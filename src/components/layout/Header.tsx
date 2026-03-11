@@ -18,6 +18,7 @@ export default function Header() {
             <span className="hidden sm:inline">+94 77 923 3822</span>
           </a>
           <div className="hidden sm:flex items-center gap-2 border-l border-slate-700 pl-4">
+            <Link href="/admin" className="hover:text-sky-400 transition-colors mr-2">Admin Panel</Link>
             <button className="hover:text-white transition-colors">English</button>
             <span>/</span>
             <button className="hover:text-white transition-colors">LKR</button>
