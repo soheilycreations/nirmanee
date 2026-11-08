@@ -6,7 +6,9 @@
  *
  *   fixed:     unit = base_price
  *   per_sqft:  unit = max(w·h/144, min_sqft) · (price_per_sqft + Σ per_sqft modifiers)
- *   then       unit = (unit + Σ flat) · (1 + Σ percent / 100)
+ *   then       unit = (unit + Σ flat + Σ per_running_ft · perimeter_ft) · (1 + Σ percent / 100)
+ *              (per_running_ft: e.g. eyelets, charged per running foot of the
+ *               print's perimeter = 2·(w + h) / 12)
  *   lines      = unit · quantity
  *   tier       = best quantity tier discount on lines
  *   express    = (lines − tier) · express_surcharge_percent / 100
@@ -15,7 +17,7 @@
  */
 
 export type PricingMode = "fixed" | "per_sqft" | "quote";
-export type ModifierType = "flat" | "percent" | "per_sqft";
+export type ModifierType = "flat" | "percent" | "per_sqft" | "per_running_ft";
 export type DesignMode = "upload" | "design_for_me" | "template";
 export type Turnaround = "standard" | "express";
 
@@ -109,6 +111,7 @@ export function computePrice(product: PricingProduct, selection: PricingSelectio
   let flat = 0;
   let percent = 0;
   let perSqft = 0;
+  let perRunningFt = 0;
   let printSize: { widthIn: number; heightIn: number } | null = null;
 
   for (const option of product.options) {
@@ -150,6 +153,7 @@ export function computePrice(product: PricingProduct, selection: PricingSelectio
     }
     if (value.modifierType === "flat") flat += value.priceModifier;
     else if (value.modifierType === "percent") percent += value.priceModifier;
+    else if (value.modifierType === "per_running_ft") perRunningFt += value.priceModifier;
     else perSqft += value.priceModifier;
   }
 
@@ -166,6 +170,12 @@ export function computePrice(product: PricingProduct, selection: PricingSelectio
     unit = areaSqft * (product.pricePerSqft + perSqft);
   } else {
     return { ok: false, error: { code: "no_price" } };
+  }
+
+  if (perRunningFt > 0) {
+    if (!printSize) return { ok: false, error: { code: "missing_option", option: "size" } };
+    const perimeterFt = (2 * (printSize.widthIn + printSize.heightIn)) / 12;
+    flat += perRunningFt * perimeterFt;
   }
 
   unit = (unit + flat) * (1 + percent / 100);
@@ -220,4 +230,9 @@ export function resolutionVerdict(ppi: number, largeFormat: boolean): "good" | "
   if (ppi >= target) return "good";
   if (ppi >= target / 2) return "ok";
   return "low";
+}
+
+/** Running feet of a print's perimeter (for per_running_ft modifiers). */
+export function perimeterFeet(size: { widthIn: number; heightIn: number }): number {
+  return Math.round(((2 * (size.widthIn + size.heightIn)) / 12) * 100) / 100;
 }

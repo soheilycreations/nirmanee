@@ -21,6 +21,7 @@ export async function signInStaff(_prev: SignInState, formData: FormData): Promi
 
   const { data, error } = await supabase.auth.signInWithPassword(parsed.data);
   if (error || !data.user) return { error: "Incorrect email or password." };
+  await supabase.cookiesWritten();
 
   const { data: staff } = await supabase.from("staff").select("is_active").eq("user_id", data.user.id).maybeSingle();
   if (!staff?.is_active) {

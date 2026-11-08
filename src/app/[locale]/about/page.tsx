@@ -5,6 +5,8 @@ import { Link } from "@/i18n/navigation";
 import { buttonClass } from "@/components/ui/button";
 import { pageMetadata } from "@/lib/seo/metadata";
 
+export const revalidate = 3600;
+
 type Props = { params: Promise<{ locale: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

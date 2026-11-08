@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { CategoryIcon } from "./CategoryIcon";
 import { cn } from "@/lib/cn";
+import { resolveImageSrc } from "@/lib/images";
 import type { ProductImage } from "@/features/catalog/types";
 
 const TINTS: Record<string, string> = {
@@ -18,11 +19,6 @@ const TINTS: Record<string, string> = {
   "custom-souvenirs": "from-accent-50 to-brand-50",
 };
 
-function imageSrc(key: string): string {
-  if (key.startsWith("/") || key.startsWith("http")) return key;
-  const base = process.env.NEXT_PUBLIC_R2_PUBLIC_URL ?? "";
-  return `${base.replace(/\/$/, "")}/${key}`;
-}
 
 /**
  * Product image, or a branded placeholder until real photography is supplied.
@@ -47,7 +43,7 @@ export function ProductVisual({
   if (image) {
     return (
       <div className={cn("relative overflow-hidden bg-paper-200", className)}>
-        <Image src={imageSrc(image.key)} alt={alt} fill sizes={sizes} priority={priority} className="object-cover" />
+        <Image src={resolveImageSrc(image.key)} alt={alt} fill sizes={sizes} priority={priority} className="object-cover" />
       </div>
     );
   }

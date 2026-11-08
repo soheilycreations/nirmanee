@@ -63,7 +63,10 @@ const banner: PricingProduct = {
       type: "finish",
       isRequired: true,
       config: {},
-      values: [{ value: "eyelets", modifierType: "flat", priceModifier: 200, widthIn: null, heightIn: null }],
+      values: [
+        { value: "eyelets", modifierType: "per_running_ft", priceModifier: 20, widthIn: null, heightIn: null },
+        { value: "none", modifierType: "flat", priceModifier: 0, widthIn: null, heightIn: null },
+      ],
     },
   ],
 };
@@ -105,17 +108,17 @@ test("invalid value and quantity", () => {
   assert.equal(computePrice(mug, { values: { inner_color: "white" }, quantity: 1.5, designMode: "upload", turnaround: "standard" }).ok, false);
 });
 
-test("per sqft with min area, per_sqft modifier and flat finish", () => {
-  // 2x4 ft = 8 sqft; (90 + 30) * 8 = 960 + 200 eyelets = 1160
+test("per sqft with min area, per_sqft modifier and eyelets per running foot", () => {
+  // 2x4 ft = 8 sqft; (90 + 30) * 8 = 960; perimeter 12 ft * 20 = 240 -> 1200
   const r = computePrice(banner, { values: { size: "2x4ft", material: "star", finish: "eyelets" }, quantity: 1, designMode: "upload", turnaround: "standard" });
   assert.ok(r.ok);
   assert.equal(r.areaSqft, 8);
-  assert.equal(r.total, 1160);
+  assert.equal(r.total, 1200);
   assert.equal(r.isEstimate, true);
 });
 
 test("custom size respects min sqft and limits", () => {
-  // 12x12 in = 1 sqft -> billed 6 sqft: 6 * 90 + 200 = 740
+  // 12x12 in = 1 sqft -> billed 6 sqft: 6 * 90 = 540; perimeter 4 ft * 20 = 80 -> 620
   const r = computePrice(banner, {
     values: { size: CUSTOM_SIZE_VALUE, material: "standard", finish: "eyelets" },
     customSize: { widthIn: 12, heightIn: 12 },
@@ -123,7 +126,7 @@ test("custom size respects min sqft and limits", () => {
   });
   assert.ok(r.ok);
   assert.equal(r.areaSqft, 6);
-  assert.equal(r.total, 740);
+  assert.equal(r.total, 620);
 
   const tooBig = computePrice(banner, {
     values: { size: CUSTOM_SIZE_VALUE, material: "standard", finish: "eyelets" },
@@ -144,4 +147,20 @@ test("effective ppi and verdict", () => {
   assert.equal(resolutionVerdict(160, false), "ok");
   assert.equal(resolutionVerdict(90, false), "low");
   assert.equal(resolutionVerdict(60, true), "ok");
+});
+
+test("eyelets scale with perimeter, not area", () => {
+  const big = computePrice(banner, {
+    values: { size: CUSTOM_SIZE_VALUE, material: "standard", finish: "eyelets" },
+    customSize: { widthIn: 120, heightIn: 36 }, // 10 x 3 ft = 30 sqft, perimeter 26 ft
+    quantity: 1, designMode: "upload", turnaround: "standard",
+  });
+  assert.ok(big.ok);
+  assert.equal(big.total, 30 * 90 + 26 * 20);
+  const cutOnly = computePrice(banner, {
+    values: { size: CUSTOM_SIZE_VALUE, material: "standard", finish: "none" },
+    customSize: { widthIn: 120, heightIn: 36 }, quantity: 1, designMode: "upload", turnaround: "standard",
+  });
+  assert.ok(cutOnly.ok);
+  assert.equal(cutOnly.total, 2700);
 });

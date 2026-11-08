@@ -11,6 +11,8 @@ import { formatLKR } from "@/lib/format";
 import { pageMetadata } from "@/lib/seo/metadata";
 import { whatsappUrl } from "@/lib/site";
 
+export const revalidate = 3600;
+
 type Props = { params: Promise<{ locale: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

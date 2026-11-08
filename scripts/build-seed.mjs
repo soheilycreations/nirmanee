@@ -70,8 +70,8 @@ for (const p of catalog.products) {
   });
   (p.templates ?? []).forEach((t, i) => {
     out.push(
-      `insert into public.product_templates (product_id, name_en, name_si, preview_key, sort_order) ` +
-        `select ${pid}, ${[t.name_en, t.name_si, t.preview_key].map(q).join(", ")}, ${(i + 1) * 10} ` +
+      `insert into public.product_templates (product_id, name_en, name_si, preview_key, config, sort_order) ` +
+        `select ${pid}, ${[t.name_en, t.name_si, t.preview_key].map(q).join(", ")}, ${j(t.config ?? {})}, ${(i + 1) * 10} ` +
         `where not exists (select 1 from public.product_templates where product_id = ${pid} and name_en = ${q(t.name_en)});`,
     );
   });

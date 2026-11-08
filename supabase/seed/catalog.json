@@ -2,464 +2,1773 @@
   "_comment": "Single source of truth for seed catalogue. `npm run db:seed` regenerates supabase/seed.sql. The storefront also reads this file in demo mode (no Supabase env). PRICES ARE PLACEHOLDERS until confirmed by the owner. Sinhala text is a draft for owner review.",
   "categories": [
     {
-      "slug": "mug-printing", "icon": "coffee", "sort_order": 10,
-      "name_en": "Mugs & Sublimation", "name_si": "මග් සහ සබ්ලිමේෂන්",
+      "slug": "mug-printing",
+      "icon": "coffee",
+      "sort_order": 10,
+      "name_en": "Mugs & Sublimation",
+      "name_si": "මග් සහ සබ්ලිමේෂන්",
       "description_en": "Photo mugs, magic mugs, clocks and gifts printed with vivid, dishwasher-safe sublimation inks.",
       "description_si": "ඡායාරූප මග්, මැජික් මග්, ඔරලෝසු සහ තෑගි භාණ්ඩ — දීප්තිමත් සබ්ලිමේෂන් මුද්‍රණයෙන්."
     },
     {
-      "slug": "photo-framing", "icon": "frame", "sort_order": 20,
-      "name_en": "Photo Framing", "name_si": "ඡායාරූප රාමු",
+      "slug": "photo-framing",
+      "icon": "frame",
+      "sort_order": 20,
+      "name_en": "Photo Framing",
+      "name_si": "ඡායාරූප රාමු",
       "description_en": "Wood, glass and LED frames for weddings, anniversaries and family portraits — printed and framed in-house.",
       "description_si": "විවාහ, සංවත්සර සහ පවුලේ ඡායාරූප සඳහා ලී, වීදුරු සහ LED රාමු — අපගේ වැඩමුළුවේම මුද්‍රණය කර රාමු කරයි."
     },
     {
-      "slug": "laser-cutting", "icon": "scissors", "sort_order": 30,
-      "name_en": "Laser Cutting", "name_si": "ලේසර් කැපීම",
+      "slug": "laser-cutting",
+      "icon": "scissors",
+      "sort_order": 30,
+      "name_en": "Laser Cutting",
+      "name_si": "ලේසර් කැපීම",
       "description_en": "Precise laser-cut names, shapes, signs and decor in MDF, wood and acrylic.",
       "description_si": "MDF, ලී සහ ඇක්‍රිලික් මත නිවැරදි ලේසර් කැපුම් නම්, හැඩතල සහ සැරසිලි."
     },
     {
-      "slug": "wood-engraving", "icon": "pen-tool", "sort_order": 40,
-      "name_en": "Wood Engraving", "name_si": "ලී මත කැටයම්",
+      "slug": "wood-engraving",
+      "icon": "pen-tool",
+      "sort_order": 40,
+      "name_en": "Wood Engraving",
+      "name_si": "ලී මත කැටයම්",
       "description_en": "Photos and messages engraved into wood plaques, boards and wood slices — a gift that lasts.",
       "description_si": "ලී පුවරු සහ ලී පෙති මත ඡායාරූප සහ පණිවිඩ කැටයම් කිරීම — කල් පවතින තෑග්ගක්."
     },
     {
-      "slug": "crystal-printing", "icon": "gem", "sort_order": 50,
-      "name_en": "Crystal Printing", "name_si": "ක්‍රිස්ටල් මුද්‍රණය",
+      "slug": "crystal-printing",
+      "icon": "gem",
+      "sort_order": 50,
+      "name_en": "Crystal Printing",
+      "name_si": "ක්‍රිස්ටල් මුද්‍රණය",
       "description_en": "Your photo printed inside glass crystal blocks — elegant keepsakes and awards.",
       "description_si": "ඔබේ ඡායාරූපය ක්‍රිස්ටල් වීදුරු කුට්ටියක් තුළ — අලංකාර සිහිවටන සහ සම්මාන."
     },
     {
-      "slug": "banners", "icon": "flag", "sort_order": 60,
-      "name_en": "Banners & Large Format", "name_si": "බැනර් සහ විශාල මුද්‍රණ",
+      "slug": "banners",
+      "icon": "flag",
+      "sort_order": 60,
+      "name_en": "Banners & Large Format",
+      "name_si": "බැනර් සහ විශාල මුද්‍රණ",
       "description_en": "Flex banners, backdrops and signage in any size for shops, events and campaigns. Priced per square foot.",
       "description_si": "කඩ, උත්සව සහ ප්‍රචාරණ සඳහා ඕනෑම ප්‍රමාණයක ෆ්ලෙක්ස් බැනර් සහ පසුබිම්. වර්ග අඩියට මිල."
     },
     {
-      "slug": "digital-printing", "icon": "printer", "sort_order": 70,
-      "name_en": "Digital Printing", "name_si": "ඩිජිටල් මුද්‍රණය",
+      "slug": "digital-printing",
+      "icon": "printer",
+      "sort_order": 70,
+      "name_en": "Digital Printing",
+      "name_si": "ඩිජිටල් මුද්‍රණය",
       "description_en": "Business cards, flyers, certificates and everyday print jobs with fast turnaround.",
       "description_si": "විසිටින් කාඩ්, පත්‍රිකා, සහතික සහ දෛනික මුද්‍රණ කටයුතු ඉක්මනින්."
     },
     {
-      "slug": "plan-printing", "icon": "file-text", "sort_order": 80,
-      "name_en": "Plan Printing", "name_si": "සැලසුම් මුද්‍රණය",
+      "slug": "plan-printing",
+      "icon": "file-text",
+      "sort_order": 80,
+      "name_en": "Plan Printing",
+      "name_si": "සැලසුම් මුද්‍රණය",
       "description_en": "A3 to A0 architectural and engineering plans in black & white or colour — send your PDF, collect the same day.",
       "description_si": "A3 සිට A0 දක්වා ගෘහ නිර්මාණ සහ ඉංජිනේරු සැලසුම් — ඔබේ PDF එක එවන්න."
     },
     {
-      "slug": "photo-enlargement", "icon": "maximize", "sort_order": 90,
-      "name_en": "Photo Enlargement", "name_si": "ඡායාරූප විශාලනය",
+      "slug": "photo-enlargement",
+      "icon": "maximize",
+      "sort_order": 90,
+      "name_en": "Photo Enlargement",
+      "name_si": "ඡායාරූප විශාලනය",
       "description_en": "Large photo prints and canvas from your phone or camera, with optional retouching.",
       "description_si": "ඔබේ දුරකථනයෙන් හෝ කැමරාවෙන් විශාල ඡායාරූප සහ කැන්වස් මුද්‍රණ."
     },
     {
-      "slug": "t-shirt-printing", "icon": "shirt", "sort_order": 100,
-      "name_en": "T-Shirt Printing", "name_si": "ටී-ෂර්ට් මුද්‍රණය",
+      "slug": "t-shirt-printing",
+      "icon": "shirt",
+      "sort_order": 100,
+      "name_en": "T-Shirt Printing",
+      "name_si": "ටී-ෂර්ට් මුද්‍රණය",
       "description_en": "Custom T-shirts for teams, events, schools and businesses — single pieces or bulk.",
       "description_si": "කණ්ඩායම්, උත්සව, පාසල් සහ ව්‍යාපාර සඳහා ටී-ෂර්ට් — එකක් හෝ තොග වශයෙන්."
     },
     {
-      "slug": "edible-print", "icon": "cake", "sort_order": 110,
-      "name_en": "Edible Print", "name_si": "කෑමට ගත හැකි මුද්‍රණ",
+      "slug": "edible-print",
+      "icon": "cake",
+      "sort_order": 110,
+      "name_en": "Edible Print",
+      "name_si": "කෑමට ගත හැකි මුද්‍රණ",
       "description_en": "Food-safe photo prints on icing sheets for birthday and celebration cakes.",
       "description_si": "උපන්දින සහ සැමරුම් කේක් සඳහා අයිසිං කඩදාසි මත ආහාරයට සුදුසු ඡායාරූප මුද්‍රණ."
     },
     {
-      "slug": "custom-souvenirs", "icon": "gift", "sort_order": 120,
-      "name_en": "Custom Souvenirs", "name_si": "සිහිවටන භාණ්ඩ",
+      "slug": "custom-souvenirs",
+      "icon": "gift",
+      "sort_order": 120,
+      "name_en": "Custom Souvenirs",
+      "name_si": "සිහිවටන භාණ්ඩ",
       "description_en": "Key tags, badges and personalised giveaways for weddings, schools and corporate events.",
       "description_si": "විවාහ, පාසල් සහ ආයතනික උත්සව සඳහා කී ටැග්, ලාංඡන සහ පුද්ගලීකරණය කළ තෑගි."
     }
   ],
   "products": [
     {
-      "slug": "photo-mug-white-11oz", "category": "mug-printing", "featured": true, "sort_order": 10,
-      "name_en": "Photo Mug — White 11oz", "name_si": "ඡායාරූප මග් — සුදු 11oz",
-      "short_en": "Your photos and words on a classic ceramic mug.", "short_si": "සම්භාව්‍ය සෙරමික් මග් එකක ඔබේ ඡායාරූප සහ වචන.",
+      "slug": "photo-mug-white-11oz",
+      "category": "mug-printing",
+      "featured": true,
+      "sort_order": 10,
+      "name_en": "Photo Mug — White 11oz",
+      "name_si": "ඡායාරූප මග් — සුදු 11oz",
+      "short_en": "Your photos and words on a classic ceramic mug.",
+      "short_si": "සම්භාව්‍ය සෙරමික් මග් එකක ඔබේ ඡායාරූප සහ වචන.",
       "description_en": "A glossy white ceramic mug printed edge to edge with your photos, names or logo. Dishwasher and microwave safe. Our designer sends you a proof before printing.",
       "description_si": "ඔබේ ඡායාරූප, නම් හෝ ලාංඡනය මුද්‍රණය කළ දිලිසෙන සුදු සෙරමික් මග් එකක්. මුද්‍රණයට පෙර අපගේ නිර්මාණකරු සාම්පලයක් එවයි.",
-      "order_type": "fixed", "pricing_mode": "fixed", "base_price": 1200,
-      "production_days": 2, "express_days": 1, "express_surcharge_percent": 50, "design_fee": 300,
-      "specs": [["Capacity", "11 oz / 330 ml"], ["Print", "Full-wrap sublimation"], ["Care", "Dishwasher & microwave safe"]],
-      "tiers": [[6, 5], [12, 10], [50, 15]],
+      "order_type": "fixed",
+      "pricing_mode": "fixed",
+      "base_price": 1200,
+      "production_days": 2,
+      "express_days": 1,
+      "express_surcharge_percent": 50,
+      "design_fee": 300,
+      "specs": [
+        [
+          "Capacity",
+          "11 oz / 330 ml"
+        ],
+        [
+          "Print",
+          "Full-wrap sublimation"
+        ],
+        [
+          "Care",
+          "Dishwasher & microwave safe"
+        ]
+      ],
+      "tiers": [
+        [
+          6,
+          5
+        ],
+        [
+          12,
+          10
+        ],
+        [
+          50,
+          15
+        ]
+      ],
       "options": [
-        { "code": "inner_color", "type": "color", "label_en": "Inside colour", "label_si": "ඇතුළත වර්ණය", "values": [
-          { "value": "white", "label_en": "White", "label_si": "සුදු", "price_modifier": 0, "swatch_hex": "#FFFFFF", "is_default": true },
-          { "value": "red", "label_en": "Red", "label_si": "රතු", "price_modifier": 150, "swatch_hex": "#C62828" },
-          { "value": "black", "label_en": "Black", "label_si": "කළු", "price_modifier": 150, "swatch_hex": "#1F1F1F" },
-          { "value": "blue", "label_en": "Blue", "label_si": "නිල්", "price_modifier": 150, "swatch_hex": "#1565C0" }
-        ]},
-        { "code": "name_text", "type": "text", "label_en": "Name or message (optional)", "label_si": "නම හෝ පණිවිඩය (අත්‍යවශ්‍ය නැත)", "is_required": false, "config": { "max_length": 40 } },
-        { "code": "photos", "type": "photo_slots", "label_en": "Photos", "label_si": "ඡායාරූප", "is_required": false, "config": { "count": 3, "print_width_in": 8, "print_height_in": 3.5 } }
+        {
+          "code": "inner_color",
+          "type": "color",
+          "label_en": "Inside colour",
+          "label_si": "ඇතුළත වර්ණය",
+          "values": [
+            {
+              "value": "white",
+              "label_en": "White",
+              "label_si": "සුදු",
+              "price_modifier": 0,
+              "swatch_hex": "#FFFFFF",
+              "is_default": true
+            },
+            {
+              "value": "red",
+              "label_en": "Red",
+              "label_si": "රතු",
+              "price_modifier": 150,
+              "swatch_hex": "#C62828"
+            },
+            {
+              "value": "black",
+              "label_en": "Black",
+              "label_si": "කළු",
+              "price_modifier": 150,
+              "swatch_hex": "#1F1F1F"
+            },
+            {
+              "value": "blue",
+              "label_en": "Blue",
+              "label_si": "නිල්",
+              "price_modifier": 150,
+              "swatch_hex": "#1565C0"
+            }
+          ]
+        },
+        {
+          "code": "name_text",
+          "type": "text",
+          "label_en": "Name or message (optional)",
+          "label_si": "නම හෝ පණිවිඩය (අත්‍යවශ්‍ය නැත)",
+          "is_required": false,
+          "config": {
+            "max_length": 40
+          }
+        },
+        {
+          "code": "photos",
+          "type": "photo_slots",
+          "label_en": "Photos",
+          "label_si": "ඡායාරූප",
+          "is_required": false,
+          "config": {
+            "count": 3,
+            "print_width_in": 8,
+            "print_height_in": 3.5
+          }
+        }
       ],
       "templates": [
-        { "name_en": "Happy Birthday", "name_si": "සුබ උපන්දිනයක්", "preview_key": "/templates/mug-birthday.svg" },
-        { "name_en": "Love collage", "name_si": "ආදර කොලාජ්", "preview_key": "/templates/mug-love.svg" },
-        { "name_en": "Company logo", "name_si": "ආයතන ලාංඡනය", "preview_key": "/templates/mug-logo.svg" }
+        {
+          "name_en": "Single photo",
+          "name_si": "තනි ඡායාරූපය",
+          "preview_key": "/templates/mug-single-photo.svg",
+          "config": {
+            "photo_slots": 1,
+            "text_fields": []
+          }
+        },
+        {
+          "name_en": "Photo + name",
+          "name_si": "ඡායාරූපය + නම",
+          "preview_key": "/templates/mug-photo-name.svg",
+          "config": {
+            "photo_slots": 1,
+            "text_fields": [
+              "name"
+            ]
+          }
+        },
+        {
+          "name_en": "2-photo collage",
+          "name_si": "ඡායාරූප 2ක කොලාජය",
+          "preview_key": "/templates/mug-collage-2.svg",
+          "config": {
+            "photo_slots": 2,
+            "text_fields": []
+          }
+        },
+        {
+          "name_en": "Photo + message",
+          "name_si": "ඡායාරූපය + පණිවිඩය",
+          "preview_key": "/templates/mug-photo-message.svg",
+          "config": {
+            "photo_slots": 1,
+            "text_fields": [
+              "message",
+              "date"
+            ]
+          }
+        }
       ]
     },
     {
-      "slug": "magic-colour-changing-mug", "category": "mug-printing", "featured": true, "sort_order": 20,
-      "name_en": "Magic Colour-Changing Mug", "name_si": "වර්ණය වෙනස් වන මැජික් මග්",
-      "short_en": "Black when cold — your photo appears with hot tea.", "short_si": "සීතල විට කළු — උණු තේ දැමූ විට ඔබේ ඡායාරූපය පෙනේ.",
+      "slug": "magic-colour-changing-mug",
+      "category": "mug-printing",
+      "featured": true,
+      "sort_order": 20,
+      "name_en": "Magic Colour-Changing Mug",
+      "name_si": "වර්ණය වෙනස් වන මැජික් මග්",
+      "short_en": "Black when cold — your photo appears with hot tea.",
+      "short_si": "සීතල විට කළු — උණු තේ දැමූ විට ඔබේ ඡායාරූපය පෙනේ.",
       "description_en": "A surprise gift: the mug looks plain black until a hot drink reveals your photo and message.",
       "description_si": "උණු පානයක් දැමූ විට ඔබේ ඡායාරූපය සහ පණිවිඩය මතු වන විශේෂ තෑග්ගක්.",
-      "order_type": "fixed", "pricing_mode": "fixed", "base_price": 1650,
-      "production_days": 2, "express_days": 1, "express_surcharge_percent": 50, "design_fee": 300,
-      "specs": [["Capacity", "11 oz / 330 ml"], ["Care", "Hand wash only"]],
-      "tiers": [[6, 5], [12, 10]],
+      "order_type": "fixed",
+      "pricing_mode": "fixed",
+      "base_price": 1650,
+      "production_days": 2,
+      "express_days": 1,
+      "express_surcharge_percent": 50,
+      "design_fee": 300,
+      "specs": [
+        [
+          "Capacity",
+          "11 oz / 330 ml"
+        ],
+        [
+          "Care",
+          "Hand wash only"
+        ]
+      ],
+      "tiers": [
+        [
+          6,
+          5
+        ],
+        [
+          12,
+          10
+        ]
+      ],
       "options": [
-        { "code": "name_text", "type": "text", "label_en": "Name or message (optional)", "label_si": "නම හෝ පණිවිඩය (අත්‍යවශ්‍ය නැත)", "is_required": false, "config": { "max_length": 40 } },
-        { "code": "photos", "type": "photo_slots", "label_en": "Photos", "label_si": "ඡායාරූප", "is_required": false, "config": { "count": 2, "print_width_in": 8, "print_height_in": 3.5 } }
+        {
+          "code": "name_text",
+          "type": "text",
+          "label_en": "Name or message (optional)",
+          "label_si": "නම හෝ පණිවිඩය (අත්‍යවශ්‍ය නැත)",
+          "is_required": false,
+          "config": {
+            "max_length": 40
+          }
+        },
+        {
+          "code": "photos",
+          "type": "photo_slots",
+          "label_en": "Photos",
+          "label_si": "ඡායාරූප",
+          "is_required": false,
+          "config": {
+            "count": 2,
+            "print_width_in": 8,
+            "print_height_in": 3.5
+          }
+        }
       ]
     },
     {
-      "slug": "mdf-sublimation-clock", "category": "mug-printing", "featured": true, "sort_order": 30,
-      "name_en": "Photo Wall Clock (MDF)", "name_si": "ඡායාරූප බිත්ති ඔරලෝසුව (MDF)",
-      "short_en": "A working wall clock with your photo.", "short_si": "ඔබේ ඡායාරූපය සහිත බිත්ති ඔරලෝසුවක්.",
+      "slug": "mdf-sublimation-clock",
+      "category": "mug-printing",
+      "featured": true,
+      "sort_order": 30,
+      "name_en": "Photo Wall Clock (MDF)",
+      "name_si": "ඡායාරූප බිත්ති ඔරලෝසුව (MDF)",
+      "short_en": "A working wall clock with your photo.",
+      "short_si": "ඔබේ ඡායාරූපය සහිත බිත්ති ඔරලෝසුවක්.",
       "description_en": "Glossy MDF wall clock printed with your photo, silent quartz movement. Perfect for living rooms, offices and gifts.",
       "description_si": "ඔබේ ඡායාරූපය මුද්‍රණය කළ දිලිසෙන MDF බිත්ති ඔරලෝසුවක්.",
-      "order_type": "fixed", "pricing_mode": "fixed", "base_price": 1200,
-      "production_days": 3, "express_days": 1, "express_surcharge_percent": 50, "design_fee": 300,
-      "specs": [["Battery", "1 × AA (not included)"], ["Material", "Gloss MDF"]],
+      "order_type": "fixed",
+      "pricing_mode": "fixed",
+      "base_price": 1200,
+      "production_days": 3,
+      "express_days": 1,
+      "express_surcharge_percent": 50,
+      "design_fee": 300,
+      "specs": [
+        [
+          "Battery",
+          "1 × AA (not included)"
+        ],
+        [
+          "Material",
+          "Gloss MDF"
+        ]
+      ],
       "tiers": [],
       "options": [
-        { "code": "size", "type": "size", "label_en": "Shape & size", "label_si": "හැඩය සහ ප්‍රමාණය", "values": [
-          { "value": "round-8", "label_en": "Round 8\"", "label_si": "රවුම් 8\"", "price_modifier": 0, "width_in": 8, "height_in": 8, "is_default": true },
-          { "value": "square-10", "label_en": "Square 10\"", "label_si": "හතරැස් 10\"", "price_modifier": 500, "width_in": 10, "height_in": 10 }
-        ]},
-        { "code": "photos", "type": "photo_slots", "label_en": "Photo", "label_si": "ඡායාරූපය", "is_required": false, "config": { "count": 1 } }
+        {
+          "code": "size",
+          "type": "size",
+          "label_en": "Shape & size",
+          "label_si": "හැඩය සහ ප්‍රමාණය",
+          "values": [
+            {
+              "value": "round-8",
+              "label_en": "Round 8\"",
+              "label_si": "රවුම් 8\"",
+              "price_modifier": 0,
+              "width_in": 8,
+              "height_in": 8,
+              "is_default": true
+            },
+            {
+              "value": "square-10",
+              "label_en": "Square 10\"",
+              "label_si": "හතරැස් 10\"",
+              "price_modifier": 500,
+              "width_in": 10,
+              "height_in": 10
+            }
+          ]
+        },
+        {
+          "code": "photos",
+          "type": "photo_slots",
+          "label_en": "Photo",
+          "label_si": "ඡායාරූපය",
+          "is_required": false,
+          "config": {
+            "count": 1
+          }
+        }
       ]
     },
     {
-      "slug": "photo-frame-with-light", "category": "photo-framing", "featured": true, "sort_order": 10,
-      "name_en": "LED Photo Frame", "name_si": "LED ඡායාරූප රාමුව",
-      "short_en": "Backlit frame that makes your photo glow.", "short_si": "ඔබේ ඡායාරූපය දිලිසෙන LED රාමුවක්.",
+      "slug": "photo-frame-with-light",
+      "category": "photo-framing",
+      "featured": true,
+      "sort_order": 10,
+      "name_en": "LED Photo Frame",
+      "name_si": "LED ඡායාරූප රාමුව",
+      "short_en": "Backlit frame that makes your photo glow.",
+      "short_si": "ඔබේ ඡායාරූපය දිලිසෙන LED රාමුවක්.",
       "description_en": "A slim frame with soft LED backlight — wedding photos and portraits look stunning at night.",
       "description_si": "මෘදු LED ආලෝකය සහිත තුනී රාමුවක් — විවාහ සහ පවුලේ ඡායාරූප සඳහා.",
-      "order_type": "fixed", "pricing_mode": "fixed", "base_price": 2000,
-      "production_days": 3, "express_days": 1, "express_surcharge_percent": 50, "design_fee": 400,
-      "specs": [["Power", "USB / adapter"]],
+      "order_type": "fixed",
+      "pricing_mode": "fixed",
+      "base_price": 2000,
+      "production_days": 3,
+      "express_days": 1,
+      "express_surcharge_percent": 50,
+      "design_fee": 400,
+      "specs": [
+        [
+          "Power",
+          "USB / adapter"
+        ]
+      ],
       "tiers": [],
       "options": [
-        { "code": "size", "type": "size", "label_en": "Size", "label_si": "ප්‍රමාණය", "values": [
-          { "value": "8x10", "label_en": "8 × 10 in", "label_si": "8 × 10 අඟල්", "price_modifier": 0, "width_in": 8, "height_in": 10, "is_default": true },
-          { "value": "10x12", "label_en": "10 × 12 in", "label_si": "10 × 12 අඟල්", "price_modifier": 600, "width_in": 10, "height_in": 12 },
-          { "value": "12x18", "label_en": "12 × 18 in", "label_si": "12 × 18 අඟල්", "price_modifier": 1400, "width_in": 12, "height_in": 18 }
-        ]},
-        { "code": "photos", "type": "photo_slots", "label_en": "Photo", "label_si": "ඡායාරූපය", "is_required": false, "config": { "count": 1 } }
+        {
+          "code": "size",
+          "type": "size",
+          "label_en": "Size",
+          "label_si": "ප්‍රමාණය",
+          "values": [
+            {
+              "value": "8x10",
+              "label_en": "8 × 10 in",
+              "label_si": "8 × 10 අඟල්",
+              "price_modifier": 0,
+              "width_in": 8,
+              "height_in": 10,
+              "is_default": true
+            },
+            {
+              "value": "10x12",
+              "label_en": "10 × 12 in",
+              "label_si": "10 × 12 අඟල්",
+              "price_modifier": 600,
+              "width_in": 10,
+              "height_in": 12
+            },
+            {
+              "value": "12x18",
+              "label_en": "12 × 18 in",
+              "label_si": "12 × 18 අඟල්",
+              "price_modifier": 1400,
+              "width_in": 12,
+              "height_in": 18
+            }
+          ]
+        },
+        {
+          "code": "photos",
+          "type": "photo_slots",
+          "label_en": "Photo",
+          "label_si": "ඡායාරූපය",
+          "is_required": false,
+          "config": {
+            "count": 1
+          }
+        }
+      ],
+      "templates": [
+        {
+          "name_en": "Single photo",
+          "name_si": "තනි ඡායාරූපය",
+          "preview_key": "/templates/frame-single-photo.svg",
+          "config": {
+            "photo_slots": 1,
+            "text_fields": []
+          }
+        },
+        {
+          "name_en": "Photo + name",
+          "name_si": "ඡායාරූපය + නම",
+          "preview_key": "/templates/frame-photo-name.svg",
+          "config": {
+            "photo_slots": 1,
+            "text_fields": [
+              "name"
+            ]
+          }
+        },
+        {
+          "name_en": "2-photo collage",
+          "name_si": "ඡායාරූප 2ක කොලාජය",
+          "preview_key": "/templates/frame-collage-2.svg",
+          "config": {
+            "photo_slots": 2,
+            "text_fields": []
+          }
+        },
+        {
+          "name_en": "Photo + date",
+          "name_si": "ඡායාරූපය + දිනය",
+          "preview_key": "/templates/frame-photo-date.svg",
+          "config": {
+            "photo_slots": 1,
+            "text_fields": [
+              "date",
+              "message"
+            ]
+          }
+        }
       ]
     },
     {
-      "slug": "magnet-pine-wood-frame", "category": "photo-framing", "sort_order": 20,
-      "name_en": "Pine Wood Magnet Frame", "name_si": "පයින් ලී චුම්බක රාමුව",
-      "short_en": "Natural pine frame with magnetic back.", "short_si": "චුම්බක පිටුපසක් සහිත ස්වභාවික පයින් ලී රාමුව.",
+      "slug": "magnet-pine-wood-frame",
+      "category": "photo-framing",
+      "sort_order": 20,
+      "name_en": "Pine Wood Magnet Frame",
+      "name_si": "පයින් ලී චුම්බක රාමුව",
+      "short_en": "Natural pine frame with magnetic back.",
+      "short_si": "චුම්බක පිටුපසක් සහිත ස්වභාවික පයින් ලී රාමුව.",
       "description_en": "A light natural-pine frame — sticks to your fridge or stands on a desk.",
       "description_si": "ශීතකරණයේ ඇලවිය හැකි හෝ මේසය මත තැබිය හැකි සැහැල්ලු පයින් ලී රාමුවක්.",
-      "order_type": "fixed", "pricing_mode": "fixed", "base_price": 650,
-      "production_days": 2, "express_days": 1, "express_surcharge_percent": 50, "design_fee": 250,
-      "specs": [["Material", "Natural pine"]],
-      "tiers": [[10, 10], [25, 15]],
+      "order_type": "fixed",
+      "pricing_mode": "fixed",
+      "base_price": 650,
+      "production_days": 2,
+      "express_days": 1,
+      "express_surcharge_percent": 50,
+      "design_fee": 250,
+      "specs": [
+        [
+          "Material",
+          "Natural pine"
+        ]
+      ],
+      "tiers": [
+        [
+          10,
+          10
+        ],
+        [
+          25,
+          15
+        ]
+      ],
       "options": [
-        { "code": "size", "type": "size", "label_en": "Size", "label_si": "ප්‍රමාණය", "values": [
-          { "value": "4x6", "label_en": "4 × 6 in", "label_si": "4 × 6 අඟල්", "price_modifier": 0, "width_in": 4, "height_in": 6, "is_default": true },
-          { "value": "6x8", "label_en": "6 × 8 in", "label_si": "6 × 8 අඟල්", "price_modifier": 250, "width_in": 6, "height_in": 8 }
-        ]},
-        { "code": "photos", "type": "photo_slots", "label_en": "Photo", "label_si": "ඡායාරූපය", "is_required": false, "config": { "count": 1 } }
+        {
+          "code": "size",
+          "type": "size",
+          "label_en": "Size",
+          "label_si": "ප්‍රමාණය",
+          "values": [
+            {
+              "value": "4x6",
+              "label_en": "4 × 6 in",
+              "label_si": "4 × 6 අඟල්",
+              "price_modifier": 0,
+              "width_in": 4,
+              "height_in": 6,
+              "is_default": true
+            },
+            {
+              "value": "6x8",
+              "label_en": "6 × 8 in",
+              "label_si": "6 × 8 අඟල්",
+              "price_modifier": 250,
+              "width_in": 6,
+              "height_in": 8
+            }
+          ]
+        },
+        {
+          "code": "photos",
+          "type": "photo_slots",
+          "label_en": "Photo",
+          "label_si": "ඡායාරූපය",
+          "is_required": false,
+          "config": {
+            "count": 1
+          }
+        }
+      ],
+      "templates": [
+        {
+          "name_en": "Single photo",
+          "name_si": "තනි ඡායාරූපය",
+          "preview_key": "/templates/frame-single-photo.svg",
+          "config": {
+            "photo_slots": 1,
+            "text_fields": []
+          }
+        },
+        {
+          "name_en": "Photo + name",
+          "name_si": "ඡායාරූපය + නම",
+          "preview_key": "/templates/frame-photo-name.svg",
+          "config": {
+            "photo_slots": 1,
+            "text_fields": [
+              "name"
+            ]
+          }
+        },
+        {
+          "name_en": "2-photo collage",
+          "name_si": "ඡායාරූප 2ක කොලාජය",
+          "preview_key": "/templates/frame-collage-2.svg",
+          "config": {
+            "photo_slots": 2,
+            "text_fields": []
+          }
+        },
+        {
+          "name_en": "Photo + date",
+          "name_si": "ඡායාරූපය + දිනය",
+          "preview_key": "/templates/frame-photo-date.svg",
+          "config": {
+            "photo_slots": 1,
+            "text_fields": [
+              "date",
+              "message"
+            ]
+          }
+        }
       ]
     },
     {
-      "slug": "hexagon-glass-photo-frame", "category": "photo-framing", "sort_order": 30,
-      "name_en": "Hexagon Glass Photo Frame", "name_si": "ෂඩාස්‍රාකාර වීදුරු රාමුව",
-      "short_en": "Photo printed on glass in a modern hexagon.", "short_si": "නවීන ෂඩාස්‍රාකාර වීදුරුවක මුද්‍රිත ඡායාරූපය.",
+      "slug": "hexagon-glass-photo-frame",
+      "category": "photo-framing",
+      "sort_order": 30,
+      "name_en": "Hexagon Glass Photo Frame",
+      "name_si": "ෂඩාස්‍රාකාර වීදුරු රාමුව",
+      "short_en": "Photo printed on glass in a modern hexagon.",
+      "short_si": "නවීන ෂඩාස්‍රාකාර වීදුරුවක මුද්‍රිත ඡායාරූපය.",
       "description_en": "Sublimation-printed glass in a hexagon shape with a stand — a modern desk keepsake.",
       "description_si": "ස්ටෑන්ඩ් එකක් සහිත ෂඩාස්‍රාකාර වීදුරු ඡායාරූප රාමුවක්.",
-      "order_type": "fixed", "pricing_mode": "fixed", "base_price": 1150,
-      "production_days": 3, "express_days": 1, "express_surcharge_percent": 50, "design_fee": 300,
-      "specs": [["Material", "Sublimation glass"]],
+      "order_type": "fixed",
+      "pricing_mode": "fixed",
+      "base_price": 1150,
+      "production_days": 3,
+      "express_days": 1,
+      "express_surcharge_percent": 50,
+      "design_fee": 300,
+      "specs": [
+        [
+          "Material",
+          "Sublimation glass"
+        ]
+      ],
       "tiers": [],
       "options": [
-        { "code": "photos", "type": "photo_slots", "label_en": "Photo", "label_si": "ඡායාරූපය", "is_required": false, "config": { "count": 1, "print_width_in": 6, "print_height_in": 6 } }
+        {
+          "code": "photos",
+          "type": "photo_slots",
+          "label_en": "Photo",
+          "label_si": "ඡායාරූපය",
+          "is_required": false,
+          "config": {
+            "count": 1,
+            "print_width_in": 6,
+            "print_height_in": 6
+          }
+        }
       ]
     },
     {
-      "slug": "anniversary-glass-clock-frame", "category": "photo-framing", "sort_order": 40,
-      "name_en": "Anniversary Glass Clock Frame", "name_si": "සංවත්සර වීදුරු ඔරලෝසු රාමුව",
-      "short_en": "Glass photo frame with a built-in clock.", "short_si": "ඔරලෝසුවක් සහිත වීදුරු ඡායාරූප රාමුව.",
+      "slug": "anniversary-glass-clock-frame",
+      "category": "photo-framing",
+      "sort_order": 40,
+      "name_en": "Anniversary Glass Clock Frame",
+      "name_si": "සංවත්සර වීදුරු ඔරලෝසු රාමුව",
+      "short_en": "Glass photo frame with a built-in clock.",
+      "short_si": "ඔරලෝසුවක් සහිත වීදුරු ඡායාරූප රාමුව.",
       "description_en": "A glass photo frame with a small clock — a favourite anniversary and wedding gift.",
       "description_si": "කුඩා ඔරලෝසුවක් සහිත වීදුරු රාමුවක් — සංවත්සර සහ විවාහ තෑග්ගක්.",
-      "order_type": "fixed", "pricing_mode": "fixed", "base_price": 1450,
-      "production_days": 3, "express_days": 1, "express_surcharge_percent": 50, "design_fee": 300,
-      "specs": [["Battery", "Button cell (included)"]],
+      "order_type": "fixed",
+      "pricing_mode": "fixed",
+      "base_price": 1450,
+      "production_days": 3,
+      "express_days": 1,
+      "express_surcharge_percent": 50,
+      "design_fee": 300,
+      "specs": [
+        [
+          "Battery",
+          "Button cell (included)"
+        ]
+      ],
       "tiers": [],
       "options": [
-        { "code": "name_text", "type": "text", "label_en": "Names & date (optional)", "label_si": "නම් සහ දිනය (අත්‍යවශ්‍ය නැත)", "is_required": false, "config": { "max_length": 50 } },
-        { "code": "photos", "type": "photo_slots", "label_en": "Photo", "label_si": "ඡායාරූපය", "is_required": false, "config": { "count": 1, "print_width_in": 6, "print_height_in": 8 } }
+        {
+          "code": "name_text",
+          "type": "text",
+          "label_en": "Names & date (optional)",
+          "label_si": "නම් සහ දිනය (අත්‍යවශ්‍ය නැත)",
+          "is_required": false,
+          "config": {
+            "max_length": 50
+          }
+        },
+        {
+          "code": "photos",
+          "type": "photo_slots",
+          "label_en": "Photo",
+          "label_si": "ඡායාරූපය",
+          "is_required": false,
+          "config": {
+            "count": 1,
+            "print_width_in": 6,
+            "print_height_in": 8
+          }
+        }
       ]
     },
     {
-      "slug": "custom-love-wooden-frame", "category": "laser-cutting", "featured": true, "sort_order": 10,
-      "name_en": "Laser-Cut Love Wooden Frame", "name_si": "ලේසර් කැපූ ආදර ලී රාමුව",
-      "short_en": "Laser-cut heart frame with your names.", "short_si": "ඔබේ නම් සහිත ලේසර් කැපූ හදවත් රාමුව.",
+      "slug": "custom-love-wooden-frame",
+      "category": "laser-cutting",
+      "featured": true,
+      "sort_order": 10,
+      "name_en": "Laser-Cut Love Wooden Frame",
+      "name_si": "ලේසර් කැපූ ආදර ලී රාමුව",
+      "short_en": "Laser-cut heart frame with your names.",
+      "short_si": "ඔබේ නම් සහිත ලේසර් කැපූ හදවත් රාමුව.",
       "description_en": "A laser-cut wooden frame with hearts and your names, holding your favourite couple photo.",
       "description_si": "හදවත් සහ ඔබේ නම් සහිත ලේසර් කැපූ ලී රාමුවක්.",
-      "order_type": "fixed", "pricing_mode": "fixed", "base_price": 1450,
-      "production_days": 3, "express_days": 2, "express_surcharge_percent": 50, "design_fee": 300,
-      "specs": [["Material", "MDF / wood"]],
+      "order_type": "fixed",
+      "pricing_mode": "fixed",
+      "base_price": 1450,
+      "production_days": 3,
+      "express_days": 2,
+      "express_surcharge_percent": 50,
+      "design_fee": 300,
+      "specs": [
+        [
+          "Material",
+          "MDF / wood"
+        ]
+      ],
       "tiers": [],
       "options": [
-        { "code": "name_text", "type": "text", "label_en": "Names to cut", "label_si": "කපා දැක්විය යුතු නම්", "is_required": true, "config": { "max_length": 30 } },
-        { "code": "photos", "type": "photo_slots", "label_en": "Photo", "label_si": "ඡායාරූපය", "is_required": false, "config": { "count": 1, "print_width_in": 4, "print_height_in": 6 } }
+        {
+          "code": "name_text",
+          "type": "text",
+          "label_en": "Names to cut",
+          "label_si": "කපා දැක්විය යුතු නම්",
+          "is_required": true,
+          "config": {
+            "max_length": 30
+          }
+        },
+        {
+          "code": "photos",
+          "type": "photo_slots",
+          "label_en": "Photo",
+          "label_si": "ඡායාරූපය",
+          "is_required": false,
+          "config": {
+            "count": 1,
+            "print_width_in": 4,
+            "print_height_in": 6
+          }
+        }
       ]
     },
     {
-      "slug": "laser-cut-name-plate", "category": "laser-cutting", "sort_order": 20,
-      "name_en": "Laser-Cut Name Plate", "name_si": "ලේසර් කැපූ නාම පුවරුව",
-      "short_en": "House, office or door name plates.", "short_si": "නිවස, කාර්යාල හෝ දොර නාම පුවරු.",
+      "slug": "laser-cut-name-plate",
+      "category": "laser-cutting",
+      "sort_order": 20,
+      "name_en": "Laser-Cut Name Plate",
+      "name_si": "ලේසර් කැපූ නාම පුවරුව",
+      "short_en": "House, office or door name plates.",
+      "short_si": "නිවස, කාර්යාල හෝ දොර නාම පුවරු.",
       "description_en": "Custom house and office name plates, laser-cut in acrylic or wood.",
       "description_si": "ඇක්‍රිලික් හෝ ලී මත ලේසර් කැපූ නිවාස සහ කාර්යාල නාම පුවරු.",
-      "order_type": "fixed", "pricing_mode": "fixed", "base_price": 2500,
-      "production_days": 4, "express_days": 2, "express_surcharge_percent": 50, "design_fee": 500,
+      "order_type": "fixed",
+      "pricing_mode": "fixed",
+      "base_price": 2500,
+      "production_days": 4,
+      "express_days": 2,
+      "express_surcharge_percent": 50,
+      "design_fee": 500,
       "specs": [],
       "tiers": [],
       "options": [
-        { "code": "material", "type": "material", "label_en": "Material", "label_si": "ද්‍රව්‍යය", "values": [
-          { "value": "mdf", "label_en": "Painted MDF", "label_si": "තීන්ත ආලේප MDF", "price_modifier": 0, "is_default": true },
-          { "value": "acrylic", "label_en": "Acrylic", "label_si": "ඇක්‍රිලික්", "price_modifier": 1000 }
-        ]},
-        { "code": "size", "type": "size", "label_en": "Size", "label_si": "ප්‍රමාණය", "values": [
-          { "value": "12x6", "label_en": "12 × 6 in", "label_si": "12 × 6 අඟල්", "price_modifier": 0, "width_in": 12, "height_in": 6, "is_default": true },
-          { "value": "18x8", "label_en": "18 × 8 in", "label_si": "18 × 8 අඟල්", "price_modifier": 1200, "width_in": 18, "height_in": 8 }
-        ]},
-        { "code": "name_text", "type": "text", "label_en": "Text on the plate", "label_si": "පුවරුවේ පෙළ", "is_required": true, "config": { "max_length": 60 } }
+        {
+          "code": "material",
+          "type": "material",
+          "label_en": "Material",
+          "label_si": "ද්‍රව්‍යය",
+          "values": [
+            {
+              "value": "mdf",
+              "label_en": "Painted MDF",
+              "label_si": "තීන්ත ආලේප MDF",
+              "price_modifier": 0,
+              "is_default": true
+            },
+            {
+              "value": "acrylic",
+              "label_en": "Acrylic",
+              "label_si": "ඇක්‍රිලික්",
+              "price_modifier": 1000
+            }
+          ]
+        },
+        {
+          "code": "size",
+          "type": "size",
+          "label_en": "Size",
+          "label_si": "ප්‍රමාණය",
+          "values": [
+            {
+              "value": "12x6",
+              "label_en": "12 × 6 in",
+              "label_si": "12 × 6 අඟල්",
+              "price_modifier": 0,
+              "width_in": 12,
+              "height_in": 6,
+              "is_default": true
+            },
+            {
+              "value": "18x8",
+              "label_en": "18 × 8 in",
+              "label_si": "18 × 8 අඟල්",
+              "price_modifier": 1200,
+              "width_in": 18,
+              "height_in": 8
+            }
+          ]
+        },
+        {
+          "code": "name_text",
+          "type": "text",
+          "label_en": "Text on the plate",
+          "label_si": "පුවරුවේ පෙළ",
+          "is_required": true,
+          "config": {
+            "max_length": 60
+          }
+        }
       ]
     },
     {
-      "slug": "black-board-frame-engraving", "category": "wood-engraving", "featured": true, "sort_order": 10,
-      "name_en": "Engraved Photo Board", "name_si": "කැටයම් කළ ඡායාරූප පුවරුව",
-      "short_en": "Your photo laser-engraved on a wooden board.", "short_si": "ලී පුවරුවක ලේසර් කැටයම් කළ ඔබේ ඡායාරූපය.",
+      "slug": "black-board-frame-engraving",
+      "category": "wood-engraving",
+      "featured": true,
+      "sort_order": 10,
+      "name_en": "Engraved Photo Board",
+      "name_si": "කැටයම් කළ ඡායාරූප පුවරුව",
+      "short_en": "Your photo laser-engraved on a wooden board.",
+      "short_si": "ලී පුවරුවක ලේසර් කැටයම් කළ ඔබේ ඡායාරූපය.",
       "description_en": "High-detail laser engraving of your photo on a black-finished board — ideal for weddings, memorials and awards.",
       "description_si": "කළු නිමාවක් සහිත පුවරුවක ඔබේ ඡායාරූපය ඉතා සියුම්ව ලේසර් කැටයම් කිරීම.",
-      "order_type": "fixed", "pricing_mode": "fixed", "base_price": 1000,
-      "production_days": 3, "express_days": 2, "express_surcharge_percent": 50, "design_fee": 300,
-      "specs": [["Technique", "Laser engraving"]],
+      "order_type": "fixed",
+      "pricing_mode": "fixed",
+      "base_price": 1000,
+      "production_days": 3,
+      "express_days": 2,
+      "express_surcharge_percent": 50,
+      "design_fee": 300,
+      "specs": [
+        [
+          "Technique",
+          "Laser engraving"
+        ]
+      ],
       "tiers": [],
       "options": [
-        { "code": "size", "type": "size", "label_en": "Size", "label_si": "ප්‍රමාණය", "values": [
-          { "value": "8x10", "label_en": "8 × 10 in", "label_si": "8 × 10 අඟල්", "price_modifier": 0, "width_in": 8, "height_in": 10, "is_default": true },
-          { "value": "10x12", "label_en": "10 × 12 in", "label_si": "10 × 12 අඟල්", "price_modifier": 400, "width_in": 10, "height_in": 12 },
-          { "value": "12x18", "label_en": "12 × 18 in", "label_si": "12 × 18 අඟල්", "price_modifier": 1100, "width_in": 12, "height_in": 18 }
-        ]},
-        { "code": "material", "type": "material", "label_en": "Board", "label_si": "පුවරුව", "values": [
-          { "value": "mdf", "label_en": "MDF", "label_si": "MDF", "price_modifier": 0, "is_default": true },
-          { "value": "pine", "label_en": "Natural pine", "label_si": "ස්වභාවික පයින්", "price_modifier": 300 }
-        ]},
-        { "code": "photos", "type": "photo_slots", "label_en": "Photo", "label_si": "ඡායාරූපය", "is_required": false, "config": { "count": 1 } }
+        {
+          "code": "size",
+          "type": "size",
+          "label_en": "Size",
+          "label_si": "ප්‍රමාණය",
+          "values": [
+            {
+              "value": "8x10",
+              "label_en": "8 × 10 in",
+              "label_si": "8 × 10 අඟල්",
+              "price_modifier": 0,
+              "width_in": 8,
+              "height_in": 10,
+              "is_default": true
+            },
+            {
+              "value": "10x12",
+              "label_en": "10 × 12 in",
+              "label_si": "10 × 12 අඟල්",
+              "price_modifier": 400,
+              "width_in": 10,
+              "height_in": 12
+            },
+            {
+              "value": "12x18",
+              "label_en": "12 × 18 in",
+              "label_si": "12 × 18 අඟල්",
+              "price_modifier": 1100,
+              "width_in": 12,
+              "height_in": 18
+            }
+          ]
+        },
+        {
+          "code": "material",
+          "type": "material",
+          "label_en": "Board",
+          "label_si": "පුවරුව",
+          "values": [
+            {
+              "value": "mdf",
+              "label_en": "MDF",
+              "label_si": "MDF",
+              "price_modifier": 0,
+              "is_default": true
+            },
+            {
+              "value": "pine",
+              "label_en": "Natural pine",
+              "label_si": "ස්වභාවික පයින්",
+              "price_modifier": 300
+            }
+          ]
+        },
+        {
+          "code": "photos",
+          "type": "photo_slots",
+          "label_en": "Photo",
+          "label_si": "ඡායාරූපය",
+          "is_required": false,
+          "config": {
+            "count": 1
+          }
+        }
       ]
     },
     {
-      "slug": "wood-slice-engraving", "category": "wood-engraving", "sort_order": 20,
-      "name_en": "Engraved Wood Slice", "name_si": "කැටයම් කළ ලී පෙත්ත",
-      "short_en": "Rustic natural wood slice with your photo.", "short_si": "ඔබේ ඡායාරූපය සහිත ස්වභාවික ලී පෙත්තක්.",
+      "slug": "wood-slice-engraving",
+      "category": "wood-engraving",
+      "sort_order": 20,
+      "name_en": "Engraved Wood Slice",
+      "name_si": "කැටයම් කළ ලී පෙත්ත",
+      "short_en": "Rustic natural wood slice with your photo.",
+      "short_si": "ඔබේ ඡායාරූපය සහිත ස්වභාවික ලී පෙත්තක්.",
       "description_en": "A natural wood slice with bark edge, engraved with your photo or message.",
       "description_si": "පොත්ත සහිත ස්වභාවික ලී පෙත්තක ඔබේ ඡායාරූපය හෝ පණිවිඩය කැටයම් කිරීම.",
-      "order_type": "fixed", "pricing_mode": "fixed", "base_price": 800,
-      "production_days": 3, "express_days": 2, "express_surcharge_percent": 50, "design_fee": 300,
-      "specs": [["Material", "Natural wood (each slice is unique)"]],
+      "order_type": "fixed",
+      "pricing_mode": "fixed",
+      "base_price": 800,
+      "production_days": 3,
+      "express_days": 2,
+      "express_surcharge_percent": 50,
+      "design_fee": 300,
+      "specs": [
+        [
+          "Material",
+          "Natural wood (each slice is unique)"
+        ]
+      ],
       "tiers": [],
       "options": [
-        { "code": "photos", "type": "photo_slots", "label_en": "Photo", "label_si": "ඡායාරූපය", "is_required": false, "config": { "count": 1, "print_width_in": 6, "print_height_in": 6 } }
+        {
+          "code": "photos",
+          "type": "photo_slots",
+          "label_en": "Photo",
+          "label_si": "ඡායාරූපය",
+          "is_required": false,
+          "config": {
+            "count": 1,
+            "print_width_in": 6,
+            "print_height_in": 6
+          }
+        }
       ]
     },
     {
-      "slug": "crystal-photo-block", "category": "crystal-printing", "featured": true, "sort_order": 10,
-      "name_en": "Crystal Photo Block", "name_si": "ක්‍රිස්ටල් ඡායාරූප කුට්ටිය",
-      "short_en": "Your photo printed inside clear crystal.", "short_si": "පැහැදිලි ක්‍රිස්ටල් තුළ ඔබේ ඡායාරූපය.",
+      "slug": "crystal-photo-block",
+      "category": "crystal-printing",
+      "featured": true,
+      "sort_order": 10,
+      "name_en": "Crystal Photo Block",
+      "name_si": "ක්‍රිස්ටල් ඡායාරූප කුට්ටිය",
+      "short_en": "Your photo printed inside clear crystal.",
+      "short_si": "පැහැදිලි ක්‍රිස්ටල් තුළ ඔබේ ඡායාරූපය.",
       "description_en": "Thick optical crystal with your photo printed inside — comes with a gift box.",
       "description_si": "ඔබේ ඡායාරූපය තුළ මුද්‍රණය කළ ඝන ක්‍රිස්ටල් කුට්ටියක් — තෑගි පෙට්ටියක් සමඟ.",
-      "order_type": "fixed", "pricing_mode": "fixed", "base_price": 2500,
-      "production_days": 3, "express_days": 2, "express_surcharge_percent": 50, "design_fee": 300,
-      "specs": [["Includes", "Gift box"]],
+      "order_type": "fixed",
+      "pricing_mode": "fixed",
+      "base_price": 2500,
+      "production_days": 3,
+      "express_days": 2,
+      "express_surcharge_percent": 50,
+      "design_fee": 300,
+      "specs": [
+        [
+          "Includes",
+          "Gift box"
+        ]
+      ],
       "tiers": [],
       "options": [
-        { "code": "size", "type": "size", "label_en": "Size", "label_si": "ප්‍රමාණය", "values": [
-          { "value": "small", "label_en": "Small (3 × 4 in)", "label_si": "කුඩා (3 × 4 අඟල්)", "price_modifier": 0, "width_in": 3, "height_in": 4, "is_default": true },
-          { "value": "medium", "label_en": "Medium (4 × 6 in)", "label_si": "මධ්‍යම (4 × 6 අඟල්)", "price_modifier": 1500, "width_in": 4, "height_in": 6 },
-          { "value": "large", "label_en": "Large (6 × 8 in)", "label_si": "විශාල (6 × 8 අඟල්)", "price_modifier": 3000, "width_in": 6, "height_in": 8 }
-        ]},
-        { "code": "photos", "type": "photo_slots", "label_en": "Photo", "label_si": "ඡායාරූපය", "is_required": false, "config": { "count": 1 } }
+        {
+          "code": "size",
+          "type": "size",
+          "label_en": "Size",
+          "label_si": "ප්‍රමාණය",
+          "values": [
+            {
+              "value": "small",
+              "label_en": "Small (3 × 4 in)",
+              "label_si": "කුඩා (3 × 4 අඟල්)",
+              "price_modifier": 0,
+              "width_in": 3,
+              "height_in": 4,
+              "is_default": true
+            },
+            {
+              "value": "medium",
+              "label_en": "Medium (4 × 6 in)",
+              "label_si": "මධ්‍යම (4 × 6 අඟල්)",
+              "price_modifier": 1500,
+              "width_in": 4,
+              "height_in": 6
+            },
+            {
+              "value": "large",
+              "label_en": "Large (6 × 8 in)",
+              "label_si": "විශාල (6 × 8 අඟල්)",
+              "price_modifier": 3000,
+              "width_in": 6,
+              "height_in": 8
+            }
+          ]
+        },
+        {
+          "code": "photos",
+          "type": "photo_slots",
+          "label_en": "Photo",
+          "label_si": "ඡායාරූපය",
+          "is_required": false,
+          "config": {
+            "count": 1
+          }
+        }
       ]
     },
     {
-      "slug": "flex-banner", "category": "banners", "featured": true, "sort_order": 10,
-      "name_en": "Flex Banner (any size)", "name_si": "ෆ්ලෙක්ස් බැනරය (ඕනෑම ප්‍රමාණයක්)",
-      "short_en": "Outdoor flex banners priced per square foot.", "short_si": "වර්ග අඩියට මිල කෙරෙන එළිමහන් ෆ්ලෙක්ස් බැනර්.",
+      "slug": "flex-banner",
+      "category": "banners",
+      "featured": true,
+      "sort_order": 10,
+      "name_en": "Flex Banner (any size)",
+      "name_si": "ෆ්ලෙක්ස් බැනරය (ඕනෑම ප්‍රමාණයක්)",
+      "short_en": "Outdoor flex banners priced per square foot.",
+      "short_si": "වර්ග අඩියට මිල කෙරෙන එළිමහන් ෆ්ලෙක්ස් බැනර්.",
       "description_en": "Weather-resistant flex banners for shops, events and campaigns. Choose a preset or enter your exact size. The price shown is an estimate — our team confirms the final quote in your job chat.",
       "description_si": "කඩ, උත්සව සහ ප්‍රචාරණ සඳහා කාලගුණයට ඔරොත්තු දෙන ෆ්ලෙක්ස් බැනර්. පෙන්වන මිල ඇස්තමේන්තුවකි — අවසාන මිල අපගේ කණ්ඩායම තහවුරු කරයි.",
-      "order_type": "quote", "pricing_mode": "per_sqft", "price_per_sqft": 90, "min_sqft": 6,
-      "production_days": 2, "express_days": 1, "express_surcharge_percent": 30, "design_fee": 1000,
-      "specs": [["Print", "Solvent / eco-solvent, outdoor"], ["Max width", "10 ft seamless"]],
-      "tiers": [[5, 5], [20, 10]],
+      "order_type": "quote",
+      "pricing_mode": "per_sqft",
+      "price_per_sqft": 90,
+      "min_sqft": 6,
+      "production_days": 2,
+      "express_days": 1,
+      "express_surcharge_percent": 30,
+      "design_fee": 1000,
+      "specs": [
+        [
+          "Print",
+          "Solvent / eco-solvent, outdoor"
+        ],
+        [
+          "Max width",
+          "10 ft seamless"
+        ]
+      ],
+      "tiers": [
+        [
+          5,
+          5
+        ],
+        [
+          20,
+          10
+        ]
+      ],
       "options": [
-        { "code": "size", "type": "size", "label_en": "Size", "label_si": "ප්‍රමාණය", "config": { "allow_custom": true, "unit": "ft", "min_width_in": 12, "max_width_in": 600, "min_height_in": 12, "max_height_in": 600 }, "values": [
-          { "value": "2x4ft", "label_en": "2 × 4 ft", "label_si": "අඩි 2 × 4", "price_modifier": 0, "width_in": 48, "height_in": 24, "is_default": true },
-          { "value": "3x6ft", "label_en": "3 × 6 ft", "label_si": "අඩි 3 × 6", "price_modifier": 0, "width_in": 72, "height_in": 36 },
-          { "value": "4x8ft", "label_en": "4 × 8 ft", "label_si": "අඩි 4 × 8", "price_modifier": 0, "width_in": 96, "height_in": 48 },
-          { "value": "6x10ft", "label_en": "6 × 10 ft", "label_si": "අඩි 6 × 10", "price_modifier": 0, "width_in": 120, "height_in": 72 }
-        ]},
-        { "code": "material", "type": "material", "label_en": "Material", "label_si": "ද්‍රව්‍යය", "values": [
-          { "value": "standard", "label_en": "Standard flex", "label_si": "සාමාන්‍ය ෆ්ලෙක්ස්", "price_modifier": 0, "is_default": true },
-          { "value": "star", "label_en": "Star flex (heavy duty)", "label_si": "ස්ටාර් ෆ්ලෙක්ස්", "modifier_type": "per_sqft", "price_modifier": 30 }
-        ]},
-        { "code": "finish", "type": "finish", "label_en": "Finishing", "label_si": "නිමාව", "values": [
-          { "value": "eyelets", "label_en": "Eyelets", "label_si": "අයිලට්", "price_modifier": 200, "is_default": true },
-          { "value": "pole-pockets", "label_en": "Pole pockets", "label_si": "පොලු සාක්කු", "price_modifier": 300 },
-          { "value": "none", "label_en": "Cut only", "label_si": "කැපීම පමණයි", "price_modifier": 0 }
-        ]}
+        {
+          "code": "size",
+          "type": "size",
+          "label_en": "Size",
+          "label_si": "ප්‍රමාණය",
+          "config": {
+            "allow_custom": true,
+            "unit": "ft",
+            "min_width_in": 12,
+            "max_width_in": 600,
+            "min_height_in": 12,
+            "max_height_in": 600
+          },
+          "values": [
+            {
+              "value": "2x4ft",
+              "label_en": "2 × 4 ft",
+              "label_si": "අඩි 2 × 4",
+              "price_modifier": 0,
+              "width_in": 48,
+              "height_in": 24,
+              "is_default": true
+            },
+            {
+              "value": "3x6ft",
+              "label_en": "3 × 6 ft",
+              "label_si": "අඩි 3 × 6",
+              "price_modifier": 0,
+              "width_in": 72,
+              "height_in": 36
+            },
+            {
+              "value": "4x8ft",
+              "label_en": "4 × 8 ft",
+              "label_si": "අඩි 4 × 8",
+              "price_modifier": 0,
+              "width_in": 96,
+              "height_in": 48
+            },
+            {
+              "value": "6x10ft",
+              "label_en": "6 × 10 ft",
+              "label_si": "අඩි 6 × 10",
+              "price_modifier": 0,
+              "width_in": 120,
+              "height_in": 72
+            }
+          ]
+        },
+        {
+          "code": "material",
+          "type": "material",
+          "label_en": "Material",
+          "label_si": "ද්‍රව්‍යය",
+          "values": [
+            {
+              "value": "standard",
+              "label_en": "Standard flex",
+              "label_si": "සාමාන්‍ය ෆ්ලෙක්ස්",
+              "price_modifier": 0,
+              "is_default": true
+            },
+            {
+              "value": "star",
+              "label_en": "Star flex (heavy duty)",
+              "label_si": "ස්ටාර් ෆ්ලෙක්ස්",
+              "modifier_type": "per_sqft",
+              "price_modifier": 30
+            }
+          ]
+        },
+        {
+          "code": "finish",
+          "type": "finish",
+          "label_en": "Finishing",
+          "label_si": "නිමාව",
+          "values": [
+            {
+              "value": "eyelets",
+              "label_en": "Eyelets",
+              "label_si": "අයිලට්",
+              "price_modifier": 20,
+              "is_default": true,
+              "modifier_type": "per_running_ft"
+            },
+            {
+              "value": "pole-pockets",
+              "label_en": "Pole pockets",
+              "label_si": "පොලු සාක්කු",
+              "price_modifier": 300
+            },
+            {
+              "value": "none",
+              "label_en": "Cut only",
+              "label_si": "කැපීම පමණයි",
+              "price_modifier": 0
+            }
+          ]
+        }
       ]
     },
     {
-      "slug": "business-cards", "category": "digital-printing", "sort_order": 10,
-      "name_en": "Business Cards (100 pack)", "name_si": "විසිටින් කාඩ් (100 පැකට්ටුව)",
-      "short_en": "Crisp business cards on premium card stock.", "short_si": "උසස් කාඩ්පත් මත විසිටින් කාඩ්.",
+      "slug": "business-cards",
+      "category": "digital-printing",
+      "sort_order": 10,
+      "name_en": "Business Cards (100 pack)",
+      "name_si": "විසිටින් කාඩ් (100 පැකට්ටුව)",
+      "short_en": "Crisp business cards on premium card stock.",
+      "short_si": "උසස් කාඩ්පත් මත විසිටින් කාඩ්.",
       "description_en": "Full-colour business cards, 100 per pack. Upload your design or let our designer create one.",
       "description_si": "සම්පූර්ණ වර්ණ විසිටින් කාඩ්, පැකට්ටුවකට 100යි.",
-      "order_type": "fixed", "pricing_mode": "fixed", "base_price": 1500,
-      "production_days": 2, "express_days": 1, "express_surcharge_percent": 50, "design_fee": 1000,
-      "specs": [["Size", "3.5 × 2 in"], ["Quantity", "100 cards per pack"]],
-      "tiers": [[5, 10], [10, 15]],
+      "order_type": "fixed",
+      "pricing_mode": "fixed",
+      "base_price": 1500,
+      "production_days": 2,
+      "express_days": 1,
+      "express_surcharge_percent": 50,
+      "design_fee": 1000,
+      "specs": [
+        [
+          "Size",
+          "3.5 × 2 in"
+        ],
+        [
+          "Quantity",
+          "100 cards per pack"
+        ]
+      ],
+      "tiers": [
+        [
+          5,
+          10
+        ],
+        [
+          10,
+          15
+        ]
+      ],
       "options": [
-        { "code": "material", "type": "material", "label_en": "Card stock", "label_si": "කාඩ්පත", "values": [
-          { "value": "300gsm", "label_en": "300gsm art card", "label_si": "300gsm ආර්ට් කාඩ්", "price_modifier": 0, "is_default": true },
-          { "value": "350gsm", "label_en": "350gsm art card", "label_si": "350gsm ආර්ට් කාඩ්", "price_modifier": 300 }
-        ]},
-        { "code": "finish", "type": "finish", "label_en": "Finish", "label_si": "නිමාව", "values": [
-          { "value": "matte", "label_en": "Matte", "label_si": "මැට්", "price_modifier": 0, "is_default": true },
-          { "value": "gloss", "label_en": "Gloss", "label_si": "ග්ලොස්", "price_modifier": 0 },
-          { "value": "laminated", "label_en": "Matte laminated", "label_si": "මැට් ලැමිනේට්", "price_modifier": 400 }
-        ]},
-        { "code": "sides", "type": "finish", "label_en": "Printed sides", "label_si": "මුද්‍රිත පැති", "values": [
-          { "value": "single", "label_en": "Front only", "label_si": "ඉදිරිපස පමණයි", "price_modifier": 0, "is_default": true },
-          { "value": "double", "label_en": "Front & back", "label_si": "දෙපැත්තම", "price_modifier": 500 }
-        ]}
+        {
+          "code": "material",
+          "type": "material",
+          "label_en": "Card stock",
+          "label_si": "කාඩ්පත",
+          "values": [
+            {
+              "value": "300gsm",
+              "label_en": "300gsm art card",
+              "label_si": "300gsm ආර්ට් කාඩ්",
+              "price_modifier": 0,
+              "is_default": true
+            },
+            {
+              "value": "350gsm",
+              "label_en": "350gsm art card",
+              "label_si": "350gsm ආර්ට් කාඩ්",
+              "price_modifier": 300
+            }
+          ]
+        },
+        {
+          "code": "finish",
+          "type": "finish",
+          "label_en": "Finish",
+          "label_si": "නිමාව",
+          "values": [
+            {
+              "value": "matte",
+              "label_en": "Matte",
+              "label_si": "මැට්",
+              "price_modifier": 0,
+              "is_default": true
+            },
+            {
+              "value": "gloss",
+              "label_en": "Gloss",
+              "label_si": "ග්ලොස්",
+              "price_modifier": 0
+            },
+            {
+              "value": "laminated",
+              "label_en": "Matte laminated",
+              "label_si": "මැට් ලැමිනේට්",
+              "price_modifier": 400
+            }
+          ]
+        },
+        {
+          "code": "sides",
+          "type": "finish",
+          "label_en": "Printed sides",
+          "label_si": "මුද්‍රිත පැති",
+          "values": [
+            {
+              "value": "single",
+              "label_en": "Front only",
+              "label_si": "ඉදිරිපස පමණයි",
+              "price_modifier": 0,
+              "is_default": true
+            },
+            {
+              "value": "double",
+              "label_en": "Front & back",
+              "label_si": "දෙපැත්තම",
+              "price_modifier": 500
+            }
+          ]
+        }
       ]
     },
     {
-      "slug": "plan-printing", "category": "plan-printing", "sort_order": 10,
-      "name_en": "Plan Printing (per sheet)", "name_si": "සැලසුම් මුද්‍රණය (පිටුවකට)",
-      "short_en": "A3–A0 plans from your PDF.", "short_si": "ඔබේ PDF එකෙන් A3–A0 සැලසුම්.",
+      "slug": "plan-printing",
+      "category": "plan-printing",
+      "sort_order": 10,
+      "name_en": "Plan Printing (per sheet)",
+      "name_si": "සැලසුම් මුද්‍රණය (පිටුවකට)",
+      "short_en": "A3–A0 plans from your PDF.",
+      "short_si": "ඔබේ PDF එකෙන් A3–A0 සැලසුම්.",
       "description_en": "Architectural and engineering plans printed from your PDF. Quantity = number of sheets.",
       "description_si": "ඔබේ PDF එකෙන් ගෘහ නිර්මාණ සහ ඉංජිනේරු සැලසුම් මුද්‍රණය. ප්‍රමාණය = පිටු ගණන.",
-      "order_type": "fixed", "pricing_mode": "fixed", "base_price": 100,
-      "production_days": 1, "express_days": 0, "express_surcharge_percent": 50, "design_fee": 0,
-      "allow_design_service": false, "requires_artwork": false,
-      "specs": [["Files", "PDF preferred (vector)"]],
-      "tiers": [[10, 10], [50, 20]],
+      "order_type": "fixed",
+      "pricing_mode": "fixed",
+      "base_price": 100,
+      "production_days": 1,
+      "express_days": 0,
+      "express_surcharge_percent": 50,
+      "design_fee": 0,
+      "allow_design_service": false,
+      "requires_artwork": false,
+      "specs": [
+        [
+          "Files",
+          "PDF preferred (vector)"
+        ]
+      ],
+      "tiers": [
+        [
+          10,
+          10
+        ],
+        [
+          50,
+          20
+        ]
+      ],
       "options": [
-        { "code": "size", "type": "size", "label_en": "Sheet size", "label_si": "පිටු ප්‍රමාණය", "values": [
-          { "value": "a3", "label_en": "A3", "label_si": "A3", "price_modifier": 0, "width_in": 16.5, "height_in": 11.7, "is_default": true },
-          { "value": "a2", "label_en": "A2", "label_si": "A2", "price_modifier": 150, "width_in": 23.4, "height_in": 16.5 },
-          { "value": "a1", "label_en": "A1", "label_si": "A1", "price_modifier": 250, "width_in": 33.1, "height_in": 23.4 },
-          { "value": "a0", "label_en": "A0", "label_si": "A0", "price_modifier": 450, "width_in": 46.8, "height_in": 33.1 }
-        ]},
-        { "code": "color_mode", "type": "finish", "label_en": "Print", "label_si": "මුද්‍රණය", "values": [
-          { "value": "bw", "label_en": "Black & white", "label_si": "කළු සුදු", "price_modifier": 0, "is_default": true },
-          { "value": "colour", "label_en": "Colour", "label_si": "වර්ණ", "modifier_type": "percent", "price_modifier": 100 }
-        ]}
+        {
+          "code": "size",
+          "type": "size",
+          "label_en": "Sheet size",
+          "label_si": "පිටු ප්‍රමාණය",
+          "values": [
+            {
+              "value": "a3",
+              "label_en": "A3",
+              "label_si": "A3",
+              "price_modifier": 0,
+              "width_in": 16.5,
+              "height_in": 11.7,
+              "is_default": true
+            },
+            {
+              "value": "a2",
+              "label_en": "A2",
+              "label_si": "A2",
+              "price_modifier": 150,
+              "width_in": 23.4,
+              "height_in": 16.5
+            },
+            {
+              "value": "a1",
+              "label_en": "A1",
+              "label_si": "A1",
+              "price_modifier": 250,
+              "width_in": 33.1,
+              "height_in": 23.4
+            },
+            {
+              "value": "a0",
+              "label_en": "A0",
+              "label_si": "A0",
+              "price_modifier": 450,
+              "width_in": 46.8,
+              "height_in": 33.1
+            }
+          ]
+        },
+        {
+          "code": "color_mode",
+          "type": "finish",
+          "label_en": "Print",
+          "label_si": "මුද්‍රණය",
+          "values": [
+            {
+              "value": "bw",
+              "label_en": "Black & white",
+              "label_si": "කළු සුදු",
+              "price_modifier": 0,
+              "is_default": true
+            },
+            {
+              "value": "colour",
+              "label_en": "Colour",
+              "label_si": "වර්ණ",
+              "modifier_type": "percent",
+              "price_modifier": 100
+            }
+          ]
+        }
       ]
     },
     {
-      "slug": "photo-enlargement", "category": "photo-enlargement", "featured": true, "sort_order": 10,
-      "name_en": "Photo Enlargement", "name_si": "ඡායාරූප විශාලනය",
-      "short_en": "Big prints and canvas from your photos.", "short_si": "ඔබේ ඡායාරූපවලින් විශාල මුද්‍රණ සහ කැන්වස්.",
+      "slug": "photo-enlargement",
+      "category": "photo-enlargement",
+      "featured": true,
+      "sort_order": 10,
+      "name_en": "Photo Enlargement",
+      "name_si": "ඡායාරූප විශාලනය",
+      "short_en": "Big prints and canvas from your photos.",
+      "short_si": "ඔබේ ඡායාරූපවලින් විශාල මුද්‍රණ සහ කැන්වස්.",
       "description_en": "Photo-quality enlargements on matte, gloss or canvas. Choose \"Design it for me\" for colour correction and retouching.",
       "description_si": "මැට්, ග්ලොස් හෝ කැන්වස් මත ඡායාරූප විශාලනය. වර්ණ නිවැරදි කිරීම සඳහා \"මට නිර්මාණය කරන්න\" තෝරන්න.",
-      "order_type": "fixed", "pricing_mode": "fixed", "base_price": 400,
-      "production_days": 1, "express_days": 0, "express_surcharge_percent": 50, "design_fee": 500,
-      "specs": [["Paper", "Photo paper / canvas"]],
-      "tiers": [[5, 10]],
+      "order_type": "fixed",
+      "pricing_mode": "fixed",
+      "base_price": 400,
+      "production_days": 1,
+      "express_days": 0,
+      "express_surcharge_percent": 50,
+      "design_fee": 500,
+      "specs": [
+        [
+          "Paper",
+          "Photo paper / canvas"
+        ]
+      ],
+      "tiers": [
+        [
+          5,
+          10
+        ]
+      ],
       "options": [
-        { "code": "size", "type": "size", "label_en": "Size", "label_si": "ප්‍රමාණය", "values": [
-          { "value": "8x12", "label_en": "8 × 12 in", "label_si": "8 × 12 අඟල්", "price_modifier": 0, "width_in": 8, "height_in": 12, "is_default": true },
-          { "value": "12x18", "label_en": "12 × 18 in", "label_si": "12 × 18 අඟල්", "price_modifier": 500, "width_in": 12, "height_in": 18 },
-          { "value": "16x24", "label_en": "16 × 24 in", "label_si": "16 × 24 අඟල්", "price_modifier": 1100, "width_in": 16, "height_in": 24 },
-          { "value": "20x30", "label_en": "20 × 30 in", "label_si": "20 × 30 අඟල්", "price_modifier": 1900, "width_in": 20, "height_in": 30 }
-        ]},
-        { "code": "finish", "type": "finish", "label_en": "Finish", "label_si": "නිමාව", "values": [
-          { "value": "matte", "label_en": "Matte", "label_si": "මැට්", "price_modifier": 0, "is_default": true },
-          { "value": "gloss", "label_en": "Gloss", "label_si": "ග්ලොස්", "price_modifier": 0 },
-          { "value": "canvas", "label_en": "Canvas", "label_si": "කැන්වස්", "modifier_type": "percent", "price_modifier": 80 }
-        ]}
+        {
+          "code": "size",
+          "type": "size",
+          "label_en": "Size",
+          "label_si": "ප්‍රමාණය",
+          "values": [
+            {
+              "value": "8x12",
+              "label_en": "8 × 12 in",
+              "label_si": "8 × 12 අඟල්",
+              "price_modifier": 0,
+              "width_in": 8,
+              "height_in": 12,
+              "is_default": true
+            },
+            {
+              "value": "12x18",
+              "label_en": "12 × 18 in",
+              "label_si": "12 × 18 අඟල්",
+              "price_modifier": 500,
+              "width_in": 12,
+              "height_in": 18
+            },
+            {
+              "value": "16x24",
+              "label_en": "16 × 24 in",
+              "label_si": "16 × 24 අඟල්",
+              "price_modifier": 1100,
+              "width_in": 16,
+              "height_in": 24
+            },
+            {
+              "value": "20x30",
+              "label_en": "20 × 30 in",
+              "label_si": "20 × 30 අඟල්",
+              "price_modifier": 1900,
+              "width_in": 20,
+              "height_in": 30
+            }
+          ]
+        },
+        {
+          "code": "finish",
+          "type": "finish",
+          "label_en": "Finish",
+          "label_si": "නිමාව",
+          "values": [
+            {
+              "value": "matte",
+              "label_en": "Matte",
+              "label_si": "මැට්",
+              "price_modifier": 0,
+              "is_default": true
+            },
+            {
+              "value": "gloss",
+              "label_en": "Gloss",
+              "label_si": "ග්ලොස්",
+              "price_modifier": 0
+            },
+            {
+              "value": "canvas",
+              "label_en": "Canvas",
+              "label_si": "කැන්වස්",
+              "modifier_type": "percent",
+              "price_modifier": 80
+            }
+          ]
+        }
       ]
     },
     {
-      "slug": "custom-t-shirt", "category": "t-shirt-printing", "featured": true, "sort_order": 10,
-      "name_en": "Custom Printed T-Shirt", "name_si": "මුද්‍රිත ටී-ෂර්ට්",
-      "short_en": "Cotton T-shirts with your design.", "short_si": "ඔබේ නිර්මාණය සහිත කපු ටී-ෂර්ට්.",
+      "slug": "custom-t-shirt",
+      "category": "t-shirt-printing",
+      "featured": true,
+      "sort_order": 10,
+      "name_en": "Custom Printed T-Shirt",
+      "name_si": "මුද්‍රිත ටී-ෂර්ට්",
+      "short_en": "Cotton T-shirts with your design.",
+      "short_si": "ඔබේ නිර්මාණය සහිත කපු ටී-ෂර්ට්.",
       "description_en": "Soft cotton crew-neck T-shirts printed with your design or logo. Great for teams and events — bulk discounts apply automatically.",
       "description_si": "ඔබේ නිර්මාණය හෝ ලාංඡනය මුද්‍රණය කළ මෘදු කපු ටී-ෂර්ට්. තොග වට්ටම් ස්වයංක්‍රීයව.",
-      "order_type": "fixed", "pricing_mode": "fixed", "base_price": 1800,
-      "production_days": 3, "express_days": 2, "express_surcharge_percent": 40, "design_fee": 750,
-      "specs": [["Fabric", "100% cotton"]],
-      "tiers": [[10, 8], [25, 12], [50, 18]],
+      "order_type": "fixed",
+      "pricing_mode": "fixed",
+      "base_price": 1800,
+      "production_days": 3,
+      "express_days": 2,
+      "express_surcharge_percent": 40,
+      "design_fee": 750,
+      "specs": [
+        [
+          "Fabric",
+          "100% cotton"
+        ]
+      ],
+      "tiers": [
+        [
+          10,
+          8
+        ],
+        [
+          25,
+          12
+        ],
+        [
+          50,
+          18
+        ]
+      ],
       "options": [
-        { "code": "size", "type": "size", "label_en": "Size", "label_si": "ප්‍රමාණය", "values": [
-          { "value": "s", "label_en": "S", "label_si": "S", "price_modifier": 0 },
-          { "value": "m", "label_en": "M", "label_si": "M", "price_modifier": 0, "is_default": true },
-          { "value": "l", "label_en": "L", "label_si": "L", "price_modifier": 0 },
-          { "value": "xl", "label_en": "XL", "label_si": "XL", "price_modifier": 0 },
-          { "value": "xxl", "label_en": "XXL", "label_si": "XXL", "price_modifier": 200 }
-        ]},
-        { "code": "color", "type": "color", "label_en": "Shirt colour", "label_si": "ෂර්ට් වර්ණය", "values": [
-          { "value": "white", "label_en": "White", "label_si": "සුදු", "price_modifier": 0, "swatch_hex": "#FFFFFF", "is_default": true },
-          { "value": "black", "label_en": "Black", "label_si": "කළු", "price_modifier": 200, "swatch_hex": "#1F1F1F" },
-          { "value": "navy", "label_en": "Navy", "label_si": "තද නිල්", "price_modifier": 200, "swatch_hex": "#1B2A4A" },
-          { "value": "red", "label_en": "Red", "label_si": "රතු", "price_modifier": 200, "swatch_hex": "#C62828" }
-        ]},
-        { "code": "print_area", "type": "finish", "label_en": "Print area", "label_si": "මුද්‍රණ ස්ථානය", "values": [
-          { "value": "front", "label_en": "Front", "label_si": "ඉදිරිපස", "price_modifier": 0, "is_default": true },
-          { "value": "front-back", "label_en": "Front & back", "label_si": "ඉදිරිපස සහ පිටුපස", "price_modifier": 700 }
-        ]},
-        { "code": "photos", "type": "photo_slots", "label_en": "Design / logo", "label_si": "නිර්මාණය / ලාංඡනය", "is_required": false, "config": { "count": 2, "print_width_in": 10, "print_height_in": 12 } }
+        {
+          "code": "size",
+          "type": "size",
+          "label_en": "Size",
+          "label_si": "ප්‍රමාණය",
+          "values": [
+            {
+              "value": "s",
+              "label_en": "S",
+              "label_si": "S",
+              "price_modifier": 0
+            },
+            {
+              "value": "m",
+              "label_en": "M",
+              "label_si": "M",
+              "price_modifier": 0,
+              "is_default": true
+            },
+            {
+              "value": "l",
+              "label_en": "L",
+              "label_si": "L",
+              "price_modifier": 0
+            },
+            {
+              "value": "xl",
+              "label_en": "XL",
+              "label_si": "XL",
+              "price_modifier": 0
+            },
+            {
+              "value": "xxl",
+              "label_en": "XXL",
+              "label_si": "XXL",
+              "price_modifier": 200
+            }
+          ]
+        },
+        {
+          "code": "color",
+          "type": "color",
+          "label_en": "Shirt colour",
+          "label_si": "ෂර්ට් වර්ණය",
+          "values": [
+            {
+              "value": "white",
+              "label_en": "White",
+              "label_si": "සුදු",
+              "price_modifier": 0,
+              "swatch_hex": "#FFFFFF",
+              "is_default": true
+            },
+            {
+              "value": "black",
+              "label_en": "Black",
+              "label_si": "කළු",
+              "price_modifier": 200,
+              "swatch_hex": "#1F1F1F"
+            },
+            {
+              "value": "navy",
+              "label_en": "Navy",
+              "label_si": "තද නිල්",
+              "price_modifier": 200,
+              "swatch_hex": "#1B2A4A"
+            },
+            {
+              "value": "red",
+              "label_en": "Red",
+              "label_si": "රතු",
+              "price_modifier": 200,
+              "swatch_hex": "#C62828"
+            }
+          ]
+        },
+        {
+          "code": "print_area",
+          "type": "finish",
+          "label_en": "Print area",
+          "label_si": "මුද්‍රණ ස්ථානය",
+          "values": [
+            {
+              "value": "front",
+              "label_en": "Front",
+              "label_si": "ඉදිරිපස",
+              "price_modifier": 0,
+              "is_default": true
+            },
+            {
+              "value": "front-back",
+              "label_en": "Front & back",
+              "label_si": "ඉදිරිපස සහ පිටුපස",
+              "price_modifier": 700
+            }
+          ]
+        },
+        {
+          "code": "photos",
+          "type": "photo_slots",
+          "label_en": "Design / logo",
+          "label_si": "නිර්මාණය / ලාංඡනය",
+          "is_required": false,
+          "config": {
+            "count": 2,
+            "print_width_in": 10,
+            "print_height_in": 12
+          }
+        }
       ]
     },
     {
-      "slug": "edible-cake-print", "category": "edible-print", "sort_order": 10,
-      "name_en": "Edible Cake Photo Print", "name_si": "කේක් සඳහා ආහාරයට ගත හැකි ඡායාරූප",
-      "short_en": "Food-safe photo print for your cake.", "short_si": "ඔබේ කේක් එකට ආහාරයට සුදුසු ඡායාරූප මුද්‍රණය.",
+      "slug": "edible-cake-print",
+      "category": "edible-print",
+      "sort_order": 10,
+      "name_en": "Edible Cake Photo Print",
+      "name_si": "කේක් සඳහා ආහාරයට ගත හැකි ඡායාරූප",
+      "short_en": "Food-safe photo print for your cake.",
+      "short_si": "ඔබේ කේක් එකට ආහාරයට සුදුසු ඡායාරූප මුද්‍රණය.",
       "description_en": "Your photo printed with edible inks on an icing sheet, ready to place on a cake.",
       "description_si": "ආහාරයට ගත හැකි තීන්තවලින් අයිසිං කඩදාසියක මුද්‍රණය කළ ඔබේ ඡායාරූපය.",
-      "order_type": "fixed", "pricing_mode": "fixed", "base_price": 1200,
-      "production_days": 1, "express_days": 0, "express_surcharge_percent": 50, "design_fee": 300,
-      "specs": [["Storage", "Keep dry, use within 3 months"]],
+      "order_type": "fixed",
+      "pricing_mode": "fixed",
+      "base_price": 1200,
+      "production_days": 1,
+      "express_days": 0,
+      "express_surcharge_percent": 50,
+      "design_fee": 300,
+      "specs": [
+        [
+          "Storage",
+          "Keep dry, use within 3 months"
+        ]
+      ],
       "tiers": [],
       "options": [
-        { "code": "size", "type": "size", "label_en": "Shape", "label_si": "හැඩය", "values": [
-          { "value": "round-8", "label_en": "Round 8\"", "label_si": "රවුම් 8\"", "price_modifier": 0, "width_in": 8, "height_in": 8, "is_default": true },
-          { "value": "a4", "label_en": "A4 rectangle", "label_si": "A4 සෘජුකෝණාස්‍රය", "price_modifier": 200, "width_in": 11.7, "height_in": 8.3 }
-        ]},
-        { "code": "photos", "type": "photo_slots", "label_en": "Photo", "label_si": "ඡායාරූපය", "is_required": false, "config": { "count": 1 } }
+        {
+          "code": "size",
+          "type": "size",
+          "label_en": "Shape",
+          "label_si": "හැඩය",
+          "values": [
+            {
+              "value": "round-8",
+              "label_en": "Round 8\"",
+              "label_si": "රවුම් 8\"",
+              "price_modifier": 0,
+              "width_in": 8,
+              "height_in": 8,
+              "is_default": true
+            },
+            {
+              "value": "a4",
+              "label_en": "A4 rectangle",
+              "label_si": "A4 සෘජුකෝණාස්‍රය",
+              "price_modifier": 200,
+              "width_in": 11.7,
+              "height_in": 8.3
+            }
+          ]
+        },
+        {
+          "code": "photos",
+          "type": "photo_slots",
+          "label_en": "Photo",
+          "label_si": "ඡායාරූපය",
+          "is_required": false,
+          "config": {
+            "count": 1
+          }
+        }
       ]
     },
     {
-      "slug": "photo-key-tag", "category": "custom-souvenirs", "sort_order": 10,
-      "name_en": "Photo Key Tag", "name_si": "ඡායාරූප කී ටැගය",
-      "short_en": "Personalised key tags — great as giveaways.", "short_si": "පුද්ගලීකරණය කළ කී ටැග් — තෑගි සඳහා සුදුසුයි.",
+      "slug": "photo-key-tag",
+      "category": "custom-souvenirs",
+      "sort_order": 10,
+      "name_en": "Photo Key Tag",
+      "name_si": "ඡායාරූප කී ටැගය",
+      "short_en": "Personalised key tags — great as giveaways.",
+      "short_si": "පුද්ගලීකරණය කළ කී ටැග් — තෑගි සඳහා සුදුසුයි.",
       "description_en": "Double-sided acrylic or MDF key tags with your photo, logo or names. Bulk prices for weddings and events.",
       "description_si": "ඔබේ ඡායාරූපය, ලාංඡනය හෝ නම් සහිත දෙපැත්තේ කී ටැග්. උත්සව සඳහා තොග මිල.",
-      "order_type": "fixed", "pricing_mode": "fixed", "base_price": 450,
-      "production_days": 3, "express_days": 2, "express_surcharge_percent": 50, "design_fee": 300,
+      "order_type": "fixed",
+      "pricing_mode": "fixed",
+      "base_price": 450,
+      "production_days": 3,
+      "express_days": 2,
+      "express_surcharge_percent": 50,
+      "design_fee": 300,
       "specs": [],
-      "tiers": [[25, 10], [50, 15], [100, 20]],
+      "tiers": [
+        [
+          25,
+          10
+        ],
+        [
+          50,
+          15
+        ],
+        [
+          100,
+          20
+        ]
+      ],
       "options": [
-        { "code": "material", "type": "material", "label_en": "Material", "label_si": "ද්‍රව්‍යය", "values": [
-          { "value": "mdf", "label_en": "MDF", "label_si": "MDF", "price_modifier": 0, "is_default": true },
-          { "value": "acrylic", "label_en": "Acrylic", "label_si": "ඇක්‍රිලික්", "price_modifier": 100 }
-        ]},
-        { "code": "photos", "type": "photo_slots", "label_en": "Photo / logo", "label_si": "ඡායාරූපය / ලාංඡනය", "is_required": false, "config": { "count": 2, "print_width_in": 2, "print_height_in": 3 } }
+        {
+          "code": "material",
+          "type": "material",
+          "label_en": "Material",
+          "label_si": "ද්‍රව්‍යය",
+          "values": [
+            {
+              "value": "mdf",
+              "label_en": "MDF",
+              "label_si": "MDF",
+              "price_modifier": 0,
+              "is_default": true
+            },
+            {
+              "value": "acrylic",
+              "label_en": "Acrylic",
+              "label_si": "ඇක්‍රිලික්",
+              "price_modifier": 100
+            }
+          ]
+        },
+        {
+          "code": "photos",
+          "type": "photo_slots",
+          "label_en": "Photo / logo",
+          "label_si": "ඡායාරූපය / ලාංඡනය",
+          "is_required": false,
+          "config": {
+            "count": 2,
+            "print_width_in": 2,
+            "print_height_in": 3
+          }
+        }
       ]
     }
   ]

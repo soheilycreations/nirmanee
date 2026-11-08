@@ -78,7 +78,7 @@ docs/                          AUDIT, SCHEMA, DESIGN, ROADMAP, PROGRESS
 
 1. **TypeScript strict.** No `any` (use `unknown` + zod), no `@ts-ignore`, no non-null `!` without a comment explaining why.
 2. **Server Components by default.** Add `"use client"` only for interactivity; keep client components small and leaf-level.
-3. **Mutations = Server Actions** (`features/<domain>/actions.ts`, `"use server"`). Route handlers only for webhooks (PayHere), cron and third-party callbacks.
+3. **Mutations = Server Actions** (`features/<domain>/actions.ts`, `"use server"`). Route handlers only for webhooks (PayHere, `/api/revalidate`), cron and third-party callbacks. **Exception:** cart mutations go through `/api/cart` (`fetch` + `keepalive`, same-origin check) because Next.js can drop an in-flight Server Action when the visitor navigates, and setting a cookie in a Server Action re-renders the page.
 4. **Validate everything with zod** at the boundary: server action inputs, route handler bodies, search params, env vars (`lib/env.ts`). Never trust the client for prices, totals, statuses or ownership.
 5. **Prices are computed server-side only** (`lib/pricing.ts`), using DB product/option data. Cart items store selections, never prices.
 6. **Database changes only as migrations** in `supabase/migrations/<timestamp>_<name>.sql`. Never edit an applied migration — add a new one. Regenerate `src/types/database.ts` after each.
@@ -94,6 +94,10 @@ docs/                          AUDIT, SCHEMA, DESIGN, ROADMAP, PROGRESS
 16. **No fake data in production UI** — no invented reviews, ratings, discounts, stats or claims.
 17. **Full-file outputs:** when showing or writing code, output complete files — no `// ...rest unchanged` placeholders.
 18. Keep `npm run lint` and `npm run build` green before every commit.
+19. **Static first:** customer pages are SSG/ISR (`export const revalidate = 3600`, `generateStaticParams`). Never read cookies/headers in the `[locale]` layout or in catalogue pages; public data comes from `lib/supabase/public.ts` (cookie-less, cached under the `catalog` tag, cleared by `/api/revalidate`). Per-visitor UI (cart badge) is client state.
+20. **Translations per page:** wrap client components in `<IntlIsland namespaces={[...]}>` so only the needed message namespaces are sent (base: common, nav, toast).
+21. **Photos:** product photos live in `public/products/<slug>/1.webp…`, gallery in `public/gallery/`; `scripts/build-assets-manifest.mjs` (runs before dev/build) indexes them — never read `public/` with `fs` at request time.
+22. **Owner content** (address, rating, socials, legal-draft flag) lives in `src/config/site-settings.ts`; sections stay hidden while values are null.
 
 ## 5. Git workflow
 
@@ -134,6 +138,8 @@ psql -d test -f supabase/tests/_supabase_stub.sql \
   -f supabase/migrations/20261109000000_phase1a_storefront.sql \
   -f supabase/migrations/20261110000000_anonymous_users.sql \
   -f supabase/migrations/20261111000000_cart_policies.sql \
+  -f supabase/migrations/20261112000000_running_ft_modifier.sql \
+  -f supabase/migrations/20261112000100_eyelets_and_templates.sql \
   -f supabase/tests/_grants.sql -f supabase/tests/foundation_scenario.sql \
   -f supabase/tests/phase1a_scenario.sql -f supabase/tests/anonymous_scenario.sql
 ```

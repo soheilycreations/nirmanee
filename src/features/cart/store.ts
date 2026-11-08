@@ -46,13 +46,22 @@ export type NewCartLine = Omit<CartLine, "id" | "files"> & { fileIds: string[] }
 // ---------------------------------------------------------------------------
 // Supabase helpers
 // ---------------------------------------------------------------------------
-async function getUser(supabase: ServerSupabase, create: boolean) {
-  const { data } = await supabase.auth.getUser();
-  if (data.user) return data.user;
+/**
+ * Current Supabase user id. getClaims() verifies the JWT locally when the
+ * project uses asymmetric signing keys (no round-trip to the auth server);
+ * with legacy symmetric keys it falls back to a network check. Guests without
+ * a session are signed in anonymously when `create` is true.
+ */
+async function getUser(supabase: ServerSupabase, create: boolean): Promise<{ id: string } | null> {
+  const { data } = await supabase.auth.getClaims();
+  const sub = data?.claims?.sub;
+  if (typeof sub === "string") return { id: sub };
   if (!create) return null;
   const { data: anon, error } = await supabase.auth.signInAnonymously();
   if (error || !anon.user) throw new Error(`anonymous sign-in failed: ${error?.message ?? "no user"}`);
-  return anon.user;
+  // Make sure the session cookie is on THIS response (see cookiesWritten()).
+  await supabase.cookiesWritten();
+  return { id: anon.user.id };
 }
 
 async function findActiveCartId(supabase: ServerSupabase, userId: string): Promise<string | null> {
@@ -204,16 +213,17 @@ export async function getCartCount(): Promise<number> {
 }
 
 /** Adds a line. `linkFiles` re-parents verified uploads (Supabase mode only). */
+/** Adds a line and returns the cart's new line count. `linkFiles` re-parents verified uploads (Supabase mode only). */
 export async function addCartLine(
   line: NewCartLine,
   linkFiles: (cartId: string, cartItemId: string, fileIds: string[]) => Promise<void>,
-): Promise<void> {
+): Promise<number> {
   const ctx = await ensureSupabaseCart();
   if (!ctx) {
     const lines = await readCookieLines();
     lines.push({ ...line, id: crypto.randomUUID(), files: [] });
     await writeCookieLines(lines);
-    return;
+    return lines.length;
   }
   if (!line.productId) throw new Error("productId required in Supabase mode");
   const { data, error } = await ctx.supabase
@@ -234,7 +244,11 @@ export async function addCartLine(
     .select("id")
     .single();
   if (error) throw new Error(`cart item insert failed: ${error.message}`);
-  if (line.fileIds.length > 0) await linkFiles(ctx.cartId, data.id, line.fileIds);
+  const [, countResult] = await Promise.all([
+    line.fileIds.length > 0 ? linkFiles(ctx.cartId, data.id, line.fileIds) : Promise.resolve(),
+    ctx.supabase.from("cart_items").select("id", { count: "exact", head: true }).eq("cart_id", ctx.cartId),
+  ]);
+  return countResult.count ?? 1;
 }
 
 export async function updateCartLineQuantity(lineId: string, quantity: number): Promise<void> {
@@ -258,4 +272,23 @@ export async function removeCartLine(lineId: string): Promise<void> {
   }
   const { error } = await supabase.from("cart_items").delete().eq("id", lineId);
   if (error) throw new Error(`cart item delete failed: ${error.message}`);
+}
+
+/**
+ * Short code staff can use to find a cart ("C-3F9A1B"): derived from the cart
+ * id in Supabase mode, or from the line ids in preview mode.
+ */
+export async function getCartReference(): Promise<string | null> {
+  const supabase = await createSupabaseServerClient();
+  if (!supabase) {
+    const lines = await readCookieLines();
+    if (lines.length === 0) return null;
+    let h = 0;
+    for (const ch of lines.map((l) => l.id).join("")) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+    return `C-${h.toString(16).toUpperCase().padStart(6, "0").slice(0, 6)}`;
+  }
+  const user = await getUser(supabase, false);
+  if (!user) return null;
+  const cartId = await findActiveCartId(supabase, user.id);
+  return cartId ? `C-${cartId.replace(/-/g, "").slice(0, 6).toUpperCase()}` : null;
 }
