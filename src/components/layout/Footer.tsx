@@ -1,109 +1,75 @@
-import Link from "next/link";
-import { Facebook, Twitter, Instagram, Linkedin, MapPin, Phone, Mail } from "lucide-react";
+import Image from "next/image";
+import { Clock, MapPin, Phone } from "lucide-react";
+import { getLocale, getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
+import { getCategories } from "@/features/catalog/queries";
+import { pick } from "@/features/catalog/types";
+import { SITE, whatsappUrl } from "@/lib/site";
+import { WhatsAppIcon } from "@/components/ui/WhatsAppIcon";
 
-export default function Footer() {
+export async function Footer() {
+  const t = await getTranslations();
+  const locale = await getLocale();
+  const categories = (await getCategories()).slice(0, 6);
+  const linkClass = "inline-flex min-h-11 items-center text-paper-300 hover:text-white";
+
   return (
-    <footer className="bg-slate-900 pt-16 pb-8 border-t border-slate-800">
-      <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
-          
-          {/* Brand & About */}
-          <div className="flex flex-col">
-            <Link href="/" className="flex items-center gap-2 mb-6">
-              <img src="/images/upload/logo.jpeg" alt="Nirmanee Print House Logo" className="w-12 h-12 rounded object-cover shadow-sm bg-white" />
-              <div className="flex flex-col">
-                <span className="font-extrabold text-2xl tracking-tight text-white leading-none">
-                  Nirmanee
-                </span>
-                <span className="text-[10px] font-bold text-sky-400 uppercase tracking-[0.2em] leading-none mt-1">
-                  Print House
-                </span>
-              </div>
-            </Link>
-            <p className="text-slate-400 text-sm leading-relaxed mb-6">
-              Your trusted partner for all printing and personalization needs since 2005. High quality, reliable, and perfectly designed.
-            </p>
-            <div className="flex items-center gap-4">
-              <a href="#" className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:bg-sky-500 hover:text-white transition-all">
-                <Facebook className="w-4 h-4" />
-              </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:bg-sky-500 hover:text-white transition-all">
-                <Twitter className="w-4 h-4" />
-              </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:bg-sky-500 hover:text-white transition-all">
-                <Instagram className="w-4 h-4" />
-              </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 hover:bg-sky-500 hover:text-white transition-all">
-                <Linkedin className="w-4 h-4" />
-              </a>
-            </div>
+    <footer className="mt-auto bg-royal-900 text-paper-300">
+      <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:grid-cols-2 lg:grid-cols-4">
+        <div>
+          <div className="flex items-center gap-3">
+            <Image src="/images/brand/nirmanee-logo.jpg" alt="" width={44} height={44} className="size-11 rounded-full" />
+            <span className="font-display text-xl font-semibold text-white">Nirmanee</span>
           </div>
-
-          {/* Quick Links */}
-          <div className="flex flex-col">
-            <h4 className="text-white font-bold text-lg mb-6">Quick Links</h4>
-            <ul className="space-y-4">
-              <li><Link href="/" className="text-slate-400 hover:text-sky-400 transition-colors text-sm">About Us</Link></li>
-              <li><Link href="/" className="text-slate-400 hover:text-sky-400 transition-colors text-sm">Shop All Products</Link></li>
-              <li><Link href="/" className="text-slate-400 hover:text-sky-400 transition-colors text-sm">Returns & Exchanges</Link></li>
-              <li><Link href="/" className="text-slate-400 hover:text-sky-400 transition-colors text-sm">Track Order</Link></li>
-              <li><Link href="/" className="text-slate-400 hover:text-sky-400 transition-colors text-sm">Contact Us</Link></li>
-            </ul>
-          </div>
-
-          {/* Categories */}
-          <div className="flex flex-col">
-            <h4 className="text-white font-bold text-lg mb-6">Categories</h4>
-            <ul className="space-y-4">
-              <li><Link href="/" className="text-slate-400 hover:text-sky-400 transition-colors text-sm">Mugs & Cups</Link></li>
-              <li><Link href="/" className="text-slate-400 hover:text-sky-400 transition-colors text-sm">T-Shirts & Apparel</Link></li>
-              <li><Link href="/" className="text-slate-400 hover:text-sky-400 transition-colors text-sm">Posters & Banners</Link></li>
-              <li><Link href="/" className="text-slate-400 hover:text-sky-400 transition-colors text-sm">Stationery Items</Link></li>
-              <li><Link href="/" className="text-slate-400 hover:text-sky-400 transition-colors text-sm">Photo Frames</Link></li>
-            </ul>
-          </div>
-
-          {/* Contact Info */}
-          <div className="flex flex-col">
-            <h4 className="text-white font-bold text-lg mb-6">Contact Info</h4>
-            <ul className="space-y-4">
-              <li className="flex items-start gap-4">
-                <Phone className="w-5 h-5 text-sky-400 shrink-0 mt-0.5" />
-                <div className="flex flex-col text-slate-400 text-sm">
-                  <span>WhatsApp: 077 92 33 822</span>
-                  <span>Tel: 034 20 400 29</span>
-                </div>
-              </li>
-              <li className="flex items-center gap-4">
-                <MapPin className="w-5 h-5 text-sky-400 shrink-0" />
-                <span className="text-slate-400 text-sm">Open Hours:<br/>MON - SUN 8.30 AM - 5.30 PM</span>
-              </li>
-              <li className="flex items-center gap-4">
-                <Mail className="w-5 h-5 text-sky-400 shrink-0" />
-                <span className="text-slate-400 text-sm">www.nirmanee.lk</span>
-              </li>
-              <li className="flex items-center gap-4">
-                <span className="px-2 py-1 bg-amber-500/20 text-amber-500 text-xs font-bold rounded-md">
-                  Islandwide Delivery Available
-                </span>
-              </li>
-            </ul>
-          </div>
-
+          <p className="mt-4 text-sm leading-relaxed">{t("footer.tagline")}</p>
         </div>
 
-        {/* Bottom Banner */}
-        <div className="pt-8 border-t border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-slate-500 text-sm text-center md:text-left">
-            &copy; {new Date().getFullYear()} Nirmanee Digital Print House. All Rights Reserved.
-          </p>
-          <div className="flex items-center gap-4">
-             {/* Mocking payment methods with simple colored boxes/icons */}
-             <div className="h-8 w-12 bg-white rounded flex items-center justify-center text-[10px] font-bold text-blue-800">VISA</div>
-             <div className="h-8 w-12 bg-white rounded flex items-center justify-center text-[10px] font-bold text-red-600">CARD</div>
-             <div className="h-8 w-12 bg-white rounded flex items-center justify-center text-[10px] font-bold text-slate-800">CASH</div>
-          </div>
+        <nav aria-label={t("footer.explore")}>
+          <h2 className="font-sans text-sm font-semibold uppercase tracking-wider text-white">{t("footer.explore")}</h2>
+          <ul className="mt-3 text-sm">
+            <li><Link className={linkClass} href="/shop">{t("nav.shop")}</Link></li>
+            <li><Link className={linkClass} href="/services">{t("nav.services")}</Link></li>
+            <li><Link className={linkClass} href="/about">{t("nav.about")}</Link></li>
+            <li><Link className={linkClass} href="/contact">{t("nav.contact")}</Link></li>
+            <li><Link className={linkClass} href="/cart">{t("nav.cart")}</Link></li>
+          </ul>
+        </nav>
+
+        <nav aria-label={t("footer.popular")}>
+          <h2 className="font-sans text-sm font-semibold uppercase tracking-wider text-white">{t("footer.popular")}</h2>
+          <ul className="mt-3 text-sm">
+            {categories.map((c) => (
+              <li key={c.slug}>
+                <Link className={linkClass} href={`/shop/${c.slug}`}>{pick(c.name, locale)}</Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        <div>
+          <h2 className="font-sans text-sm font-semibold uppercase tracking-wider text-white">{t("footer.visit")}</h2>
+          <ul className="mt-3 space-y-1 text-sm">
+            <li>
+              <a className={`${linkClass} gap-2`} href={whatsappUrl()} target="_blank" rel="noopener noreferrer">
+                <WhatsAppIcon className="size-4" /> {SITE.whatsappDisplay}
+              </a>
+            </li>
+            <li>
+              <a className={`${linkClass} gap-2`} href={`tel:${SITE.phone}`}>
+                <Phone className="size-4" aria-hidden="true" /> {SITE.phoneDisplay}
+              </a>
+            </li>
+            <li className="flex min-h-11 items-center gap-2"><Clock className="size-4 shrink-0" aria-hidden="true" /> {t("footer.hours")}</li>
+            <li>
+              <a className={`${linkClass} gap-2`} href={SITE.mapsUrl} target="_blank" rel="noopener noreferrer">
+                <MapPin className="size-4" aria-hidden="true" /> {t("footer.location")}
+              </a>
+            </li>
+          </ul>
         </div>
+      </div>
+      <div className="border-t border-white/10">
+        <p className="mx-auto max-w-6xl px-4 py-5 text-xs text-paper-400">{t("footer.rights", { year: new Date().getFullYear() })}</p>
       </div>
     </footer>
   );
