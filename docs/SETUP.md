@@ -17,6 +17,8 @@ real backend.
    - `20261109000000_phase1a_storefront.sql`
    - `20261110000000_anonymous_users.sql` — guests (anonymous auth) can never act as staff, one active cart per user, reviews need a permanent account or order token
    - `20261111000000_cart_policies.sql` — carts RLS checks the row's own `user_id` (fixes `INSERT … RETURNING`)
+   - `20261112000000_running_ft_modifier.sql` — new price modifier `per_running_ft` (run on its own)
+   - `20261112000100_eyelets_and_templates.sql` — banner eyelets per running foot (Rs 20 placeholder) + 4 mug and 4 frame templates
 3. Load the catalogue: run `supabase/seed.sql` (regenerate with `npm run db:seed`
    after editing `supabase/seed/catalog.json`).
 4. **Authentication → Sign In / Providers → enable "Allow anonymous sign-ins"**
@@ -67,6 +69,21 @@ Uploads switch on only when Supabase **and** the secret key **and** all R2
 variables are present. A partially configured group fails loudly at runtime.
 
 Redeploy after changing variables (they are read at build/request time).
+
+## 3b. Instant updates when products change (ISR)
+
+Customer pages are static and rebuilt at most hourly. To refresh them immediately
+after you edit prices or products:
+
+1. Set `REVALIDATE_SECRET` on Vercel (`openssl rand -hex 32`) and redeploy.
+2. Supabase → **Database → Webhooks → Create a new hook**, one per table:
+   `products`, `product_options`, `product_option_values`, `product_price_tiers`,
+   `product_templates`, `categories`, `app_settings`, `delivery_zones`.
+   - Events: Insert, Update, Delete
+   - Type: HTTP Request · Method **POST**
+   - URL: `https://nirmanee.vercel.app/api/revalidate`
+   - HTTP header: `x-revalidate-secret: <REVALIDATE_SECRET>`
+3. Edit a price → reload the product page: it shows the new price.
 
 ## 4. First admin account
 

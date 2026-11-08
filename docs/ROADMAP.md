@@ -140,7 +140,7 @@ v2 → approve → production moves to delivered — entirely in the app, with r
 - [ ] Per-page `generateMetadata` (en/si), canonical + `hreflang`, Open Graph images (dynamic `opengraph-image`).
 - [ ] `sitemap.ts` (categories, products, static pages, both locales) and `robots.ts` (disallow `/staff`, `/api`, order pages).
 - [ ] JSON-LD: `LocalBusiness` (Kalutara NAP, hours, geo, phone), `Product`, `BreadcrumbList`, `FAQPage`.
-- [ ] Static pages: About, Services (one landing page per service for local SEO, e.g. "Photo framing Kalutara"), Contact (map, WhatsApp), FAQ, Terms, Privacy, Refund policy (required by PayHere).
+- [x] Static pages (FAQ, Terms, Privacy, Refund policy, Track placeholder done in P1A polish): About, Services (one landing page per service for local SEO, e.g. "Photo framing Kalutara"), Contact (map, WhatsApp), FAQ, Terms, Privacy, Refund policy (required by PayHere).
 - [ ] Google Business Profile link, Search Console + sitemap submission, Vercel Analytics / Speed Insights.
   AC: Lighthouse mobile ≥ 90 performance, 100 SEO on home, category and product pages; Rich Results test passes; 0 broken links.
 

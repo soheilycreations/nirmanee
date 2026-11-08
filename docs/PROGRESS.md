@@ -4,6 +4,38 @@ Newest first. Update after every task (see `CLAUDE.md` §6).
 
 ---
 
+## 2026-11-08 — Phase 1A polish (`feat/storefront`)
+
+**Bugs fixed**
+- `/product/<id>`: only the 12 old prototype ids redirect (to their new product/category); anything else is a real 404.
+- Shop sort: per-sq-ft products sort by their real minimum order (`minimumPrice()`: cheapest required options at the minimum billable size); search and sort now apply instantly in the browser (no Search button), state mirrored in `?q=&sort=`.
+- Add to cart is optimistic: badge + toast update instantly, the save runs in the background and rolls back with an error toast if it fails. Cart quantity changes are instant (debounced save, revert on failure); remove is instant with a 6-second **Undo**.
+- **Guest session bug found while testing:** a server action can be dropped by Next.js when the visitor navigates, and setting a cookie in an action re-renders the whole page (56 KB, ~2–3 s here). Cart mutations moved to `/api/cart` (route handler, `fetch` + `keepalive`, same-origin check), the session cookie write after anonymous sign-in is now awaited, sessions are read with `getClaims()`, and the cart page shows "Saving…" and refreshes itself if opened while an add is still saving.
+- Cart WhatsApp message: options, design path, turnaround, skip-proof, uploaded-file count, notes, price with estimate flag, total and a short **cart reference** (`C-XXXXXX`, from the cart id).
+- Cart shows delivery fees by zone from `delivery_zones` (pickup free).
+- Custom size: inline min/max validation messages. Eyelets priced **per running foot of perimeter** (new modifier `per_running_ft`, Rs 20 placeholder, admin-editable).
+- Home 390px: WhatsApp button shows "WhatsApp" on small screens (full label from `sm` up), never cut off.
+- Locale: the URL decides the language (`localeDetection: false`); `/en/...` always English even with a Sinhala cookie.
+- Tap targets: bulk-discount chips and breadcrumbs are 44px.
+
+**Templates:** "Start from a template" only appears when a product has templates. 4 layouts each (SVG previews) for the photo mug and the two photo frames: single photo, photo + name, 2-photo collage, photo + date/message; layout hint (photos + text fields) under the picker.
+
+**New pages:** `/privacy`, `/terms`, `/returns` (no refund after proof approval, free reprint for our faults, 48h claim window), `/faq` (FAQPage JSON-LD), `/track` (order no + phone, "available after online checkout launches" + WhatsApp). EN + SI drafts with a visible "Draft" notice (`SITE_SETTINGS.legalDraft`). Footer "Help & policies" column.
+
+**Design:** hero image slot (recent-work collage from `public/gallery/`, illustrated tiles until photos exist) + "Ready in 24–48h · Free pickup in Kalutara"; "How your order works" journey (photo → mockup → approve → printed & delivered) on home and product pages; trust section (Google rating, address, embedded map, shop photo, "serving since") driven by `src/config/site-settings.ts`, hidden until filled; recent-work gallery (hidden if empty); multi-photo product gallery from `public/products/<slug>/1.webp…` with thumbnails (placeholder fallback kept); categories with fewer than 2 products hidden from nav/home (still reachable).
+
+**Performance:** home, shop, categories, services, products, about, contact, FAQ and policy pages are SSG + ISR (1 h) — locally ~10 ms TTFB, served from Vercel's CDN in production. Catalogue/settings/zones read through a cookie-less public client cached under the `catalog` tag; `/api/revalidate` (secret header, Supabase DB webhooks) refreshes pages when products change. Cart badge is client state (no cookies in the layout). The proxy only touches Supabase when a session cookie exists. Each page ships only its translation namespaces (`IntlIsland`).
+
+**Verified:** `npm run lint`, `tsc`, `npm test` (10/10), `npm run build`, full local SQL suite (7 migrations, 3 scenarios), and a 48-check Playwright run at 390px + 1366px against the live Supabase project (temporary photos/guests created and removed afterwards).
+
+**Owner actions**
+- Run migrations `20261111000000_cart_policies.sql`, `20261112000000_running_ft_modifier.sql` (on its own), `20261112000100_eyelets_and_templates.sql` in the SQL editor; afterwards `public/templates/mug-birthday.svg`, `mug-love.svg`, `mug-logo.svg` can be deleted.
+- Set `REVALIDATE_SECRET` on Vercel + create the Supabase DB webhooks (`docs/SETUP.md` §3b).
+- Photos, business details and text reviews: `docs/CONTENT-CHECKLIST.md`.
+- Two anonymous users from before this session (10:46, 11:03 UTC) were left untouched — probably your own test visits.
+
+---
+
 ## 2026-11-08 — Live Supabase verification (`feat/storefront`)
 
 **State of the live project `jvejmlwpahjittbzztmy`** (owner ran the combined SQL): migrations 1–4 + seed applied (19 products, 12 categories, 3 templates, settings, delivery zones), anonymous sign-ins enabled, owner's admin account + `staff` row created. Keys (`sb_publishable_` / `sb_secret_`, `ORDER_TOKEN_SECRET`) provided via environment variables.

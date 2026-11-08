@@ -7,6 +7,8 @@ Source of truth: `supabase/migrations/` (applied in order):
 3. `20261109000000_phase1a_storefront.sql` — owner decisions + storefront support (§12)
 4. `20261110000000_anonymous_users.sql` — anonymous (guest) users vs permanent accounts (§13)
 5. `20261111000000_cart_policies.sql` — carts RLS split per command, checks `user_id` / `guest_token_hash` on the row itself (§13)
+6. `20261112000000_running_ft_modifier.sql` — `price_modifier_type` gains `per_running_ft` (§14)
+7. `20261112000100_eyelets_and_templates.sql` — eyelets priced per running foot; template layouts (§14)
 
 Status: **tested locally (Postgres 16 + Supabase auth stubs), NOT applied to any Supabase project yet.** See `docs/SETUP.md`.
 
@@ -282,3 +284,15 @@ without `RETURNING`, so it works on databases that don't have this migration yet
 
 Guests keep full access to their own carts, uploads, orders, job chat and proofs
 (those rules key on `auth.uid()` ownership, which anonymous users have).
+
+## 14. Running-foot pricing & templates (`20261112*`)
+
+- `price_modifier_type` adds **`per_running_ft`**: price × running feet of the print's
+  perimeter, `2·(w + h) / 12`. Used for banner eyelets (Rs 20/ft placeholder,
+  editable in `product_option_values`). Pricing engine: `src/lib/pricing.ts`.
+- `product_templates.config` now carries the layout: `{ "photo_slots": 2, "text_fields": ["name"] }`
+  (shown as a hint under the template picker). Photo mug: single photo, photo + name,
+  2-photo collage, photo + message. Photo frames (LED, pine magnet): single photo,
+  photo + name, 2-photo collage, photo + date. The three earlier mug templates are
+  set `is_active = false`; their SVGs in `public/templates/` can be deleted once
+  this migration has run.
