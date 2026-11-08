@@ -122,6 +122,10 @@ supabase start && supabase db reset          # local DB with migrations + seed
 supabase gen types typescript --local > src/types/database.ts
 ```
 
+Live project: `jvejmlwpahjittbzztmy` (keys come from the environment / `.env.local`, never commit them).
+In the Claude cloud sandbox, Node only reaches Supabase through the proxy with
+`NODE_USE_ENV_PROXY=1` (e.g. `NODE_USE_ENV_PROXY=1 npm start`).
+
 SQL scenario test without Docker (plain Postgres 15+):
 ```bash
 psql -d test -f supabase/tests/_supabase_stub.sql \
@@ -129,6 +133,7 @@ psql -d test -f supabase/tests/_supabase_stub.sql \
   -f supabase/migrations/20261108000000_foundation_schema.sql \
   -f supabase/migrations/20261109000000_phase1a_storefront.sql \
   -f supabase/migrations/20261110000000_anonymous_users.sql \
+  -f supabase/migrations/20261111000000_cart_policies.sql \
   -f supabase/tests/_grants.sql -f supabase/tests/foundation_scenario.sql \
   -f supabase/tests/phase1a_scenario.sql -f supabase/tests/anonymous_scenario.sql
 ```

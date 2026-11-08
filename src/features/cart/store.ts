@@ -76,9 +76,15 @@ export async function ensureSupabaseCart(): Promise<{ supabase: ServerSupabase; 
   if (!user) return null;
   const existing = await findActiveCartId(supabase, user.id);
   if (existing) return { supabase, cartId: existing, userId: user.id };
-  const { data, error } = await supabase.from("carts").insert({ user_id: user.id }).select("id").single();
-  if (error) throw new Error(`cart create failed: ${error.message}`);
-  return { supabase, cartId: data.id, userId: user.id };
+  // Insert WITHOUT `RETURNING`: under the original carts policy the row is not
+  // yet visible to the ownership check inside the same statement. A unique
+  // index allows one active cart per user, so a concurrent insert (two tabs)
+  // fails with 23505 — in both cases we simply read the active cart back.
+  const { error } = await supabase.from("carts").insert({ user_id: user.id });
+  if (error && error.code !== "23505") throw new Error(`cart create failed: ${error.message}`);
+  const cartId = await findActiveCartId(supabase, user.id);
+  if (!cartId) throw new Error("cart create failed: cart not found after insert");
+  return { supabase, cartId, userId: user.id };
 }
 
 interface DbCartItem {

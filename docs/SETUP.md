@@ -16,6 +16,7 @@ real backend.
    - `20261108000000_foundation_schema.sql`
    - `20261109000000_phase1a_storefront.sql`
    - `20261110000000_anonymous_users.sql` — guests (anonymous auth) can never act as staff, one active cart per user, reviews need a permanent account or order token
+   - `20261111000000_cart_policies.sql` — carts RLS checks the row's own `user_id` (fixes `INSERT … RETURNING`)
 3. Load the catalogue: run `supabase/seed.sql` (regenerate with `npm run db:seed`
    after editing `supabase/seed/catalog.json`).
 4. **Authentication → Sign In / Providers → enable "Allow anonymous sign-ins"**
@@ -93,6 +94,9 @@ admin only. (Customer sign-up comes later; guests use anonymous sign-in.)
       `options.captchaToken` to `signInAnonymously()` / `signInWithPassword()`.
       Anonymous sign-ins without captcha let bots create unlimited guest users/carts.
 - [ ] Auth rate limits reviewed (Authentication → Rate Limits), esp. anonymous sign-ins per IP.
+- [ ] Public email sign-ups: currently enabled in the project. Nothing in the app lets
+      customers create email accounts yet, and staff access needs a `staff` row, so this is
+      safe — but decide before launch (anonymous sign-ins rely on sign-ups being allowed).
 - [ ] Legacy JWT `anon` / `service_role` keys disabled; secret key rotated after setup.
 - [ ] R2 CORS narrowed to the production domain (+ preview pattern).
 - [ ] Placeholder prices and delivery fees confirmed; Sinhala reviewed.

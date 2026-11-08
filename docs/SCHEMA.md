@@ -6,6 +6,7 @@ Source of truth: `supabase/migrations/` (applied in order):
 2. `20261108000000_foundation_schema.sql` — core model (this document §1–§9)
 3. `20261109000000_phase1a_storefront.sql` — owner decisions + storefront support (§12)
 4. `20261110000000_anonymous_users.sql` — anonymous (guest) users vs permanent accounts (§13)
+5. `20261111000000_cart_policies.sql` — carts RLS split per command, checks `user_id` / `guest_token_hash` on the row itself (§13)
 
 Status: **tested locally (Postgres 16 + Supabase auth stubs), NOT applied to any Supabase project yet.** See `docs/SETUP.md`.
 
@@ -272,6 +273,12 @@ JWT claim `is_anonymous = true`. `authenticated` therefore never means "trusted"
 | One active cart per user | unique index `carts_one_active_per_user` |
 | Reviews need a permanent account or the order token | policy `reviews_customer_insert` (+ ownership trigger) |
 | Guests cannot set a profile email (done by account upgrade) | trigger `profiles_guard` |
+
+**Carts policies (`20261111000000_cart_policies.sql`)**: the original `carts_owner_all` used
+`app.owns_cart(id)`, a lookup by id that cannot see the row being inserted, so
+`INSERT … RETURNING` failed. Policies are now `carts_owner_select/insert/update/delete`
+and compare the row's `user_id` / `guest_token_hash` directly. (The app also creates carts
+without `RETURNING`, so it works on databases that don't have this migration yet.)
 
 Guests keep full access to their own carts, uploads, orders, job chat and proofs
 (those rules key on `auth.uid()` ownership, which anonymous users have).

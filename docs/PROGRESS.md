@@ -4,6 +4,29 @@ Newest first. Update after every task (see `CLAUDE.md` §6).
 
 ---
 
+## 2026-11-08 — Live Supabase verification (`feat/storefront`)
+
+**State of the live project `jvejmlwpahjittbzztmy`** (owner ran the combined SQL): migrations 1–4 + seed applied (19 products, 12 categories, 3 templates, settings, delivery zones), anonymous sign-ins enabled, owner's admin account + `staff` row created. Keys (`sb_publishable_` / `sb_secret_`, `ORDER_TOKEN_SECRET`) provided via environment variables.
+
+**Bug found and fixed**
+- Creating a cart failed live: `INSERT … RETURNING` on `carts` violated RLS because the policy's `app.owns_cart(id)` lookup can't see the row being inserted (local tests had inserted without RETURNING). Fixed twice: the app now inserts without RETURNING and re-reads the active cart (handles the two-tab race via the unique index), and migration `20261111000000_cart_policies.sql` rewrites the carts policies to check the row's `user_id` / `guest_token_hash` directly. **Migration 5 still needs to be run by the owner** — the app works without it.
+
+**Live checks — 29/29 passed** (real UI + real database, temporary test users deleted afterwards)
+- Guest add-to-cart → anonymous auth user + session cookie; header count; cart persists across navigation; option labels; quantity update and remove persisted; one active cart reused; second browser sees an empty cart.
+- RLS as an anonymous user: can't see others' carts, staff, orders, payments or coupons; can't create a cart for someone else; second active cart rejected; can't change product prices; public settings readable.
+- Anonymous user cannot be made staff (trigger); guests are redirected from `/admin`.
+- Staff login: non-staff account refused (and stays locked out), designer signs in to the dashboard, sign-out re-locks `/admin`, wrong password shows an error.
+- Uploader correctly falls back to WhatsApp (R2 not configured yet).
+- `npm run lint`, `tsc`, `npm test` (9/9), `npm run build`, full local SQL suite (5 migrations, 3 scenario files) green.
+
+**Not yet verified:** owner's own admin login (password unknown to me — owner to test), R2 uploads (no R2 credentials), Vercel deployment with these env vars.
+
+**Follow-ups**
+- `NextIntlClientProvider` currently ships the full message catalogue to the browser — pass only client namespaces (perf, P1).
+- Generate `src/types/database.ts` (needs Supabase CLI access or the owner running `supabase gen types`).
+
+---
+
 ## 2026-11-08 — Supabase hookup prep (`feat/storefront`)
 
 **Done**
