@@ -1,0 +1,68 @@
+import Image from "next/image";
+import { CategoryIcon } from "./CategoryIcon";
+import { cn } from "@/lib/cn";
+import type { ProductImage } from "@/features/catalog/types";
+
+const TINTS: Record<string, string> = {
+  "mug-printing": "from-brand-50 to-paper-200",
+  "photo-framing": "from-accent-50 to-paper-200",
+  "laser-cutting": "from-paper-200 to-accent-100",
+  "wood-engraving": "from-accent-100 to-paper-300",
+  "crystal-printing": "from-brand-50 to-royal-100",
+  banners: "from-brand-100 to-paper-200",
+  "digital-printing": "from-paper-100 to-brand-50",
+  "plan-printing": "from-paper-200 to-paper-100",
+  "photo-enlargement": "from-royal-100 to-paper-200",
+  "t-shirt-printing": "from-paper-200 to-brand-50",
+  "edible-print": "from-danger-50 to-accent-50",
+  "custom-souvenirs": "from-accent-50 to-brand-50",
+};
+
+function imageSrc(key: string): string {
+  if (key.startsWith("/") || key.startsWith("http")) return key;
+  const base = process.env.NEXT_PUBLIC_R2_PUBLIC_URL ?? "";
+  return `${base.replace(/\/$/, "")}/${key}`;
+}
+
+/**
+ * Product image, or a branded placeholder until real photography is supplied.
+ */
+export function ProductVisual({
+  image,
+  alt,
+  categorySlug,
+  placeholderLabel,
+  sizes = "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw",
+  priority = false,
+  className,
+}: {
+  image: ProductImage | undefined;
+  alt: string;
+  categorySlug: string;
+  placeholderLabel: string;
+  sizes?: string;
+  priority?: boolean;
+  className?: string;
+}) {
+  if (image) {
+    return (
+      <div className={cn("relative overflow-hidden bg-paper-200", className)}>
+        <Image src={imageSrc(image.key)} alt={alt} fill sizes={sizes} priority={priority} className="object-cover" />
+      </div>
+    );
+  }
+  return (
+    <div
+      className={cn(
+        "relative flex flex-col items-center justify-center gap-2 overflow-hidden bg-gradient-to-br text-ink-500",
+        TINTS[categorySlug] ?? "from-paper-200 to-paper-100",
+        className,
+      )}
+      role="img"
+      aria-label={alt}
+    >
+      <CategoryIcon slug={categorySlug} className="size-10 text-ink-700/70 sm:size-12" />
+      <span className="rounded-full bg-surface/70 px-2.5 py-0.5 text-[11px] font-medium text-ink-500">{placeholderLabel}</span>
+    </div>
+  );
+}

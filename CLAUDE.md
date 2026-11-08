@@ -41,6 +41,7 @@ Languages: **English + Sinhala** everywhere customer-facing.
 | i18n | next-intl, locales `en` (default) and `si`, routes `/[locale]/…` |
 | Validation | zod (all inputs: forms, server actions, route handlers, env) |
 | Hosting | Vercel |
+| Request middleware | `src/proxy.ts` (Next 16 renamed `middleware.ts` → `proxy.ts`): next-intl routing, Supabase session refresh, `/admin` gate |
 
 ## 3. Folder conventions
 
@@ -106,11 +107,17 @@ docs/                          AUDIT, SCHEMA, DESIGN, ROADMAP, PROGRESS
 questions, next step. Also tick the matching items in `docs/ROADMAP.md`. If the schema changed,
 update `docs/SCHEMA.md` in the same commit.
 
-## 7. Useful commands
+## 7. Preview mode
+
+With no Supabase env the app still runs: catalogue from `supabase/seed/catalog.json`, cart in a cookie, uploads → WhatsApp, `/admin` denied. Keep both paths working until production is configured (`docs/SETUP.md`).
+
+## 8. Useful commands
 
 ```bash
 npm run dev                 # local dev server
 npm run lint && npm run build
+npm test                    # pricing engine unit tests (node --test)
+npm run db:seed             # regenerate supabase/seed.sql from supabase/seed/catalog.json
 supabase start && supabase db reset          # local DB with migrations + seed
 supabase gen types typescript --local > src/types/database.ts
 ```
@@ -118,6 +125,9 @@ supabase gen types typescript --local > src/types/database.ts
 SQL scenario test without Docker (plain Postgres 15+):
 ```bash
 psql -d test -f supabase/tests/_supabase_stub.sql \
+  -f supabase/migrations/20261107000000_drop_legacy_tables.sql \
   -f supabase/migrations/20261108000000_foundation_schema.sql \
-  -f supabase/tests/_grants.sql -f supabase/tests/foundation_scenario.sql
+  -f supabase/migrations/20261109000000_phase1a_storefront.sql \
+  -f supabase/tests/_grants.sql -f supabase/tests/foundation_scenario.sql \
+  -f supabase/tests/phase1a_scenario.sql
 ```

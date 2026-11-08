@@ -4,6 +4,46 @@ Newest first. Update after every task (see `CLAUDE.md` §6).
 
 ---
 
+## 2026-11-08 — Phase 1A: storefront → cart (`feat/storefront`)
+
+**Owner decisions applied**
+1. Legacy tables dropped by a migration ordered before the foundation schema.
+2. Guests: Supabase anonymous sign-in (+ order token links later).
+3. Printing blocked in the DB until the order is fully paid (quote balance + paid revisions).
+4. 3rd+ revision = Rs 500 each (`app_settings.revision_fee_lkr`), shown on the product page before ordering; `revision_fee_preview()` RPC for the proof screen (P2).
+5. Designers see assigned jobs + an unassigned queue and can `claim_job()`.
+6. Delivery zones (Kalutara district / Western Province / rest of island, admin-editable, placeholder fees); pickup free.
+7. Direction A "Ink & Paper"; branded placeholders until real photos/vector logo arrive.
+
+**Done**
+- Migrations `20261107000000_drop_legacy_tables.sql`, `20261109000000_phase1a_storefront.sql` + `supabase/tests/phase1a_scenario.sql` (all scenarios pass on local Postgres 16).
+- Catalogue seed as one JSON source (`supabase/seed/catalog.json`: 12 categories, 19 products, options, quantity tiers, 3 mug templates) → `npm run db:seed` → `supabase/seed.sql`.
+- Critical fixes: working mobile nav (drawer, Esc/overlay close, focus return), "Admin Panel" link removed, `/admin` behind Supabase Auth + active staff role (proxy + server check, fails closed), real 404s (`/products/unknown`, unknown paths), all nav/footer links real, no fake reviews/ratings/old prices/stock photos, NIRMANEE20 bar removed, old `/product/:id` → `/shop` redirect, default favicon and 7 MB of WhatsApp/AI images removed.
+- Redesigned in Ink & Paper, mobile-first: Home (products above the fold at 390px — first card at 524px), Shop (+ `/shop/[category]`, server-side search/sort via GET form), Services (one section per service with anchors), About, Contact, Cart, localised 404. Floating WhatsApp button (hidden on mobile product pages where the sticky bar is), 44px tap targets, `next/image`.
+- Products server-rendered from Supabase; falls back to the seed JSON in preview mode.
+- Product page: three paths (Upload / Design it for me +fee / Template), live price (size incl. custom W×H, material, finish, colour, qty tiers, Standard/Express), sticky price + Add to cart bar on mobile, "Ready in X days · Pickup Kalutara · Islandwide 2–4 days", "Skip proof, print as-is", design brief/notes, revision-fee notice.
+- Pricing engine `src/lib/pricing.ts` shared by client preview and server action; 9 unit tests (`npm test`).
+- Uploader: direct presigned PUT to R2 (JPG/PNG/HEIC/PDF/AI/ZIP, ≤500 MB, ≤10 files), thumbnails, progress bar, server-side size verification (HeadObject), low-resolution warning from print size (300 ppi target, 100 for large format), WhatsApp fallback.
+- Cart: Supabase `carts`/`cart_items` with anonymous auth (RLS), cookie cart in preview mode; quantity update, remove, uploaded-file count, delivery info, "Send cart on WhatsApp" until checkout ships.
+- i18n: next-intl, `/` English + `/si` Sinhala, full UI catalogues, `lang` per locale, Sinhala fonts/line-height, language toggle keeps the current page.
+- SEO: per-page metadata + canonical + hreflang, Open Graph/Twitter + generated OG image, `sitemap.xml` (both locales), `robots.txt` (previews disallowed), LocalBusiness / Product / BreadcrumbList JSON-LD.
+- Security headers (HSTS, X-Frame-Options, nosniff, Referrer-Policy, Permissions-Policy).
+- Verified: `npm run lint` clean, `tsc` clean, `npm test` 9/9, `npm run build` OK, Playwright run (mobile nav, language switch, customise → add to cart → update → remove, search/sort, 0 console errors, no horizontal scroll).
+
+**Not verified (needs owner setup, see `docs/SETUP.md`)**
+- Supabase-mode cart, anonymous sign-in, staff login and R2 uploads were type-checked and RLS-tested in SQL, but not run against a live Supabase project / R2 bucket (no credentials in this environment).
+
+**Open items for the owner**
+- Create Supabase project + R2 bucket and add env vars on Vercel (`docs/SETUP.md`).
+- Confirm placeholder prices in `supabase/seed/catalog.json` and delivery-zone fees.
+- Review Sinhala text (`messages/si.json`, seed JSON).
+- Shop street address, Google Maps link, Facebook/Instagram URLs, contact email.
+- Real photos + vector logo.
+
+**Next:** P1B — checkout (contact, delivery zone, order creation via service role), PayHere sandbox with notify_url md5sig verification, order confirmation page.
+
+---
+
 ## 2026-11-08 — Foundation (`feat/foundation`)
 
 **Done**

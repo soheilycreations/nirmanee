@@ -14,8 +14,10 @@ Each task has acceptance criteria (AC). Tick items as they land and log them in 
 
 ## P1 — Storefront, customiser, cart/checkout, PayHere
 
+> **P1A (storefront → cart) done on `feat/storefront`.** Remaining P1 work: Supabase project + env (owner), real photos, UI primitives library, checkout, PayHere. Items marked [x] are implemented; some need the live Supabase/R2 setup (`docs/SETUP.md`) before they work outside preview mode.
+
 ### P1.1 Platform setup
-- [ ] **Decisions from foundation resolved** (legacy tables, guest model, payment rules).
+- [x] **Decisions from foundation resolved** (legacy tables, guest model, payment rules).
   AC: answers recorded in PROGRESS.md.
 - [ ] **Supabase projects** (dev + prod), migration applied to dev, seed run, types generated to `src/types/database.ts`.
   AC: `supabase db reset` works locally; scenario test passes; `npm run build` uses generated types.
@@ -23,9 +25,9 @@ Each task has acceptance criteria (AC). Tick items as they land and log them in 
   AC: `admin.ts` imports `server-only`; build fails if imported from a client component.
 - [ ] **Env validation** `lib/env.ts` (zod) for every var in `.env.example`.
   AC: missing/invalid var → clear error at boot; no placeholder fallbacks.
-- [ ] **next-intl** with `/en` and `/si`, `messages/{en,si}.json`, locale switcher, `<html lang>` per locale, `hreflang` alternates.
+- [x] **next-intl** with `/en` and `/si`, `messages/{en,si}.json`, locale switcher, `<html lang>` per locale, `hreflang` alternates.
   AC: every customer route renders in both locales; no hardcoded UI strings (lint rule or review checklist); Sinhala reviewed by a native speaker.
-- [ ] **Security quick wins:** remove header "Admin Panel" link, delete mock `/admin` + `/admin/pos`, add security headers (CSP, HSTS, X-Frame-Options, Referrer-Policy) in `next.config.ts`.
+- [x] **Security quick wins:** remove header "Admin Panel" link, delete mock `/admin` + `/admin/pos`, add security headers (CSP, HSTS, X-Frame-Options, Referrer-Policy) in `next.config.ts`.
   AC: `/admin` returns 404; securityheaders.com grade ≥ A.
 - [ ] **UI primitives** in `components/ui`: Button, IconButton, Card, Input, Textarea, Select, Checkbox/Radio, Badge, StatusPill, Dialog/Sheet, Toast, Skeleton, PriceTag.
   AC: all use DESIGN tokens only; keyboard + screen-reader accessible; documented examples page (dev only).
@@ -33,29 +35,29 @@ Each task has acceptance criteria (AC). Tick items as they land and log them in 
 ### P1.2 Catalogue
 - [ ] **Seed real catalogue**: categories (12), ≥ 20 products with options/values, images renamed and uploaded to R2 public bucket.
   AC: no `WhatsApp Image…` filenames remain in use; every product has en/si name and real photo.
-- [ ] **Home page** redesign (hero, services grid, featured products from DB, how-it-works "order → proof → approve → print", trust strip with real facts only, WhatsApp CTA).
+- [x] **Home page** redesign (hero, services grid, featured products from DB, how-it-works "order → proof → approve → print", trust strip with real facts only, WhatsApp CTA).
   AC: LCP < 2.5 s on 4G Moto G (Lighthouse mobile ≥ 90 perf, ≥ 95 a11y/SEO); no fake reviews/ratings/discounts.
-- [ ] **Category page** `/[locale]/c/[slug]` with product grid, sorting, pagination (server-rendered).
+- [x] **Category page** `/[locale]/c/[slug]` with product grid, sorting, pagination (server-rendered).
   AC: unknown slug → 404; `generateMetadata` per category.
-- [ ] **Product page** `/[locale]/p/[slug]` (server component + client customiser island), gallery with `next/image`, "from" price, specs, production time, FAQ.
+- [x] **Product page** `/[locale]/p/[slug]` (server component + client customiser island), gallery with `next/image`, "from" price, specs, production time, FAQ.
   AC: unknown slug → 404; correct product always shown; JSON-LD `Product` without fake ratings.
-- [ ] **Header/Footer** rebuild: working nav, mobile menu, cart count, locale switcher, real contact/NAP, no dead links.
+- [x] **Header/Footer** rebuild: working nav, mobile menu, cart count, locale switcher, real contact/NAP, no dead links.
   AC: link checker reports 0 broken internal links.
 
 ### P1.3 Customiser & uploads
-- [ ] **Option renderer** for size (presets + custom W×H with min/max), material, finish, color (swatches), text fields (max length), photo slots.
+- [x] **Option renderer** for size (presets + custom W×H with min/max), material, finish, color (swatches), text fields (max length), photo slots.
   AC: required options enforced client + server (zod); price preview updates live and matches server.
-- [ ] **Pricing engine** `lib/pricing.ts` (fixed, per_sqft with min_sqft, flat/percent/per_sqft modifiers, quantity) with unit tests.
+- [x] **Pricing engine** `lib/pricing.ts` (fixed, per_sqft with min_sqft, flat/percent/per_sqft modifiers, quantity) with unit tests.
   AC: ≥ 95 % branch coverage; server result is the only one persisted.
-- [ ] **R2 uploads**: server action → `job_files` (pending) → presigned PUT (multipart > 100 MB) → progress UI → confirm via HeadObject → `uploaded` + width/height.
+- [x] **R2 uploads**: server action → `job_files` (pending) → presigned PUT (multipart > 100 MB) → progress UI → confirm via HeadObject → `uploaded` + width/height.
   AC: 500 MB file uploads on desktop; mid-upload refresh can resume or cleanly fail; > 500 MB or disallowed type rejected server-side; low-resolution warning when photo < slot min px.
-- [ ] **Notes & template picker** (product_templates).
+- [x] **Notes & template picker** (product_templates).
   AC: selected template and notes appear on the order item snapshot.
 
 ### P1.4 Cart & checkout
-- [ ] **Guest identity**: anonymous Supabase sign-in on first cart action; optional account creation keeps cart and orders.
+- [x] **Guest identity**: anonymous Supabase sign-in on first cart action; optional account creation keeps cart and orders.
   AC: guest cart survives reload and browser restart; signing up keeps the same orders.
-- [ ] **Cart** page/drawer: edit quantity/options, remove, uploaded file thumbnails, server-computed totals, coupon field.
+- [x] **Cart** page/drawer: edit quantity/options, remove, uploaded file thumbnails, server-computed totals, coupon field.
   AC: totals always server-computed; invalid coupon shows reason.
 - [ ] **Checkout** (single page): contact (name, phone required, email optional), delivery method pickup/courier + address (district list), delivery fee rule, notes, terms; creates order + items (service role) → jobs auto-created by trigger; files re-parented from cart items to jobs.
   AC: zod-validated; order totals match pricing engine; order number shown; access-token link generated; idempotent on double-submit.

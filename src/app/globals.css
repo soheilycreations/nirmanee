@@ -114,20 +114,9 @@
   --duration-fast: 150ms;
   --duration-base: 240ms;
 
-  /* --- Legacy (kept so existing pages render unchanged until redesign) ---- */
-  --color-sky-50: #f0f9ff;
-  --color-sky-100: #e0f2fe;
-  --color-sky-200: #bae6fd;
-  --color-sky-300: #7dd3fc;
-  --color-sky-400: #38bdf8;
-  --color-sky-500: #0ea5e9;
-  --color-sky-600: #0284c7;
-  --color-slate-50: #f8fafc;
-  --color-slate-100: #f1f5f9;
-  --color-slate-200: #e2e8f0;
-  --color-slate-300: #cbd5e1;
-  --color-slate-800: #1e293b;
-  --color-slate-900: #0f172a;
+  /* --- WhatsApp (darkened for 5:1 contrast with white text) ------------- */
+  --color-whatsapp: #137a43;
+  --color-whatsapp-hover: #0f6537;
 }
 
 @layer base {
@@ -137,10 +126,18 @@
   }
 
   body {
-    /* Colours stay on the legacy palette until the page redesign (P1). */
-    background-color: #f8fafc;
-    color: #1e293b;
+    background-color: var(--color-bg);
+    color: var(--color-fg);
     font-family: var(--font-sans);
+    line-height: 1.6;
+  }
+
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.15;
+    text-wrap: balance;
   }
 
   /* Sinhala needs taller line boxes for stacked vowel signs. */
@@ -168,46 +165,17 @@
   }
 }
 
-/* Hide scrollbar for cleaner look if requested */
-.scrollbar-hide::-webkit-scrollbar {
+/* Mobile: the product page has its own sticky price bar and WhatsApp link,
+   so the floating button would only cover content there. */
+@media (max-width: 1023px) {
+  body:has([data-sticky-cta]) .wa-fab {
+    display: none;
+  }
+}
+
+.no-scrollbar::-webkit-scrollbar {
   display: none;
 }
-.scrollbar-hide {
-  -ms-overflow-style: none;
+.no-scrollbar {
   scrollbar-width: none;
 }
-
-/* Fluid Ink Animations */
-@keyframes blob {
-  0% { transform: translate(0px, 0px) scale(1); }
-  33% { transform: translate(30px, -50px) scale(1.1); }
-  66% { transform: translate(-20px, 20px) scale(0.9); }
-  100% { transform: translate(0px, 0px) scale(1); }
-}
-.animate-blob {
-  animation: blob 10s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
-}
-.animation-delay-2000 {
-  animation-delay: 2s;
-}
-.animation-delay-4000 {
-  animation-delay: 4s;
-}
-
-/* Floating Icon Animations */
-@keyframes float-0 {
-  0%, 100% { transform: translate(0px, 0px) rotate(-12deg); }
-  50% { transform: translate(15px, -25px) rotate(5deg); }
-}
-@keyframes float-1 {
-  0%, 100% { transform: translate(0px, 0px) rotate(12deg); }
-  50% { transform: translate(-20px, 20px) rotate(-5deg); }
-}
-@keyframes float-2 {
-  0%, 100% { transform: translate(0px, 0px) rotate(-45deg); }
-  33% { transform: translate(20px, -20px) rotate(-20deg); }
-  66% { transform: translate(-15px, 10px) rotate(-55deg); }
-}
-.animate-float-0 { animation: float-0 8s infinite ease-in-out; }
-.animate-float-1 { animation: float-1 10s infinite ease-in-out; }
-.animate-float-2 { animation: float-2 12s infinite ease-in-out; }

@@ -1,9 +1,14 @@
 # Database schema
 
-Source of truth: [`supabase/migrations/20261108000000_foundation_schema.sql`](../supabase/migrations/20261108000000_foundation_schema.sql).
-Status: **written and tested locally (Postgres 16 + Supabase auth stubs), NOT applied to production.**
+Source of truth: `supabase/migrations/` (applied in order):
 
-Scenario test: [`supabase/tests/foundation_scenario.sql`](../supabase/tests/foundation_scenario.sql)
+1. `20261107000000_drop_legacy_tables.sql` — drops the old mock `products/orders/order_items`
+2. `20261108000000_foundation_schema.sql` — core model (this document §1–§9)
+3. `20261109000000_phase1a_storefront.sql` — owner decisions + storefront support (§12)
+
+Status: **tested locally (Postgres 16 + Supabase auth stubs), NOT applied to any Supabase project yet.** See `docs/SETUP.md`.
+
+Scenario tests: `supabase/tests/foundation_scenario.sql` then `supabase/tests/phase1a_scenario.sql`
 (fixed order → payment → proof → changes → re-proof → guest approval → print → deliver → review;
 quote → accept → 50 % advance; RLS isolation checks).
 
@@ -211,7 +216,11 @@ Flow: server action validates (zod: type, size ≤ 500 MB) → inserts `job_file
 returns presigned PUT (multipart for > 100 MB) → browser uploads directly → server confirms with
 `HeadObject` and sets `uploaded` + dimensions. Downloads always via short-lived presigned GET.
 
-## 10. Legacy tables
+## 10. Legacy tables (resolved)
+
+Owner confirmed the legacy tables only held mock data; `20261107000000_drop_legacy_tables.sql` drops them before the foundation migration. `supabase/schema.sql` has been deleted.
+
+### Original note
 
 `supabase/schema.sql` defined `products`, `orders`, `order_items` with incompatible shapes. The
 foundation migration uses the same names, so **it will fail on a database where the legacy schema
@@ -226,3 +235,25 @@ supabase start                       # local stack (Docker)
 supabase db reset                    # applies migrations + supabase/seed.sql
 supabase gen types typescript --local > src/types/database.ts
 ```
+
+## 12. Phase 1A additions (`20261109000000_phase1a_storefront.sql`)
+
+| Change | Details |
+|---|---|
+| `app_settings` (key, value jsonb, is_public) | Admin-editable. `revision_fee_lkr = 500`, `free_revisions = 2`. Public rows readable by the storefront. |
+| `delivery_zones` | `kalutara` / `western` / `island` with `fee`, `eta_min_days`, `eta_max_days` (fees are placeholders). Pickup = free (`delivery_method = pickup`). |
+| `orders.extras_total`, `orders.delivery_zone` | `total = max(subtotal − discount, 0) + delivery_fee + extras_total`; courier orders need a zone. |
+| `products.design_fee`, `allow_customer_artwork`, `allow_design_service`, `express_days`, `express_surcharge_percent` | Drive the three design paths and Standard/Express turnaround. |
+| `product_price_tiers` (min_quantity, discount_percent) | Quantity discounts. |
+| `design_mode` enum (`upload`, `design_for_me`, `template`), `turnaround` enum (`standard`, `express`) | On `cart_items` and `order_items`, plus `skip_proof` (upload path only) and `order_items.price_breakdown`. |
+| `job_files.cart_id` | Uploads made on the product page before the item exists; linked to `cart_item_id` on "Add to cart". |
+| `jobs.revision_fees_total`; `max_free_revisions` default from settings | |
+
+**New rules (triggers)**
+
+- **Printing requires full payment**: `→ printing` raises unless `orders.amount_paid ≥ total` (covers the quote balance and paid revisions).
+- **Paid revisions**: each `changes_requested` beyond `max_free_revisions` adds `revision_fee_lkr` to `jobs.revision_fees_total` and to the order (`extras_total`, `total`), recalculates payment status and says so in the system message.
+- **Express due dates**: `→ new` uses `products.express_days` when the item is express.
+- **Designer queue**: designers can see unassigned jobs in status `new` (job, order, customer uploads) and take one with `claim_job(job_id)`; other assignment changes remain admin-only.
+
+**New RPCs**: `claim_job(job_id)` (designer/admin), `revision_fee_preview(job_id)` → `revision_count, max_free_revisions, next_revision_fee` (shown to the customer *before* they request changes).

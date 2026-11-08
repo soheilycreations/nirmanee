@@ -1,105 +1,60 @@
-import Link from "next/link";
-import { Search, User, ShoppingCart, Menu, Heart, Phone } from "lucide-react";
+import Image from "next/image";
+import { ShoppingBag } from "lucide-react";
+import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
+import { getCartCount } from "@/features/cart/store";
+import { whatsappUrl } from "@/lib/site";
+import { LanguageSwitcher } from "./LanguageSwitcher";
+import { MobileNav } from "./MobileNav";
 
-export default function Header() {
+export async function Header() {
+  const t = await getTranslations();
+  const count = await getCartCount();
+  const items = [
+    { href: "/shop", label: t("nav.shop") },
+    { href: "/services", label: t("nav.services") },
+    { href: "/about", label: t("nav.about") },
+    { href: "/contact", label: t("nav.contact") },
+  ];
+
   return (
-    <header className="w-full bg-white/95 backdrop-blur-md sticky top-0 border-b border-slate-100 z-50 transition-all duration-300">
-      {/* Top Bar */}
-      <div className="bg-slate-900 text-white text-xs py-2 px-4 flex justify-between items-center">
-        <div className="flex items-center gap-2">
-          <span className="bg-sky-500 text-white px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">
-            Special Offer
+    <header className="sticky top-0 z-50 border-b border-line bg-surface/95 backdrop-blur supports-[backdrop-filter]:bg-surface/85">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-2 px-4">
+        <Link href="/" className="flex min-h-11 items-center gap-2.5" aria-label={t("meta.siteName")}>
+          <Image src="/images/brand/nirmanee-logo.jpg" alt="" width={40} height={40} className="size-10 rounded-full" priority />
+          <span className="flex flex-col leading-none">
+            <span className="font-display text-xl font-semibold text-ink-900">Nirmanee</span>
+            <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-brand-600">Digital Print House</span>
           </span>
-          <span className="hidden sm:inline">Get 20% off your first web order! Use code: NIRMANEE20</span>
-        </div>
-        <div className="flex items-center gap-4 text-slate-300">
-          <a href="tel:+94779233822" className="flex items-center gap-1 hover:text-white transition-colors">
-            <Phone className="w-3 h-3" />
-            <span className="hidden sm:inline">+94 77 923 3822</span>
-          </a>
-          <div className="hidden sm:flex items-center gap-2 border-l border-slate-700 pl-4">
-            <Link href="/admin" className="hover:text-sky-400 transition-colors mr-2">Admin Panel</Link>
-            <button className="hover:text-white transition-colors">English</button>
-            <span>/</span>
-            <button className="hover:text-white transition-colors">LKR</button>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Header */}
-      <div className="container mx-auto px-4 py-5 flex items-center justify-between">
-        {/* Mobile Menu */}
-        <button className="lg:hidden p-2 text-slate-600 hover:text-sky-500 transition-colors">
-          <Menu className="w-6 h-6" />
-        </button>
-
-        {/* Logo */}
-        <Link href="/" className="flex items-center gap-3 group">
-          <div className="relative">
-            <div className="absolute inset-0 bg-sky-400 rounded-full blur-md opacity-20 group-hover:opacity-40 transition-opacity" />
-            <img
-              src="/images/upload/logo.jpeg"
-              alt="Nirmanee Print House Logo"
-              className="w-12 h-12 md:w-14 md:h-14 rounded-full shadow-md border-2 border-white object-cover bg-white relative z-10 transition-transform group-hover:scale-105"
-            />
-          </div>
-          <div className="flex flex-col">
-            <span className="font-extrabold text-2xl md:text-3xl tracking-tight text-slate-900 leading-none group-hover:text-sky-600 transition-colors">
-              Nirmanee
-            </span>
-            <span className="text-[10px] md:text-xs font-bold text-sky-500 uppercase tracking-[0.2em] leading-none mt-1">
-              Digital Print House
-            </span>
-          </div>
         </Link>
 
-        {/* Desktop Navigation */}
-        <nav className="hidden lg:flex items-center gap-8">
-          <Link href="/" className="text-sky-500 font-bold text-sm hover:text-sky-600 transition-colors relative group">
-            Home
-            <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-sky-500 rounded-full" />
-          </Link>
-          <Link href="/shop" className="text-slate-600 font-medium text-sm hover:text-sky-500 transition-colors relative group">
-            Shop
-            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-sky-500 rounded-full transition-all group-hover:w-full" />
-          </Link>
-          <Link href="/services" className="text-slate-600 font-medium text-sm hover:text-sky-500 transition-colors relative group">
-            Services
-            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-sky-500 rounded-full transition-all group-hover:w-full" />
-          </Link>
-          <Link href="/about" className="text-slate-600 font-medium text-sm hover:text-sky-500 transition-colors relative group">
-            About Us
-            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-sky-500 rounded-full transition-all group-hover:w-full" />
-          </Link>
-          <Link href="/contact" className="text-slate-600 font-medium text-sm hover:text-sky-500 transition-colors relative group">
-            Contact
-            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-sky-500 rounded-full transition-all group-hover:w-full" />
-          </Link>
+        <nav aria-label={t("nav.main")} className="hidden lg:block">
+          <ul className="flex items-center gap-1">
+            {items.map((item) => (
+              <li key={item.href}>
+                <Link href={item.href} className="inline-flex h-11 items-center rounded-control px-4 text-[15px] font-medium text-ink-700 hover:bg-paper-200 hover:text-ink-900">
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
         </nav>
 
-        {/* Action Icons */}
-        <div className="flex items-center gap-4 sm:gap-6">
-          <button className="p-2 text-slate-500 hover:text-sky-500 hover:bg-sky-50 rounded-full transition-all hidden sm:block">
-            <Search className="w-5 h-5" />
-          </button>
-          <button className="p-2 text-slate-500 hover:text-sky-500 hover:bg-sky-50 rounded-full transition-all hidden sm:block">
-            <User className="w-5 h-5" />
-          </button>
-          <button className="p-2 text-slate-500 hover:text-sky-500 hover:bg-sky-50 rounded-full transition-all hidden sm:block">
-            <Heart className="w-5 h-5" />
-          </button>
-          <Link href="/shop" className="flex items-center gap-3 group ml-2">
-            <div className="relative p-2 bg-sky-50 group-hover:bg-sky-100 rounded-full transition-colors text-sky-600">
-              <ShoppingCart className="w-5 h-5 group-hover:scale-110 transition-transform" />
-              <span className="absolute -top-1 -right-1 bg-rose-500 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-white shadow-sm">
-                0
+        <div className="flex items-center gap-1">
+          <LanguageSwitcher className="hidden sm:inline-flex" />
+          <Link
+            href="/cart"
+            aria-label={t("nav.cartWithCount", { count })}
+            className="relative inline-flex size-11 items-center justify-center rounded-control text-ink-900 hover:bg-paper-200"
+          >
+            <ShoppingBag className="size-6" aria-hidden="true" strokeWidth={1.75} />
+            {count > 0 && (
+              <span className="absolute right-1 top-1 flex min-w-5 items-center justify-center rounded-full bg-primary px-1 text-[11px] font-bold text-white">
+                {count}
               </span>
-            </div>
-            <div className="hidden sm:flex flex-col items-start">
-              <span className="text-[10px] text-slate-500 font-medium leading-none mb-1">Your Cart</span>
-              <span className="text-sm font-extrabold text-slate-900 leading-none">Rs. 0.00</span>
-            </div>
+            )}
           </Link>
+          <MobileNav items={items} whatsappHref={whatsappUrl()} />
         </div>
       </div>
     </header>
