@@ -5,10 +5,11 @@ Source of truth: `supabase/migrations/` (applied in order):
 1. `20261107000000_drop_legacy_tables.sql` — drops the old mock `products/orders/order_items`
 2. `20261108000000_foundation_schema.sql` — core model (this document §1–§9)
 3. `20261109000000_phase1a_storefront.sql` — owner decisions + storefront support (§12)
+4. `20261110000000_anonymous_users.sql` — anonymous (guest) users vs permanent accounts (§13)
 
 Status: **tested locally (Postgres 16 + Supabase auth stubs), NOT applied to any Supabase project yet.** See `docs/SETUP.md`.
 
-Scenario tests: `supabase/tests/foundation_scenario.sql` then `supabase/tests/phase1a_scenario.sql`
+Scenario tests: `supabase/tests/foundation_scenario.sql`, then `phase1a_scenario.sql`, then `anonymous_scenario.sql`
 (fixed order → payment → proof → changes → re-proof → guest approval → print → deliver → review;
 quote → accept → 50 % advance; RLS isolation checks).
 
@@ -257,3 +258,20 @@ supabase gen types typescript --local > src/types/database.ts
 - **Designer queue**: designers can see unassigned jobs in status `new` (job, order, customer uploads) and take one with `claim_job(job_id)`; other assignment changes remain admin-only.
 
 **New RPCs**: `claim_job(job_id)` (designer/admin), `revision_fee_preview(job_id)` → `revision_count, max_free_revisions, next_revision_fee` (shown to the customer *before* they request changes).
+
+## 13. Anonymous users (`20261110000000_anonymous_users.sql`)
+
+Guests sign in with Supabase anonymous auth: real `auth.uid()`, role `authenticated`,
+JWT claim `is_anonymous = true`. `authenticated` therefore never means "trusted".
+
+| Rule | Mechanism |
+|---|---|
+| `app.is_anonymous()` | reads `is_anonymous` from `request.jwt.claims` |
+| Anonymous sessions never get staff rights, even for a uid with a staff row | `app.staff_role()` returns null when anonymous (all `is_staff/is_admin/is_ops/is_job_staff` build on it) |
+| Anonymous users cannot be added to `staff` | trigger `staff_not_anonymous` (checks `auth.users.is_anonymous`) |
+| One active cart per user | unique index `carts_one_active_per_user` |
+| Reviews need a permanent account or the order token | policy `reviews_customer_insert` (+ ownership trigger) |
+| Guests cannot set a profile email (done by account upgrade) | trigger `profiles_guard` |
+
+Guests keep full access to their own carts, uploads, orders, job chat and proofs
+(those rules key on `auth.uid()` ownership, which anonymous users have).

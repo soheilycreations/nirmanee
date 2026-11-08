@@ -19,20 +19,30 @@ function group<T extends z.ZodRawShape>(name: string, shape: T, values: Record<k
   return parsed.data;
 }
 
+/**
+ * Supabase API keys. Preferred: the new `sb_publishable_…` / `sb_secret_…` keys.
+ * The legacy JWT `anon` / `service_role` variables are still accepted as a
+ * fallback so older deployments keep working during the switch.
+ */
 export function supabaseEnv() {
   return group(
     "Supabase",
     { url: z.url(), anonKey: z.string().min(20) },
     {
       url: process.env.NEXT_PUBLIC_SUPABASE_URL,
-      anonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+      anonKey: process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     },
   );
 }
 
+/** Server-only key that bypasses RLS (`sb_secret_…`, legacy: service_role JWT). */
 export function supabaseServiceRoleKey(): string | null {
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  return key && key.length > 20 ? key : null;
+  const key = process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!key || key.length <= 20) return null;
+  if (key.startsWith("sb_publishable_")) {
+    throw new Error("[env] SUPABASE_SECRET_KEY holds a publishable key — use the sb_secret_ key");
+  }
+  return key;
 }
 
 export function r2Env() {

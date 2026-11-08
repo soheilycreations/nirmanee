@@ -82,8 +82,8 @@ docs/                          AUDIT, SCHEMA, DESIGN, ROADMAP, PROGRESS
 4. **Validate everything with zod** at the boundary: server action inputs, route handler bodies, search params, env vars (`lib/env.ts`). Never trust the client for prices, totals, statuses or ownership.
 5. **Prices are computed server-side only** (`lib/pricing.ts`), using DB product/option data. Cart items store selections, never prices.
 6. **Database changes only as migrations** in `supabase/migrations/<timestamp>_<name>.sql`. Never edit an applied migration — add a new one. Regenerate `src/types/database.ts` after each.
-7. **RLS on every table**, with explicit policies. New table without RLS = rejected. Business rules that must always hold (status transitions, payment recalculation, revision counts) live in **DB triggers/functions**, not only in app code.
-8. **Service role key** only in `lib/supabase/admin.ts` (with `import "server-only"`), used only where RLS cannot express the operation (checkout insert, PayHere notify, upload confirmation). Prefer the user-scoped server client.
+7. **RLS on every table**, with explicit policies. Remember guests are `authenticated` too (anonymous auth) — use `app.is_anonymous()` when a rule needs a permanent account. New table without RLS = rejected. Business rules that must always hold (status transitions, payment recalculation, revision counts) live in **DB triggers/functions**, not only in app code.
+8. **Secret key** (`SUPABASE_SECRET_KEY`, `sb_secret_…`; legacy service_role) only in `lib/supabase/admin.ts` (with `import "server-only"`), used only where RLS cannot express the operation (checkout insert, PayHere notify, upload confirmation). Prefer the user-scoped server client.
 9. **No secrets in code or in `NEXT_PUBLIC_*`.** All config via env vars documented in `.env.example`. Never log secrets, tokens, or full PayHere payloads to the client.
 10. **Files go to R2, never to `public/` or the DB.** Use presigned PUT/GET with short TTLs; verify size/type server-side; record every object in `job_files`.
 11. **PayHere:** compute the checkout `hash` server-side; on `notify_url` verify `md5sig` (`UPPER(MD5(merchant_id + order_id + payhere_amount + payhere_currency + status_code + UPPER(MD5(merchant_secret))))`), check amount/currency against our DB, make the handler idempotent (unique `provider_reference`), then insert the payment with the service role. Never mark paid from `return_url`.
@@ -128,6 +128,7 @@ psql -d test -f supabase/tests/_supabase_stub.sql \
   -f supabase/migrations/20261107000000_drop_legacy_tables.sql \
   -f supabase/migrations/20261108000000_foundation_schema.sql \
   -f supabase/migrations/20261109000000_phase1a_storefront.sql \
+  -f supabase/migrations/20261110000000_anonymous_users.sql \
   -f supabase/tests/_grants.sql -f supabase/tests/foundation_scenario.sql \
-  -f supabase/tests/phase1a_scenario.sql
+  -f supabase/tests/phase1a_scenario.sql -f supabase/tests/anonymous_scenario.sql
 ```

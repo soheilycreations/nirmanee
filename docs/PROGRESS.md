@@ -4,6 +4,22 @@ Newest first. Update after every task (see `CLAUDE.md` §6).
 
 ---
 
+## 2026-11-08 — Supabase hookup prep (`feat/storefront`)
+
+**Done**
+- `.env.local` created from `.env.example` (gitignored, mode 600) with the project URL/ref and public settings; secrets left blank.
+- Cloud environment allowlist: added `jvejmlwpahjittbzztmy.supabase.co` and `api.supabase.com`.
+- Switched to the new Supabase keys: `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` / `SUPABASE_SECRET_KEY` (legacy `ANON_KEY` / `SERVICE_ROLE_KEY` still accepted as fallback; a publishable key in the secret slot is rejected).
+- Migration `20261110000000_anonymous_users.sql`: `app.is_anonymous()`, anonymous sessions never get staff rights, anonymous users can't be added to `staff`, one active cart per user, reviews need a permanent account or order token, guests can't set a profile email. Test `supabase/tests/anonymous_scenario.sql`; all four scenario files pass on local Postgres 16.
+- `docs/SETUP.md`: new keys, first admin account steps, pre-launch checklist (captcha/Turnstile on auth, rate limits, disable legacy keys, R2 CORS, cleanup jobs, PayHere live).
+- `supabase/.temp/` gitignored.
+
+**Blocked / waiting on the owner**
+- Migrations + seed not yet applied to the live project: the owner declined to provide a Supabase personal access token, and direct Postgres is not reachable from the sandbox → owner runs the combined SQL in the dashboard SQL editor.
+- Publishable/secret keys and ORDER_TOKEN_SECRET not yet provided → live verification of cart / anonymous auth / staff login pending.
+
+---
+
 ## 2026-11-08 — Phase 1A: storefront → cart (`feat/storefront`)
 
 **Owner decisions applied**
