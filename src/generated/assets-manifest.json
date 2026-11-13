@@ -1,6 +1,64 @@
 {
   "products": {},
-  "samples": {},
+  "samples": {
+    "anniversary-glass-clock-frame": [
+      "/products/anniversary-glass-clock-frame/sample-1.webp"
+    ],
+    "black-board-frame-engraving": [
+      "/products/black-board-frame-engraving/sample-1.webp"
+    ],
+    "business-cards": [
+      "/products/business-cards/sample-1.webp"
+    ],
+    "crystal-photo-block": [
+      "/products/crystal-photo-block/sample-1.webp"
+    ],
+    "custom-love-wooden-frame": [
+      "/products/custom-love-wooden-frame/sample-1.webp"
+    ],
+    "custom-t-shirt": [
+      "/products/custom-t-shirt/sample-1.webp"
+    ],
+    "edible-cake-print": [
+      "/products/edible-cake-print/sample-1.webp"
+    ],
+    "flex-banner": [
+      "/products/flex-banner/sample-1.webp"
+    ],
+    "hexagon-glass-photo-frame": [
+      "/products/hexagon-glass-photo-frame/sample-1.webp"
+    ],
+    "laser-cut-name-plate": [
+      "/products/laser-cut-name-plate/sample-1.webp"
+    ],
+    "magic-colour-changing-mug": [
+      "/products/magic-colour-changing-mug/sample-1.webp"
+    ],
+    "magnet-pine-wood-frame": [
+      "/products/magnet-pine-wood-frame/sample-1.webp"
+    ],
+    "mdf-sublimation-clock": [
+      "/products/mdf-sublimation-clock/sample-1.webp"
+    ],
+    "photo-enlargement": [
+      "/products/photo-enlargement/sample-1.webp"
+    ],
+    "photo-frame-with-light": [
+      "/products/photo-frame-with-light/sample-1.webp"
+    ],
+    "photo-key-tag": [
+      "/products/photo-key-tag/sample-1.webp"
+    ],
+    "photo-mug-white-11oz": [
+      "/products/photo-mug-white-11oz/sample-1.webp"
+    ],
+    "plan-printing": [
+      "/products/plan-printing/sample-1.webp"
+    ],
+    "wood-slice-engraving": [
+      "/products/wood-slice-engraving/sample-1.webp"
+    ]
+  },
   "gallery": [],
   "brand": {
     "heroCollage": [],

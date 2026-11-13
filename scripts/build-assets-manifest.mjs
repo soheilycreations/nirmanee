@@ -5,6 +5,7 @@
 import { readdirSync, statSync, writeFileSync, existsSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { splitProductFiles } from "./lib/product-files.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const IMG = /\.(webp|jpe?g|png|avif)$/i;
@@ -15,7 +16,6 @@ function images(dir) {
   return readdirSync(dir).filter((f) => IMG.test(f) && statSync(path.join(dir, f)).isFile()).sort(natural);
 }
 
-const SAMPLE = /^sample-\d+\./i; // AI sample images: labelled, never part of the gallery
 const products = {};
 const samples = {};
 const productsDir = path.join(root, "public/products");
@@ -24,8 +24,7 @@ if (existsSync(productsDir)) {
     const dir = path.join(productsDir, slug);
     if (!statSync(dir).isDirectory()) continue;
     const files = images(dir);
-    const real = files.filter((f) => !SAMPLE.test(f));
-    const sample = files.filter((f) => SAMPLE.test(f));
+    const { real, sample } = splitProductFiles(files);
     if (real.length) products[slug] = real.map((f) => `/products/${slug}/${f}`);
     if (sample.length) samples[slug] = sample.map((f) => `/products/${slug}/${f}`);
   }

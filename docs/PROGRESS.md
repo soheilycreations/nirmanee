@@ -4,6 +4,23 @@ Newest first. Update after every task (see `CLAUDE.md` §6).
 
 ---
 
+## 2026-11-13 — Sample images for 19 products (`feat/storefront`)
+
+**Done**
+- Matched Flow's 40 AI sample images (19 products, mostly 2 variants each, 3 for two products) by looking at each
+  image, not by file name, and converted one per product to `public/products/<slug>/sample-1.webp`
+  (1600×1600, 55–89 KB; sources are 1024×1024, so upscaled ~1.6× and slightly soft).
+- Sample rule moved to `scripts/lib/product-files.mjs` (`splitProductFiles`, `pickSample`), used by
+  `scripts/build-assets-manifest.mjs` and `src/lib/assets.ts`; unit tests in `src/lib/sample-image.test.ts`.
+- Raw files removed from `incoming/` (README kept; originals remain in git history).
+
+**Notes**
+- Flow file names are unreliable: `Pine_wood_photo_frame_displayed_…` is actually the glass clock frame, and
+  `Glass_photo_frame_standing_upright_…` is a hexagon frame.
+- Unused variants are in git history (commit before this one) if a different pick is wanted.
+
+---
+
 ## 2026-11-13 — Storefront assets (`feat/storefront`)
 
 **Done**

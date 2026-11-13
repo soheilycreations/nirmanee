@@ -1,4 +1,5 @@
 import manifest from "@/generated/assets-manifest.json";
+import { pickSample } from "../../scripts/lib/product-files.mjs";
 
 interface Manifest {
   products: Record<string, string[]>;
@@ -19,7 +20,7 @@ export function productImagesFor(slug: string): string[] {
  * (`hasRealPhoto` false) and must be shown with a "Sample image" label. Never part of a gallery.
  */
 export function productSampleFor(slug: string, hasRealPhoto: boolean): string | null {
-  return hasRealPhoto ? null : (data.samples?.[slug]?.[0] ?? null);
+  return pickSample(data.samples?.[slug], hasRealPhoto);
 }
 
 /** Recent-work photos in public/gallery/. Empty → gallery sections are hidden. */
