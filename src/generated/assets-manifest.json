@@ -1,8 +1,9 @@
 {
   "products": {},
+  "samples": {},
   "gallery": [],
   "brand": {
     "heroCollage": [],
-    "shopPhoto": null
+    "shopPhoto": "/brand/shop.webp"
   }
 }

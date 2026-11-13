@@ -4,6 +4,29 @@ Newest first. Update after every task (see `CLAUDE.md` §6).
 
 ---
 
+## 2026-11-13 — Storefront assets (`feat/storefront`)
+
+**Done**
+- `incoming/README.md`: drop zone for raw assets (what to drop, naming, targets). Not served by the site.
+- Shop-front photo processed with ImageMagick: `public/brand/shop.webp` (1600×1200, 94 KB — centre crop on the
+  entrance, ~1.8× upscale from the 2000×667 source, so slightly soft) and `public/brand/shop-wide.webp`
+  (2400×800, 170 KB). `shop.webp` is picked up automatically by the existing home `TrustSection`
+  (and the contact page); `shop-wide.webp` is the About page banner (en/si alt text).
+- AI sample images: `public/products/<slug>/sample-N.webp` shown with a "Sample image" / "නිදර්ශන රූපය" label on
+  product cards and the product page. They are only used when the product has no real photo (catalogue
+  images or `1.webp`, `2.webp`…), are excluded from `ProductGallery`, JSON-LD and social previews.
+
+**Decisions**
+- Extended the existing `scripts/build-assets-manifest.mjs` (new `samples` map; `products` now excludes
+  `sample-*`) rather than adding a second manifest; `productSampleFor()` lives in `src/lib/assets.ts`.
+- Rebased on top of the Phase 1A polish commits; dropped my duplicate home trust-photo markup.
+
+**Open questions**
+- The 4:3 crop cuts off the outer side bays; send a native 4:3 / higher-res original for the full facade.
+- Sinhala label/alt strings are drafts — need native review.
+
+---
+
 ## 2026-11-08 — Phase 1A polish (`feat/storefront`)
 
 **Bugs fixed**

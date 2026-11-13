@@ -1,4 +1,4 @@
-// Scans public/products/<slug>/ and public/gallery/ and writes
+// Scans public/products/<slug>/ (real photos 1.webp, 2.webp… and sample-N.webp AI samples) and public/gallery/ and writes
 // src/generated/assets-manifest.json. Runs before `dev` and `build` so pages
 // can list photos without reading the filesystem at request time (on Vercel,
 // public/ is served by the CDN and is not available to ISR functions).
@@ -15,14 +15,19 @@ function images(dir) {
   return readdirSync(dir).filter((f) => IMG.test(f) && statSync(path.join(dir, f)).isFile()).sort(natural);
 }
 
+const SAMPLE = /^sample-\d+\./i; // AI sample images: labelled, never part of the gallery
 const products = {};
+const samples = {};
 const productsDir = path.join(root, "public/products");
 if (existsSync(productsDir)) {
   for (const slug of readdirSync(productsDir).sort()) {
     const dir = path.join(productsDir, slug);
     if (!statSync(dir).isDirectory()) continue;
     const files = images(dir);
-    if (files.length) products[slug] = files.map((f) => `/products/${slug}/${f}`);
+    const real = files.filter((f) => !SAMPLE.test(f));
+    const sample = files.filter((f) => SAMPLE.test(f));
+    if (real.length) products[slug] = real.map((f) => `/products/${slug}/${f}`);
+    if (sample.length) samples[slug] = sample.map((f) => `/products/${slug}/${f}`);
   }
 }
 
@@ -37,5 +42,5 @@ const brand = {
   shopPhoto: ["shop.webp", "shop.jpg"].map((f) => `/brand/${f}`).find((p) => existsSync(path.join(root, "public", p))) ?? null,
 };
 
-writeFileSync(path.join(root, "src/generated/assets-manifest.json"), JSON.stringify({ products, gallery, brand }, null, 2) + "\n");
-console.log(`assets manifest: ${Object.keys(products).length} products with photos, ${gallery.length} gallery images`);
+writeFileSync(path.join(root, "src/generated/assets-manifest.json"), JSON.stringify({ products, samples, gallery, brand }, null, 2) + "\n");
+console.log(`assets manifest: ${Object.keys(products).length} products with photos, ${Object.keys(samples).length} with sample images, ${gallery.length} gallery images`);

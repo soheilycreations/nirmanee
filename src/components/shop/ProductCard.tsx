@@ -2,6 +2,7 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { fromPrice, pick, type Product } from "@/features/catalog/types";
 import { formatLKR } from "@/lib/format";
+import { productSampleFor } from "@/lib/assets";
 import { ProductVisual } from "./ProductVisual";
 
 export async function ProductCard({ product, priority = false }: { product: Product; priority?: boolean }) {
@@ -9,6 +10,7 @@ export async function ProductCard({ product, priority = false }: { product: Prod
   const locale = await getLocale();
   const name = pick(product.name, locale);
   const price = fromPrice(product);
+  const sample = productSampleFor(product.slug, product.images.length > 0);
 
   return (
     <Link
@@ -17,11 +19,12 @@ export async function ProductCard({ product, priority = false }: { product: Prod
     >
       <div className="relative">
         <ProductVisual
-          image={product.images[0]}
+          image={product.images[0] ?? (sample ? { key: sample, alt: product.name } : undefined)}
           alt={name}
           categorySlug={product.categorySlug}
           placeholderLabel={t("photoComingSoon")}
           priority={priority}
+          sampleLabel={sample ? t("sampleImage") : undefined}
           className="aspect-square transition-transform duration-300 group-hover:scale-[1.02]"
         />
         {product.orderType === "quote" && (

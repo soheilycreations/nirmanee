@@ -36,6 +36,7 @@
     "switchLanguageLabel": "View this page in Sinhala",
     "home": "Home",
     "photoComingSoon": "Photo coming soon",
+    "sampleImage": "Sample image",
     "readyIn": "{days, plural, =0 {Ready same day} one {Ready in # day} other {Ready in # days}}",
     "pickupKalutara": "Pickup Kalutara",
     "islandwide": "Islandwide {days} days",
@@ -306,7 +307,8 @@
     "whatText": "Photo mugs and sublimation gifts, photo framing, crystal printing, laser cutting and wood engraving, banners and large format, plan printing, T-shirts, edible cake prints and custom souvenirs.",
     "visitTitle": "Visit our shop",
     "visitText": "Drop by our Kalutara shop to see samples, talk to a designer or collect your order.",
-    "contactCta": "Contact & directions"
+    "contactCta": "Contact & directions",
+    "shopPhotoAlt": "Our Kalutara shop front at night"
   },
   "contact": {
     "title": "Contact us",

@@ -10,6 +10,7 @@ import { OrderJourney } from "@/components/home/OrderJourney";
 import { resolveImageSrc } from "@/lib/images";
 import { fromPrice, pick } from "@/features/catalog/types";
 import { getPublicSettings } from "@/features/settings/queries";
+import { productSampleFor } from "@/lib/assets";
 import { ProductVisual } from "@/components/shop/ProductVisual";
 import { ProductCard } from "@/components/shop/ProductCard";
 import { DeliveryLine } from "@/components/shop/DeliveryLine";
@@ -55,6 +56,7 @@ export default async function ProductPage({ params }: Props) {
   const category = categories.find((c) => c.slug === product.categorySlug);
   const name = pick(product.name, locale);
   const price = fromPrice(product);
+  const sample = productSampleFor(product.slug, product.images.length > 0);
   const related = products.filter((p) => p.categorySlug === product.categorySlug && p.slug !== product.slug).slice(0, 4);
   const url = `${siteUrl()}${localizedPath(locale, `/products/${product.slug}`)}`;
 
@@ -114,12 +116,13 @@ export default async function ProductPage({ params }: Props) {
             </IntlIsland>
           ) : (
             <ProductVisual
-              image={undefined}
+              image={sample ? { key: sample, alt: product.name } : undefined}
               alt={name}
               categorySlug={product.categorySlug}
               placeholderLabel={t("common.photoComingSoon")}
               sizes="(max-width: 1024px) 100vw, 50vw"
               priority
+              sampleLabel={sample ? t("common.sampleImage") : undefined}
               className="aspect-[4/3] rounded-sheet sm:aspect-square"
             />
           )}
