@@ -143,7 +143,7 @@ interface SeedProduct {
   production_days: number; express_days?: number | null; express_surcharge_percent?: number; design_fee?: number;
   allow_customer_artwork?: boolean; allow_design_service?: boolean; requires_artwork?: boolean;
   images?: { key: string; alt_en?: string; alt_si?: string }[];
-  specs?: [string, string][]; tiers?: [number, number][]; options?: SeedOption[];
+  specs?: [string, string][]; /** Spec labels with AI-drafted values awaiting owner review (not used at runtime). */ specs_review?: string[]; tiers?: [number, number][]; options?: SeedOption[];
   templates?: { name_en: string; name_si?: string; preview_key: string; config?: unknown }[];
 }
 

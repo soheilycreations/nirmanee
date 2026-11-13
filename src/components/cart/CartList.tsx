@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Minus, Paperclip, Plus, Store, Trash2, Truck } from "lucide-react";
+import { Minus, Paperclip, Plus, ShoppingBag, Store, Trash2, Truck } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { removeCartItemRequest, updateCartQuantityRequest } from "@/features/cart/client";
@@ -163,7 +163,10 @@ export function CartList({ initialLines, zones, cartRef }: { initialLines: CartL
   if (visible.length === 0) {
     return (
       <div className="py-12 text-center">
-        <p className="text-display-sm font-display">{t("empty")}</p>
+        <span className="mx-auto flex size-20 items-center justify-center rounded-full bg-brand-50 text-brand-600">
+          <ShoppingBag className="size-9" strokeWidth={1.5} aria-hidden="true" />
+        </span>
+        <p className="mt-4 text-display-sm font-display">{t("empty")}</p>
         <p className="mt-2 text-ink-700">{t("emptyText")}</p>
         <Link href="/shop" className={buttonClass({ size: "lg", className: "mt-6" })}>{t("continue")}</Link>
       </div>

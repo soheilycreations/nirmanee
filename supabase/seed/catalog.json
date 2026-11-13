@@ -1,5 +1,5 @@
 {
-  "_comment": "Single source of truth for seed catalogue. `npm run db:seed` regenerates supabase/seed.sql. The storefront also reads this file in demo mode (no Supabase env). PRICES ARE PLACEHOLDERS until confirmed by the owner. Sinhala text is a draft for owner review.",
+  "_comment": "Single source of truth for seed catalogue. `npm run db:seed` regenerates supabase/seed.sql. The storefront also reads this file in demo mode (no Supabase env). PRICES ARE PLACEHOLDERS until confirmed by the owner. Sinhala text is a draft for owner review. Products with a `specs_review` list have AI-drafted spec values for those labels: owner must confirm or correct them (they are shown to customers).",
   "categories": [
     {
       "slug": "mug-printing",
@@ -61,8 +61,8 @@
       "sort_order": 70,
       "name_en": "Digital Printing",
       "name_si": "ඩිජිටල් මුද්‍රණය",
-      "description_en": "Business cards, flyers, certificates and everyday print jobs with fast turnaround.",
-      "description_si": "විසිටින් කාඩ්, පත්‍රිකා, සහතික සහ දෛනික මුද්‍රණ කටයුතු ඉක්මනින්."
+      "description_en": "Full-colour business cards on premium art card, with fast turnaround. Need something else printed? Message us on WhatsApp.",
+      "description_si": "ප්‍රීමියම් කාඩ්බෝඩ් මත පූර්ණ වර්ණ විසිටින් කාඩ් — ඉක්මන් සේවාව. වෙනත් මුද්‍රණයක් අවශ්‍යද? WhatsApp හරහා අපට පණිවිඩයක් එවන්න."
     },
     {
       "slug": "plan-printing",
@@ -131,12 +131,16 @@
       "design_fee": 300,
       "specs": [
         [
-          "Capacity",
+          "Size",
           "11 oz / 330 ml"
         ],
         [
-          "Print",
-          "Full-wrap sublimation"
+          "Material",
+          "Glossy white ceramic"
+        ],
+        [
+          "Finish",
+          "Glossy, full-wrap sublimation print"
         ],
         [
           "Care",
@@ -282,13 +286,24 @@
       "design_fee": 300,
       "specs": [
         [
-          "Capacity",
+          "Size",
           "11 oz / 330 ml"
+        ],
+        [
+          "Material",
+          "Ceramic"
+        ],
+        [
+          "Finish",
+          "Black until a hot drink reveals your photo"
         ],
         [
           "Care",
           "Hand wash only"
         ]
+      ],
+      "specs_review": [
+        "Material"
       ],
       "tiers": [
         [
@@ -345,12 +360,20 @@
       "design_fee": 300,
       "specs": [
         [
-          "Battery",
-          "1 × AA (not included)"
+          "Size",
+          "Round 8 in or square 10 in"
         ],
         [
           "Material",
           "Gloss MDF"
+        ],
+        [
+          "Finish",
+          "Glossy sublimation print"
+        ],
+        [
+          "Battery",
+          "1 × AA (not included)"
         ]
       ],
       "tiers": [],
@@ -412,9 +435,25 @@
       "design_fee": 400,
       "specs": [
         [
+          "Size",
+          "8 × 10, 10 × 12 or 12 × 18 in"
+        ],
+        [
+          "Material",
+          "Wooden frame"
+        ],
+        [
+          "Finish",
+          "Backlit photo print"
+        ],
+        [
           "Power",
           "USB / adapter"
         ]
+      ],
+      "specs_review": [
+        "Material",
+        "Finish"
       ],
       "tiers": [],
       "options": [
@@ -525,8 +564,16 @@
       "design_fee": 250,
       "specs": [
         [
+          "Size",
+          "4 × 6 or 6 × 8 in"
+        ],
+        [
           "Material",
           "Natural pine"
+        ],
+        [
+          "Finish",
+          "Natural wood with magnetic back"
         ]
       ],
       "tiers": [
@@ -639,9 +686,21 @@
       "design_fee": 300,
       "specs": [
         [
+          "Size",
+          "Hexagon with desk stand"
+        ],
+        [
           "Material",
           "Sublimation glass"
+        ],
+        [
+          "Finish",
+          "Glossy glass print"
         ]
+      ],
+      "specs_review": [
+        "Size",
+        "Finish"
       ],
       "tiers": [],
       "options": [
@@ -678,9 +737,24 @@
       "design_fee": 300,
       "specs": [
         [
+          "Size",
+          "Desk frame with small clock"
+        ],
+        [
+          "Material",
+          "Glass"
+        ],
+        [
+          "Finish",
+          "Sublimation print on glass"
+        ],
+        [
           "Battery",
           "Button cell (included)"
         ]
+      ],
+      "specs_review": [
+        "Size"
       ],
       "tiers": [],
       "options": [
@@ -728,9 +802,20 @@
       "design_fee": 300,
       "specs": [
         [
+          "Size",
+          "Holds one couple photo"
+        ],
+        [
           "Material",
           "MDF / wood"
+        ],
+        [
+          "Finish",
+          "Laser-cut hearts and names"
         ]
+      ],
+      "specs_review": [
+        "Size"
       ],
       "tiers": [],
       "options": [
@@ -775,7 +860,20 @@
       "express_days": 2,
       "express_surcharge_percent": 50,
       "design_fee": 500,
-      "specs": [],
+      "specs": [
+        [
+          "Size",
+          "12 × 6 or 18 × 8 in"
+        ],
+        [
+          "Material",
+          "Painted MDF or acrylic"
+        ],
+        [
+          "Finish",
+          "Laser-cut"
+        ]
+      ],
       "tiers": [],
       "options": [
         {
@@ -856,8 +954,16 @@
       "design_fee": 300,
       "specs": [
         [
-          "Technique",
-          "Laser engraving"
+          "Size",
+          "8 × 10, 10 × 12 or 12 × 18 in"
+        ],
+        [
+          "Material",
+          "MDF or natural pine"
+        ],
+        [
+          "Finish",
+          "Black finish, laser-engraved photo"
         ]
       ],
       "tiers": [],
@@ -947,9 +1053,20 @@
       "design_fee": 300,
       "specs": [
         [
+          "Size",
+          "Varies (each slice is natural)"
+        ],
+        [
           "Material",
-          "Natural wood (each slice is unique)"
+          "Natural wood with bark edge"
+        ],
+        [
+          "Finish",
+          "Laser-engraved"
         ]
+      ],
+      "specs_review": [
+        "Size"
       ],
       "tiers": [],
       "options": [
@@ -986,6 +1103,18 @@
       "express_surcharge_percent": 50,
       "design_fee": 300,
       "specs": [
+        [
+          "Size",
+          "Small 3 × 4, medium 4 × 6 or large 6 × 8 in"
+        ],
+        [
+          "Material",
+          "Optical crystal"
+        ],
+        [
+          "Finish",
+          "Photo printed inside the crystal"
+        ],
         [
           "Includes",
           "Gift box"
@@ -1058,6 +1187,18 @@
       "express_surcharge_percent": 30,
       "design_fee": 1000,
       "specs": [
+        [
+          "Size",
+          "2 × 4 ft and up, or any custom size"
+        ],
+        [
+          "Material",
+          "Standard or star flex (heavy duty)"
+        ],
+        [
+          "Finish",
+          "Eyelets, pole pockets or cut only"
+        ],
         [
           "Print",
           "Solvent / eco-solvent, outdoor"
@@ -1202,6 +1343,14 @@
           "3.5 × 2 in"
         ],
         [
+          "Material",
+          "300 or 350 gsm art card"
+        ],
+        [
+          "Finish",
+          "Matte, gloss or matte laminated"
+        ],
+        [
           "Quantity",
           "100 cards per pack"
         ]
@@ -1309,9 +1458,24 @@
       "requires_artwork": false,
       "specs": [
         [
+          "Size",
+          "A3, A2, A1 or A0"
+        ],
+        [
+          "Material",
+          "Plotter paper"
+        ],
+        [
+          "Finish",
+          "Black & white or colour"
+        ],
+        [
           "Files",
           "PDF preferred (vector)"
         ]
+      ],
+      "specs_review": [
+        "Material"
       ],
       "tiers": [
         [
@@ -1409,8 +1573,16 @@
       "design_fee": 500,
       "specs": [
         [
-          "Paper",
-          "Photo paper / canvas"
+          "Size",
+          "8 × 12, 12 × 18, 16 × 24 or 20 × 30 in"
+        ],
+        [
+          "Material",
+          "Photo paper or canvas"
+        ],
+        [
+          "Finish",
+          "Matte, gloss or canvas"
         ]
       ],
       "tiers": [
@@ -1511,8 +1683,16 @@
       "design_fee": 750,
       "specs": [
         [
-          "Fabric",
+          "Size",
+          "S, M, L, XL or XXL"
+        ],
+        [
+          "Material",
           "100% cotton"
+        ],
+        [
+          "Finish",
+          "Printed front, or front & back"
         ]
       ],
       "tiers": [
@@ -1660,6 +1840,18 @@
       "design_fee": 300,
       "specs": [
         [
+          "Size",
+          "Round 8 in or A4"
+        ],
+        [
+          "Material",
+          "Edible icing sheet"
+        ],
+        [
+          "Finish",
+          "Food-safe edible ink"
+        ],
+        [
           "Storage",
           "Keep dry, use within 3 months"
         ]
@@ -1720,7 +1912,23 @@
       "express_days": 2,
       "express_surcharge_percent": 50,
       "design_fee": 300,
-      "specs": [],
+      "specs": [
+        [
+          "Size",
+          "Standard key-tag size"
+        ],
+        [
+          "Material",
+          "MDF or acrylic"
+        ],
+        [
+          "Finish",
+          "Double-sided print"
+        ]
+      ],
+      "specs_review": [
+        "Size"
+      ],
       "tiers": [
         [
           25,

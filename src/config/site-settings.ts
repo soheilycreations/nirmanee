@@ -5,6 +5,13 @@
  * HIDDEN until it is filled in — nothing is ever shown with made-up data.
  * After editing, commit and redeploy.
  */
+export interface SiteReview {
+  author: string;
+  /** 1–5, optional. */
+  rating?: number;
+  text: { en: string; si?: string };
+}
+
 export interface SiteSettings {
   /** TODO(owner): Google Business rating, e.g. { rating: 4.8, reviewCount: 57, url: "https://g.page/r/…" } */
   googleRating: { rating: number; reviewCount: number; url: string } | null;
@@ -20,6 +27,12 @@ export interface SiteSettings {
   email: string | null;
   /** TODO(owner): social profile URLs */
   socials: { facebook: string | null; instagram: string | null; tiktok: string | null; youtube: string | null };
+  /**
+   * TODO(owner): real customer reviews to show on the home page, e.g.
+   * { author: "Nimali P.", rating: 5, text: { en: "Beautiful mug, arrived in two days.", si: "…" } }.
+   * Only add reviews customers actually wrote (and agreed to have shown). Empty → the reviews strip is hidden.
+   */
+  reviews: SiteReview[];
   /** Set to false once the owner has reviewed /privacy, /terms and /returns (removes the "draft" notice). */
   legalDraft: boolean;
 }
@@ -32,6 +45,7 @@ export const SITE_SETTINGS: SiteSettings = {
   servingSince: null,
   email: null,
   socials: { facebook: null, instagram: null, tiktok: null, youtube: null },
+  reviews: [],
   legalDraft: true,
 };
 

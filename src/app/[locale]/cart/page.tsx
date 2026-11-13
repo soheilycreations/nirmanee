@@ -3,12 +3,13 @@ import { ShoppingBag } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { IntlIsland } from "@/i18n/IntlIsland";
-import { getCatalog } from "@/features/catalog/queries";
+import { getNavCategories, getCatalog } from "@/features/catalog/queries";
 import { pick, type Product } from "@/features/catalog/types";
 import { getCartLines, getCartReference, type CartLine } from "@/features/cart/store";
 import { getDeliveryZones } from "@/features/settings/queries";
 import { CartList, type CartListLine } from "@/components/cart/CartList";
 import { CartPendingSync } from "@/components/cart/CartPendingSync";
+import { CategoryIcon } from "@/components/shop/CategoryIcon";
 import { ProductVisual } from "@/components/shop/ProductVisual";
 import { buttonClass } from "@/components/ui/button";
 import { CUSTOM_SIZE_VALUE } from "@/lib/pricing";
@@ -50,15 +51,32 @@ export default async function CartPage({ params }: Props) {
   const [lines, { products }, zones, cartRef] = await Promise.all([getCartLines(), getCatalog(), getDeliveryZones(), getCartReference()]);
 
   if (lines.length === 0) {
+    const categories = (await getNavCategories()).slice(0, 6);
     return (
-      <section className="mx-auto max-w-xl px-4 py-20 text-center">
-        <ShoppingBag className="mx-auto size-12 text-ink-300" aria-hidden="true" />
+      <section className="mx-auto max-w-xl px-4 py-16 text-center sm:py-20">
+        <span className="mx-auto flex size-20 items-center justify-center rounded-full bg-brand-50 text-brand-600">
+          <ShoppingBag className="size-9" strokeWidth={1.5} aria-hidden="true" />
+        </span>
         <IntlIsland namespaces={["cart"]}>
           <CartPendingSync />
         </IntlIsland>
         <h1 className="mt-4 text-display-sm">{t("cart.empty")}</h1>
         <p className="mt-2 text-ink-700">{t("cart.emptyText")}</p>
         <Link href="/shop" className={buttonClass({ size: "lg", className: "mt-6" })}>{t("cart.continue")}</Link>
+        {categories.length > 0 && (
+          <nav aria-label={t("cart.emptyCategories")} className="mt-10">
+            <h2 className="font-sans text-sm font-semibold uppercase tracking-wider text-ink-500">{t("cart.emptyCategories")}</h2>
+            <ul className="mt-3 flex flex-wrap justify-center gap-2">
+              {categories.map((c) => (
+                <li key={c.slug}>
+                  <Link href={`/shop/${c.slug}`} className="inline-flex h-11 items-center gap-2 rounded-full border border-line bg-surface px-4 text-sm font-medium hover:border-brand-300 hover:text-brand-700">
+                    <CategoryIcon slug={c.slug} className="size-4" /> {pick(c.name, locale)}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )}
       </section>
     );
   }

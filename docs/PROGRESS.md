@@ -4,6 +4,23 @@ Newest first. Update after every task (see `CLAUDE.md` §6).
 
 ---
 
+## 2026-11-13 — Layout gaps from the Chrome review (`claude/great-sagan-k7y2tq`, merged with `feat/storefront`)
+
+**Done** — every section renders complete now and fills in from `src/config/site-settings.ts` / `public/gallery/` later; nothing invented.
+- **Home:** 4-tile hero collage (gallery photos when present, else product sample images labelled "Sample image"); 4 category chips + "More" → Services; trust strip with icon badges (Google rating / "serving since" appear only when set); "Popular right now" = 4 cards + View all; new `StudioBlock` (hours, WhatsApp + phone tap buttons, Get directions with generic Kalutara maps link until `mapsLink` is set, address when set; right column = map embed → shop photo → plain Kalutara panel, never empty); "Recent work" gallery and new `ReviewsStrip` (`SITE_SETTINGS.reviews`) hidden until data exists.
+- **Shop / categories:** all 12 chips (active highlighted, scrolls itself into view on mobile); "Can't see what you need? Ask on WhatsApp" card spans the spare cells of the last grid row; "Related categories" row when a category has <3 products; Digital Printing intro now describes business cards only (`catalog.json`, EN + SI).
+- **Product pages:** thumbnail strip stays hidden for 1 image; without R2 the upload box is replaced by a "Send your photos on WhatsApp" button with product + cart reference prefilled (`getCartReferenceAction`); every product has Size / Material / Finish specs; "sq ft" + Quote badge spacing fixed; related products topped up from related categories (`features/catalog/related.ts`), hidden if <3.
+- **Other pages:** Services (image per service, mini product cards, turnaround from real `production_days`); Contact (number once as tap link, email/delivery cards full width, WhatsApp enquiry form with no backend, map/photo column); About (hidden "Our story" from `src/content/about.ts`, 3-step "How we work", categories link to their shop pages); FAQ (Ordering / Files / Delivery / Payment, first item open, link to Returns); Track ("What your status means" + WhatsApp help); 404 (popular category links); empty cart (icon + category links).
+- `npm run lint`, `tsc`, `npm test` (15/15) and `npm run build` pass. No browser run (as requested).
+
+**Owner review needed**
+- **Specs I drafted** (shown to customers!): any product with `specs_review` in `supabase/seed/catalog.json` — magic mug (Material), light frame (Material, Finish), hexagon glass (Size, Finish), clock frame (Size), love frame (Size), wood slice (Size), plan printing (Material), key tag (Size). Other new spec values come from existing options/descriptions. Re-run `npm run db:seed` after editing.
+- Sinhala text added this round (FAQ groups, status meanings, contact form, shop/WhatsApp card…) is a draft.
+- To fill in: `OUR_STORY` in `src/content/about.ts`; `reviews`, `googleRating`, `streetAddress`, `mapEmbedUrl`, `mapsLink`, `servingSince` in `src/config/site-settings.ts`; photos in `public/gallery/`.
+- Supabase mode: seed.sql regenerated; apply to the live DB if you want the new category blurb/specs there.
+
+---
+
 ## 2026-11-13 — Sample images for 19 products (`feat/storefront`)
 
 **Done**

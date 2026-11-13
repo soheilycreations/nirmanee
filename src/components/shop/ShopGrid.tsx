@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Search } from "lucide-react";
+import { MessageCircle, Search } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { buttonClass } from "@/components/ui/button";
+import { WhatsAppIcon } from "@/components/ui/WhatsAppIcon";
 import { whatsappUrl } from "@/lib/site";
 
 export type ShopSort = "featured" | "price-asc" | "price-desc" | "name";
@@ -17,6 +18,17 @@ export interface ShopGridItem {
   minPrice: number | null;
   featuredRank: number;
   node: React.ReactNode;
+}
+
+// Literal class names (Tailwind must see them). Index = number of columns the card spans.
+const SPAN_BASE = ["", "col-span-1", "col-span-2"];
+const SPAN_MD = ["", "md:col-span-1", "md:col-span-2", "md:col-span-3"];
+const SPAN_LG = ["", "lg:col-span-1", "lg:col-span-2", "lg:col-span-3", "lg:col-span-4"];
+
+/** Columns the "ask on WhatsApp" card spans so it fills the last row (a whole row when the last one is full). */
+function fillSpan(count: number, cols: number): number {
+  const rem = count % cols;
+  return rem === 0 ? cols : cols - rem;
 }
 
 /**
@@ -95,6 +107,18 @@ export function ShopGrid({ items }: { items: ShopGridItem[] }) {
       {visible.length > 0 ? (
         <ul className="mt-3 grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-3 lg:grid-cols-4">
           {visible.map((i) => (<li key={i.slug}>{i.node}</li>))}
+          <li className={`${SPAN_BASE[fillSpan(visible.length, 2)]} ${SPAN_MD[fillSpan(visible.length, 3)]} ${SPAN_LG[fillSpan(visible.length, 4)]}`}>
+            <div className="flex h-full min-h-40 flex-col justify-center gap-3 rounded-card border border-dashed border-brand-300 bg-brand-50 p-5">
+              <MessageCircle className="size-7 text-brand-600" strokeWidth={1.5} aria-hidden="true" />
+              <div>
+                <h2 className="font-sans text-base font-semibold leading-snug">{t("cantFindTitle")}</h2>
+                <p className="mt-1 text-sm text-ink-700">{t("cantFindText")}</p>
+              </div>
+              <a href={whatsappUrl(t("cantFindMessage"))} target="_blank" rel="noopener noreferrer" className={buttonClass({ variant: "whatsapp", className: "self-start" })}>
+                <WhatsAppIcon /> {tc("chatOnWhatsapp")}
+              </a>
+            </div>
+          </li>
         </ul>
       ) : (
         <div className="mt-6 rounded-card border border-dashed border-paper-400 bg-surface p-8 text-center">

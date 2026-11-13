@@ -9,6 +9,7 @@ import { ProductGallery } from "@/components/product/ProductGallery";
 import { OrderJourney } from "@/components/home/OrderJourney";
 import { resolveImageSrc } from "@/lib/images";
 import { fromPrice, pick } from "@/features/catalog/types";
+import { relatedProducts } from "@/features/catalog/related";
 import { getPublicSettings } from "@/features/settings/queries";
 import { productSampleFor } from "@/lib/assets";
 import { ProductVisual } from "@/components/shop/ProductVisual";
@@ -57,7 +58,9 @@ export default async function ProductPage({ params }: Props) {
   const name = pick(product.name, locale);
   const price = fromPrice(product);
   const sample = productSampleFor(product.slug, product.images.length > 0);
-  const related = products.filter((p) => p.categorySlug === product.categorySlug && p.slug !== product.slug).slice(0, 4);
+  // Same category first, topped up from related categories; hidden when fewer than 3.
+  const { items: relatedItems, sameCategoryOnly } = relatedProducts(product, categories, products);
+  const related = relatedItems.length >= 3 ? relatedItems : [];
   const url = `${siteUrl()}${localizedPath(locale, `/products/${product.slug}`)}`;
 
   // Product structured data — no ratings until real reviews exist.
@@ -135,9 +138,9 @@ export default async function ProductPage({ params }: Props) {
           <h1 className="text-[1.75rem] leading-tight sm:text-display-sm">{name}</h1>
           <p className="mt-2 text-ink-700">{pick(product.shortDescription, locale)}</p>
           {price !== null && (
-            <p className="mt-3 text-xl font-semibold">
-              {product.pricingMode === "per_sqft" ? t("common.perSqft", { price: formatLKR(price) }) : t("common.from", { price: formatLKR(price) })}
-              {product.orderType === "quote" && <span className="ml-2 rounded-full bg-accent-100 px-2.5 py-0.5 align-middle text-xs font-semibold text-accent-700">{t("common.quoteBadge")}</span>}
+            <p className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-xl font-semibold">
+              <span>{product.pricingMode === "per_sqft" ? t("common.perSqft", { price: formatLKR(price) }) : t("common.from", { price: formatLKR(price) })}</span>{" "}
+              {product.orderType === "quote" && <span className="rounded-full bg-accent-100 px-2.5 py-0.5 text-xs font-semibold text-accent-700">{t("common.quoteBadge")}</span>}
             </p>
           )}
           <DeliveryLine days={product.productionDays} className="mt-3" />
@@ -169,7 +172,7 @@ export default async function ProductPage({ params }: Props) {
 
       {related.length > 0 && category && (
         <section aria-labelledby="related" className="mt-16">
-          <h2 id="related" className="text-2xl">{t("product.relatedTitle", { category: pick(category.name, locale) })}</h2>
+          <h2 id="related" className="text-2xl">{sameCategoryOnly ? t("product.relatedTitle", { category: pick(category.name, locale) }) : t("product.relatedMixedTitle")}</h2>
           <ul className="mt-4 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
             {related.map((p) => (<li key={p.slug}><ProductCard product={p} /></li>))}
           </ul>
