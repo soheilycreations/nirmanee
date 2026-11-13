@@ -1,4 +1,4 @@
-import type { DesignMode, ModifierType, PricingMode, PricingProduct } from "@/lib/pricing";
+import { computePrice, CUSTOM_SIZE_VALUE, type DesignMode, type ModifierType, type PricingMode, type PricingProduct } from "@/lib/pricing";
 
 export type Locale = "en" | "si";
 
@@ -60,6 +60,17 @@ export interface ProductTemplate {
   id: string;
   name: Localized;
   previewKey: string;
+  /** Photos the layout needs, and which text fields it shows ("name", "message", "date"). */
+  photoSlots: number;
+  textFields: string[];
+}
+
+export function parseTemplateConfig(config: unknown): { photoSlots: number; textFields: string[] } {
+  const c = (config ?? {}) as { photo_slots?: unknown; text_fields?: unknown };
+  return {
+    photoSlots: typeof c.photo_slots === "number" ? c.photo_slots : 1,
+    textFields: Array.isArray(c.text_fields) ? c.text_fields.filter((f): f is string => typeof f === "string") : [],
+  };
 }
 
 export interface ProductImage {
@@ -116,4 +127,38 @@ export function fromPrice(product: Product): number | null {
     return product.pricePerSqft;
   }
   return null;
+}
+
+/**
+ * Cheapest possible order (quantity 1, standard turnaround, own artwork):
+ * greedily picks, for each required option, the value giving the lowest total.
+ * For per-sq-ft products this is the minimum billable size — used for sorting.
+ */
+export function minimumPrice(product: Product): number | null {
+  if (product.pricingMode === "quote") return null;
+  const values: Record<string, string> = {};
+  for (const o of product.options) {
+    if (o.type === "text" || o.type === "photo_slots" || o.values.length === 0) continue;
+    if (o.isRequired) values[o.code] = (o.values.find((v) => v.isDefault) ?? o.values[0]).value;
+  }
+  const total = (v: Record<string, string>) => {
+    const r = computePrice(product, { values: v, customSize: null, quantity: 1, designMode: "upload", turnaround: "standard" });
+    return r.ok ? r.total : Number.POSITIVE_INFINITY;
+  };
+  for (const o of product.options) {
+    if (!(o.code in values)) continue;
+    let best = values[o.code];
+    let bestTotal = total(values);
+    for (const v of o.values) {
+      if (v.value === CUSTOM_SIZE_VALUE) continue;
+      const t = total({ ...values, [o.code]: v.value });
+      if (t < bestTotal) {
+        best = v.value;
+        bestTotal = t;
+      }
+    }
+    values[o.code] = best;
+  }
+  const result = total(values);
+  return Number.isFinite(result) ? result : null;
 }

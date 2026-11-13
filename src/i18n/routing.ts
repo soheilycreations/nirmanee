@@ -5,7 +5,11 @@ export const routing = defineRouting({
   defaultLocale: "en",
   // English at "/", Sinhala at "/si/..."
   localePrefix: "as-needed",
-  localeCookie: { name: "NEXT_LOCALE", maxAge: 60 * 60 * 24 * 365 },
+  // The URL alone decides the language: "/" and "/en/…" are always English,
+  // "/si/…" always Sinhala. No cookie/Accept-Language redirects, which also
+  // keeps every page cacheable (static/ISR) regardless of visitor.
+  localeDetection: false,
+  localeCookie: false,
 });
 
 export type AppLocale = (typeof routing.locales)[number];

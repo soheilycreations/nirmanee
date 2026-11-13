@@ -3,6 +3,9 @@
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { AlertTriangle, CheckCircle2, FileArchive, FileText, ImageIcon, Loader2, RotateCcw, UploadCloud, X } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { getCartReferenceAction } from "@/features/cart/actions";
+import { useCart } from "@/components/cart/CartProvider";
+import { buttonClass } from "@/components/ui/button";
 import { confirmUpload, removeUpload, requestUpload } from "@/features/uploads/actions";
 import {
   ACCEPT_ATTRIBUTE,
@@ -100,6 +103,20 @@ export function Uploader({
     });
   }, [items, onChange]);
 
+  // Cart reference for the WhatsApp fallback (only fetched while uploads are unavailable; refreshed when the cart changes).
+  const { count: cartCount } = useCart();
+  const [cartRef, setCartRef] = useState<string | null>(null);
+  useEffect(() => {
+    if (enabled) return;
+    let cancelled = false;
+    getCartReferenceAction()
+      .then((ref) => !cancelled && setCartRef(ref))
+      .catch(() => undefined);
+    return () => {
+      cancelled = true;
+    };
+  }, [enabled, cartCount]);
+
   // Revoke object URLs on unmount.
   useEffect(() => () => itemsRef.current.forEach((i) => i.previewUrl && URL.revokeObjectURL(i.previewUrl)), []);
 
@@ -167,14 +184,15 @@ export function Uploader({
     if (item.fileId) await removeUpload({ fileId: item.fileId });
   }, []);
 
-  const fallbackHref = whatsappUrl(t("whatsappMessage", { product: productName }));
+  const fallbackHref = whatsappUrl([t("whatsappMessage", { product: productName }), ...(cartRef ? [t("whatsappRef", { ref: cartRef })] : [])].join("\n"));
 
+  // No R2 yet: no upload box, just a clear WhatsApp button with the product (and cart reference) prefilled.
   if (!enabled) {
     return (
-      <div className="rounded-card border border-dashed border-paper-400 bg-surface p-4">
-        <p className="text-sm text-ink-700">{t("unavailable")}</p>
-        <a href={fallbackHref} target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex min-h-11 items-center gap-2 font-semibold text-whatsapp underline-offset-2 hover:underline">
-          <WhatsAppIcon /> {t("whatsappFallback")}
+      <div className="rounded-card border border-line bg-surface p-4">
+        <p className="text-sm text-ink-700">{t("whatsappOnlyText")}</p>
+        <a href={fallbackHref} target="_blank" rel="noopener noreferrer" className={buttonClass({ variant: "whatsapp", full: true, className: "mt-3" })}>
+          <WhatsAppIcon /> {t("sendOnWhatsapp")}
         </a>
       </div>
     );

@@ -1,15 +1,19 @@
 import type { Metadata } from "next";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Clock } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { getCatalog } from "@/features/catalog/queries";
-import { fromPrice, pick } from "@/features/catalog/types";
+import { pick } from "@/features/catalog/types";
 import { CategoryIcon } from "@/components/shop/CategoryIcon";
 import { buttonClass } from "@/components/ui/button";
 import { WhatsAppIcon } from "@/components/ui/WhatsAppIcon";
-import { formatLKR } from "@/lib/format";
+import { ProductMiniCard } from "@/components/shop/ProductMiniCard";
+import { ProductVisual } from "@/components/shop/ProductVisual";
+import { productSampleFor } from "@/lib/assets";
 import { pageMetadata } from "@/lib/seo/metadata";
 import { whatsappUrl } from "@/lib/site";
+
+export const revalidate = 3600;
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -48,16 +52,40 @@ export default async function ServicesPage({ params }: Props) {
       <div className="mx-auto max-w-6xl divide-y divide-line px-4">
         {categories.map((c) => {
           const name = pick(c.name, locale);
-          const examples = products.filter((p) => p.categorySlug === c.slug).slice(0, 4);
+          const inCategory = products.filter((p) => p.categorySlug === c.slug);
+          const examples = inCategory.slice(0, 4);
+          const lead = inCategory[0];
+          const leadSample = lead ? (lead.images[0]?.key ?? productSampleFor(lead.slug, false)) : null;
+          // Typical turnaround from the real production days of this category's products.
+          const days = inCategory.map((p) => p.productionDays);
+          const minDays = days.length > 0 ? Math.min(...days) : null;
+          const maxDays = days.length > 0 ? Math.max(...days) : null;
           return (
             <section key={c.slug} id={c.slug} aria-labelledby={`${c.slug}-title`} className="scroll-mt-20 py-10 sm:py-12">
               <div className="grid gap-6 lg:grid-cols-[1fr_1.2fr] lg:gap-12">
                 <div>
-                  <span className="flex size-12 items-center justify-center rounded-full bg-brand-50 text-brand-600">
-                    <CategoryIcon slug={c.slug} className="size-6" />
-                  </span>
-                  <h2 id={`${c.slug}-title`} className="mt-4 text-2xl sm:text-display-sm">{name}</h2>
+                  <ProductVisual
+                    image={leadSample ? { key: leadSample, alt: c.name } : undefined}
+                    alt={lead ? pick(lead.name, locale) : name}
+                    categorySlug={c.slug}
+                    placeholderLabel={t("common.photoComingSoon")}
+                    sizes="(max-width: 1024px) 100vw, 40vw"
+                    sampleLabel={leadSample && !lead?.images[0] ? t("common.sampleImage") : undefined}
+                    className="aspect-[16/9] rounded-card"
+                  />
+                  <h2 id={`${c.slug}-title`} className="mt-5 flex items-center gap-3 text-2xl sm:text-display-sm">
+                    <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-brand-50 text-brand-600">
+                      <CategoryIcon slug={c.slug} className="size-5" />
+                    </span>
+                    {name}
+                  </h2>
                   <p className="mt-2 text-ink-700">{pick(c.description, locale)}</p>
+                  {minDays !== null && maxDays !== null && (
+                    <p className="mt-3 flex items-center gap-2 text-sm font-medium text-ink-700">
+                      <Clock className="size-4 shrink-0 text-brand-600" aria-hidden="true" />
+                      {t("services.turnaround", { range: minDays === maxDays ? String(minDays) : `${minDays}–${maxDays}`, count: maxDays })}
+                    </p>
+                  )}
                   <div className="mt-5 flex flex-col gap-2 sm:flex-row">
                     {examples.length > 0 && (
                       <Link href={`/shop/${c.slug}`} className={buttonClass()}>
@@ -72,22 +100,10 @@ export default async function ServicesPage({ params }: Props) {
                 <div>
                   <h3 className="font-sans text-sm font-semibold uppercase tracking-wider text-ink-500">{t("services.examples")}</h3>
                   {examples.length > 0 ? (
-                    <ul className="mt-3 divide-y divide-line rounded-card border border-line bg-surface">
-                      {examples.map((p) => {
-                        const price = fromPrice(p);
-                        return (
-                          <li key={p.slug}>
-                            <Link href={`/products/${p.slug}`} className="flex min-h-14 items-center justify-between gap-3 px-4 py-3 hover:bg-paper-100">
-                              <span className="font-medium">{pick(p.name, locale)}</span>
-                              {price !== null && (
-                                <span className="shrink-0 text-sm text-ink-700">
-                                  {p.pricingMode === "per_sqft" ? t("common.perSqft", { price: formatLKR(price) }) : t("common.from", { price: formatLKR(price) })}
-                                </span>
-                              )}
-                            </Link>
-                          </li>
-                        );
-                      })}
+                    <ul className="mt-3 grid gap-3 sm:grid-cols-2">
+                      {examples.map((p) => (
+                        <li key={p.slug}><ProductMiniCard product={p} /></li>
+                      ))}
                     </ul>
                   ) : (
                     <p className="mt-3 rounded-card border border-dashed border-paper-400 p-4 text-ink-700">{t("services.noProducts")}</p>

@@ -4,6 +4,134 @@ Newest first. Update after every task (see `CLAUDE.md` §6).
 
 ---
 
+## 2026-11-13 — Layout gaps from the Chrome review (`claude/great-sagan-k7y2tq`, merged with `feat/storefront`)
+
+**Done** — every section renders complete now and fills in from `src/config/site-settings.ts` / `public/gallery/` later; nothing invented.
+- **Home:** 4-tile hero collage (gallery photos when present, else product sample images labelled "Sample image"); 4 category chips + "More" → Services; trust strip with icon badges (Google rating / "serving since" appear only when set); "Popular right now" = 4 cards + View all; new `StudioBlock` (hours, WhatsApp + phone tap buttons, Get directions with generic Kalutara maps link until `mapsLink` is set, address when set; right column = map embed → shop photo → plain Kalutara panel, never empty); "Recent work" gallery and new `ReviewsStrip` (`SITE_SETTINGS.reviews`) hidden until data exists.
+- **Shop / categories:** all 12 chips (active highlighted, scrolls itself into view on mobile); "Can't see what you need? Ask on WhatsApp" card spans the spare cells of the last grid row; "Related categories" row when a category has <3 products; Digital Printing intro now describes business cards only (`catalog.json`, EN + SI).
+- **Product pages:** thumbnail strip stays hidden for 1 image; without R2 the upload box is replaced by a "Send your photos on WhatsApp" button with product + cart reference prefilled (`getCartReferenceAction`); every product has Size / Material / Finish specs; "sq ft" + Quote badge spacing fixed; related products topped up from related categories (`features/catalog/related.ts`), hidden if <3.
+- **Other pages:** Services (image per service, mini product cards, turnaround from real `production_days`); Contact (number once as tap link, email/delivery cards full width, WhatsApp enquiry form with no backend, map/photo column); About (hidden "Our story" from `src/content/about.ts`, 3-step "How we work", categories link to their shop pages); FAQ (Ordering / Files / Delivery / Payment, first item open, link to Returns); Track ("What your status means" + WhatsApp help); 404 (popular category links); empty cart (icon + category links).
+- `npm run lint`, `tsc`, `npm test` (15/15) and `npm run build` pass. No browser run (as requested).
+
+**Owner review needed**
+- **Specs I drafted** (shown to customers!): any product with `specs_review` in `supabase/seed/catalog.json` — magic mug (Material), light frame (Material, Finish), hexagon glass (Size, Finish), clock frame (Size), love frame (Size), wood slice (Size), plan printing (Material), key tag (Size). Other new spec values come from existing options/descriptions. Re-run `npm run db:seed` after editing.
+- Sinhala text added this round (FAQ groups, status meanings, contact form, shop/WhatsApp card…) is a draft.
+- To fill in: `OUR_STORY` in `src/content/about.ts`; `reviews`, `googleRating`, `streetAddress`, `mapEmbedUrl`, `mapsLink`, `servingSince` in `src/config/site-settings.ts`; photos in `public/gallery/`.
+- Supabase mode: seed.sql regenerated; apply to the live DB if you want the new category blurb/specs there.
+
+---
+
+## 2026-11-13 — Sample images for 19 products (`feat/storefront`)
+
+**Done**
+- Matched Flow's 40 AI sample images (19 products, mostly 2 variants each, 3 for two products) by looking at each
+  image, not by file name, and converted one per product to `public/products/<slug>/sample-1.webp`
+  (1600×1600, 55–89 KB; sources are 1024×1024, so upscaled ~1.6× and slightly soft).
+- Sample rule moved to `scripts/lib/product-files.mjs` (`splitProductFiles`, `pickSample`), used by
+  `scripts/build-assets-manifest.mjs` and `src/lib/assets.ts`; unit tests in `src/lib/sample-image.test.ts`.
+- Raw files removed from `incoming/` (README kept; originals remain in git history).
+
+**Notes**
+- Flow file names are unreliable: `Pine_wood_photo_frame_displayed_…` is actually the glass clock frame, and
+  `Glass_photo_frame_standing_upright_…` is a hexagon frame.
+- Unused variants are in git history (commit before this one) if a different pick is wanted.
+
+---
+
+## 2026-11-13 — Storefront assets (`feat/storefront`)
+
+**Done**
+- `incoming/README.md`: drop zone for raw assets (what to drop, naming, targets). Not served by the site.
+- Shop-front photo processed with ImageMagick: `public/brand/shop.webp` (1600×1200, 94 KB — centre crop on the
+  entrance, ~1.8× upscale from the 2000×667 source, so slightly soft) and `public/brand/shop-wide.webp`
+  (2400×800, 170 KB). `shop.webp` is picked up automatically by the existing home `TrustSection`
+  (and the contact page); `shop-wide.webp` is the About page banner (en/si alt text).
+- AI sample images: `public/products/<slug>/sample-N.webp` shown with a "Sample image" / "නිදර්ශන රූපය" label on
+  product cards and the product page. They are only used when the product has no real photo (catalogue
+  images or `1.webp`, `2.webp`…), are excluded from `ProductGallery`, JSON-LD and social previews.
+
+**Decisions**
+- Extended the existing `scripts/build-assets-manifest.mjs` (new `samples` map; `products` now excludes
+  `sample-*`) rather than adding a second manifest; `productSampleFor()` lives in `src/lib/assets.ts`.
+- Rebased on top of the Phase 1A polish commits; dropped my duplicate home trust-photo markup.
+
+**Open questions**
+- The 4:3 crop cuts off the outer side bays; send a native 4:3 / higher-res original for the full facade.
+- Sinhala label/alt strings are drafts — need native review.
+
+---
+
+## 2026-11-08 — Phase 1A polish (`feat/storefront`)
+
+**Bugs fixed**
+- `/product/<id>`: only the 12 old prototype ids redirect (to their new product/category); anything else is a real 404.
+- Shop sort: per-sq-ft products sort by their real minimum order (`minimumPrice()`: cheapest required options at the minimum billable size); search and sort now apply instantly in the browser (no Search button), state mirrored in `?q=&sort=`.
+- Add to cart is optimistic: badge + toast update instantly, the save runs in the background and rolls back with an error toast if it fails. Cart quantity changes are instant (debounced save, revert on failure); remove is instant with a 6-second **Undo**.
+- **Guest session bug found while testing:** a server action can be dropped by Next.js when the visitor navigates, and setting a cookie in an action re-renders the whole page (56 KB, ~2–3 s here). Cart mutations moved to `/api/cart` (route handler, `fetch` + `keepalive`, same-origin check), the session cookie write after anonymous sign-in is now awaited, sessions are read with `getClaims()`, and the cart page shows "Saving…" and refreshes itself if opened while an add is still saving.
+- Cart WhatsApp message: options, design path, turnaround, skip-proof, uploaded-file count, notes, price with estimate flag, total and a short **cart reference** (`C-XXXXXX`, from the cart id).
+- Cart shows delivery fees by zone from `delivery_zones` (pickup free).
+- Custom size: inline min/max validation messages. Eyelets priced **per running foot of perimeter** (new modifier `per_running_ft`, Rs 20 placeholder, admin-editable).
+- Home 390px: WhatsApp button shows "WhatsApp" on small screens (full label from `sm` up), never cut off.
+- Locale: the URL decides the language (`localeDetection: false`); `/en/...` always English even with a Sinhala cookie.
+- Tap targets: bulk-discount chips and breadcrumbs are 44px.
+
+**Templates:** "Start from a template" only appears when a product has templates. 4 layouts each (SVG previews) for the photo mug and the two photo frames: single photo, photo + name, 2-photo collage, photo + date/message; layout hint (photos + text fields) under the picker.
+
+**New pages:** `/privacy`, `/terms`, `/returns` (no refund after proof approval, free reprint for our faults, 48h claim window), `/faq` (FAQPage JSON-LD), `/track` (order no + phone, "available after online checkout launches" + WhatsApp). EN + SI drafts with a visible "Draft" notice (`SITE_SETTINGS.legalDraft`). Footer "Help & policies" column.
+
+**Design:** hero image slot (recent-work collage from `public/gallery/`, illustrated tiles until photos exist) + "Ready in 24–48h · Free pickup in Kalutara"; "How your order works" journey (photo → mockup → approve → printed & delivered) on home and product pages; trust section (Google rating, address, embedded map, shop photo, "serving since") driven by `src/config/site-settings.ts`, hidden until filled; recent-work gallery (hidden if empty); multi-photo product gallery from `public/products/<slug>/1.webp…` with thumbnails (placeholder fallback kept); categories with fewer than 2 products hidden from nav/home (still reachable).
+
+**Performance:** home, shop, categories, services, products, about, contact, FAQ and policy pages are SSG + ISR (1 h) — locally ~10 ms TTFB, served from Vercel's CDN in production. Catalogue/settings/zones read through a cookie-less public client cached under the `catalog` tag; `/api/revalidate` (secret header, Supabase DB webhooks) refreshes pages when products change. Cart badge is client state (no cookies in the layout). The proxy only touches Supabase when a session cookie exists. Each page ships only its translation namespaces (`IntlIsland`).
+
+**Verified:** `npm run lint`, `tsc`, `npm test` (10/10), `npm run build`, full local SQL suite (7 migrations, 3 scenarios), and a 48-check Playwright run at 390px + 1366px against the live Supabase project (temporary photos/guests created and removed afterwards).
+
+**Owner actions**
+- Run migrations `20261111000000_cart_policies.sql`, `20261112000000_running_ft_modifier.sql` (on its own), `20261112000100_eyelets_and_templates.sql` in the SQL editor; afterwards `public/templates/mug-birthday.svg`, `mug-love.svg`, `mug-logo.svg` can be deleted.
+- Set `REVALIDATE_SECRET` on Vercel + create the Supabase DB webhooks (`docs/SETUP.md` §3b).
+- Photos, business details and text reviews: `docs/CONTENT-CHECKLIST.md`.
+- Two anonymous users from before this session (10:46, 11:03 UTC) were left untouched — probably your own test visits.
+
+---
+
+## 2026-11-08 — Live Supabase verification (`feat/storefront`)
+
+**State of the live project `jvejmlwpahjittbzztmy`** (owner ran the combined SQL): migrations 1–4 + seed applied (19 products, 12 categories, 3 templates, settings, delivery zones), anonymous sign-ins enabled, owner's admin account + `staff` row created. Keys (`sb_publishable_` / `sb_secret_`, `ORDER_TOKEN_SECRET`) provided via environment variables.
+
+**Bug found and fixed**
+- Creating a cart failed live: `INSERT … RETURNING` on `carts` violated RLS because the policy's `app.owns_cart(id)` lookup can't see the row being inserted (local tests had inserted without RETURNING). Fixed twice: the app now inserts without RETURNING and re-reads the active cart (handles the two-tab race via the unique index), and migration `20261111000000_cart_policies.sql` rewrites the carts policies to check the row's `user_id` / `guest_token_hash` directly. **Migration 5 still needs to be run by the owner** — the app works without it.
+
+**Live checks — 29/29 passed** (real UI + real database, temporary test users deleted afterwards)
+- Guest add-to-cart → anonymous auth user + session cookie; header count; cart persists across navigation; option labels; quantity update and remove persisted; one active cart reused; second browser sees an empty cart.
+- RLS as an anonymous user: can't see others' carts, staff, orders, payments or coupons; can't create a cart for someone else; second active cart rejected; can't change product prices; public settings readable.
+- Anonymous user cannot be made staff (trigger); guests are redirected from `/admin`.
+- Staff login: non-staff account refused (and stays locked out), designer signs in to the dashboard, sign-out re-locks `/admin`, wrong password shows an error.
+- Uploader correctly falls back to WhatsApp (R2 not configured yet).
+- `npm run lint`, `tsc`, `npm test` (9/9), `npm run build`, full local SQL suite (5 migrations, 3 scenario files) green.
+
+**Not yet verified:** owner's own admin login (password unknown to me — owner to test), R2 uploads (no R2 credentials), Vercel deployment with these env vars.
+
+**Follow-ups**
+- `NextIntlClientProvider` currently ships the full message catalogue to the browser — pass only client namespaces (perf, P1).
+- Generate `src/types/database.ts` (needs Supabase CLI access or the owner running `supabase gen types`).
+
+---
+
+## 2026-11-08 — Supabase hookup prep (`feat/storefront`)
+
+**Done**
+- `.env.local` created from `.env.example` (gitignored, mode 600) with the project URL/ref and public settings; secrets left blank.
+- Cloud environment allowlist: added `jvejmlwpahjittbzztmy.supabase.co` and `api.supabase.com`.
+- Switched to the new Supabase keys: `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` / `SUPABASE_SECRET_KEY` (legacy `ANON_KEY` / `SERVICE_ROLE_KEY` still accepted as fallback; a publishable key in the secret slot is rejected).
+- Migration `20261110000000_anonymous_users.sql`: `app.is_anonymous()`, anonymous sessions never get staff rights, anonymous users can't be added to `staff`, one active cart per user, reviews need a permanent account or order token, guests can't set a profile email. Test `supabase/tests/anonymous_scenario.sql`; all four scenario files pass on local Postgres 16.
+- `docs/SETUP.md`: new keys, first admin account steps, pre-launch checklist (captcha/Turnstile on auth, rate limits, disable legacy keys, R2 CORS, cleanup jobs, PayHere live).
+- `supabase/.temp/` gitignored.
+
+**Blocked / waiting on the owner**
+- Migrations + seed not yet applied to the live project: the owner declined to provide a Supabase personal access token, and direct Postgres is not reachable from the sandbox → owner runs the combined SQL in the dashboard SQL editor.
+- Publishable/secret keys and ORDER_TOKEN_SECRET not yet provided → live verification of cart / anonymous auth / staff login pending.
+
+---
+
 ## 2026-11-08 — Phase 1A: storefront → cart (`feat/storefront`)
 
 **Owner decisions applied**
