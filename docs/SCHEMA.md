@@ -5,10 +5,14 @@ Source of truth: `supabase/migrations/` (applied in order):
 1. `20261107000000_drop_legacy_tables.sql` — drops the old mock `products/orders/order_items`
 2. `20261108000000_foundation_schema.sql` — core model (this document §1–§9)
 3. `20261109000000_phase1a_storefront.sql` — owner decisions + storefront support (§12)
+4. `20261110000000_anonymous_users.sql` — anonymous (guest) users vs permanent accounts (§13)
+5. `20261111000000_cart_policies.sql` — carts RLS split per command, checks `user_id` / `guest_token_hash` on the row itself (§13)
+6. `20261112000000_running_ft_modifier.sql` — `price_modifier_type` gains `per_running_ft` (§14)
+7. `20261112000100_eyelets_and_templates.sql` — eyelets priced per running foot; template layouts (§14)
 
 Status: **tested locally (Postgres 16 + Supabase auth stubs), NOT applied to any Supabase project yet.** See `docs/SETUP.md`.
 
-Scenario tests: `supabase/tests/foundation_scenario.sql` then `supabase/tests/phase1a_scenario.sql`
+Scenario tests: `supabase/tests/foundation_scenario.sql`, then `phase1a_scenario.sql`, then `anonymous_scenario.sql`
 (fixed order → payment → proof → changes → re-proof → guest approval → print → deliver → review;
 quote → accept → 50 % advance; RLS isolation checks).
 
@@ -257,3 +261,38 @@ supabase gen types typescript --local > src/types/database.ts
 - **Designer queue**: designers can see unassigned jobs in status `new` (job, order, customer uploads) and take one with `claim_job(job_id)`; other assignment changes remain admin-only.
 
 **New RPCs**: `claim_job(job_id)` (designer/admin), `revision_fee_preview(job_id)` → `revision_count, max_free_revisions, next_revision_fee` (shown to the customer *before* they request changes).
+
+## 13. Anonymous users (`20261110000000_anonymous_users.sql`)
+
+Guests sign in with Supabase anonymous auth: real `auth.uid()`, role `authenticated`,
+JWT claim `is_anonymous = true`. `authenticated` therefore never means "trusted".
+
+| Rule | Mechanism |
+|---|---|
+| `app.is_anonymous()` | reads `is_anonymous` from `request.jwt.claims` |
+| Anonymous sessions never get staff rights, even for a uid with a staff row | `app.staff_role()` returns null when anonymous (all `is_staff/is_admin/is_ops/is_job_staff` build on it) |
+| Anonymous users cannot be added to `staff` | trigger `staff_not_anonymous` (checks `auth.users.is_anonymous`) |
+| One active cart per user | unique index `carts_one_active_per_user` |
+| Reviews need a permanent account or the order token | policy `reviews_customer_insert` (+ ownership trigger) |
+| Guests cannot set a profile email (done by account upgrade) | trigger `profiles_guard` |
+
+**Carts policies (`20261111000000_cart_policies.sql`)**: the original `carts_owner_all` used
+`app.owns_cart(id)`, a lookup by id that cannot see the row being inserted, so
+`INSERT … RETURNING` failed. Policies are now `carts_owner_select/insert/update/delete`
+and compare the row's `user_id` / `guest_token_hash` directly. (The app also creates carts
+without `RETURNING`, so it works on databases that don't have this migration yet.)
+
+Guests keep full access to their own carts, uploads, orders, job chat and proofs
+(those rules key on `auth.uid()` ownership, which anonymous users have).
+
+## 14. Running-foot pricing & templates (`20261112*`)
+
+- `price_modifier_type` adds **`per_running_ft`**: price × running feet of the print's
+  perimeter, `2·(w + h) / 12`. Used for banner eyelets (Rs 20/ft placeholder,
+  editable in `product_option_values`). Pricing engine: `src/lib/pricing.ts`.
+- `product_templates.config` now carries the layout: `{ "photo_slots": 2, "text_fields": ["name"] }`
+  (shown as a hint under the template picker). Photo mug: single photo, photo + name,
+  2-photo collage, photo + message. Photo frames (LED, pine magnet): single photo,
+  photo + name, 2-photo collage, photo + date. The three earlier mug templates are
+  set `is_active = false`; their SVGs in `public/templates/` can be deleted once
+  this migration has run.

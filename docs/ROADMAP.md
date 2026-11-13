@@ -19,11 +19,11 @@ Each task has acceptance criteria (AC). Tick items as they land and log them in 
 ### P1.1 Platform setup
 - [x] **Decisions from foundation resolved** (legacy tables, guest model, payment rules).
   AC: answers recorded in PROGRESS.md.
-- [ ] **Supabase projects** (dev + prod), migration applied to dev, seed run, types generated to `src/types/database.ts`.
+- [x] **Supabase projects** (dev + prod) — production project `jvejmlwpahjittbzztmy` live with migrations + seed (a separate dev project is still optional); types not generated yet, migration applied to dev, seed run, types generated to `src/types/database.ts`.
   AC: `supabase db reset` works locally; scenario test passes; `npm run build` uses generated types.
-- [ ] **`@supabase/ssr` clients** `lib/supabase/{server,browser,admin}.ts`, session refresh in `middleware.ts`, delete `src/lib/supabase.ts`.
+- [x] **`@supabase/ssr` clients** `lib/supabase/{server,browser,admin}.ts`, session refresh in `middleware.ts`, delete `src/lib/supabase.ts`.
   AC: `admin.ts` imports `server-only`; build fails if imported from a client component.
-- [ ] **Env validation** `lib/env.ts` (zod) for every var in `.env.example`.
+- [x] **Env validation** `lib/env.ts` (zod) for every var in `.env.example`.
   AC: missing/invalid var → clear error at boot; no placeholder fallbacks.
 - [x] **next-intl** with `/en` and `/si`, `messages/{en,si}.json`, locale switcher, `<html lang>` per locale, `hreflang` alternates.
   AC: every customer route renders in both locales; no hardcoded UI strings (lint rule or review checklist); Sinhala reviewed by a native speaker.
@@ -140,7 +140,7 @@ v2 → approve → production moves to delivered — entirely in the app, with r
 - [ ] Per-page `generateMetadata` (en/si), canonical + `hreflang`, Open Graph images (dynamic `opengraph-image`).
 - [ ] `sitemap.ts` (categories, products, static pages, both locales) and `robots.ts` (disallow `/staff`, `/api`, order pages).
 - [ ] JSON-LD: `LocalBusiness` (Kalutara NAP, hours, geo, phone), `Product`, `BreadcrumbList`, `FAQPage`.
-- [ ] Static pages: About, Services (one landing page per service for local SEO, e.g. "Photo framing Kalutara"), Contact (map, WhatsApp), FAQ, Terms, Privacy, Refund policy (required by PayHere).
+- [x] Static pages (FAQ, Terms, Privacy, Refund policy, Track placeholder done in P1A polish): About, Services (one landing page per service for local SEO, e.g. "Photo framing Kalutara"), Contact (map, WhatsApp), FAQ, Terms, Privacy, Refund policy (required by PayHere).
 - [ ] Google Business Profile link, Search Console + sitemap submission, Vercel Analytics / Speed Insights.
   AC: Lighthouse mobile ≥ 90 performance, 100 SEO on home, category and product pages; Rich Results test passes; 0 broken links.
 

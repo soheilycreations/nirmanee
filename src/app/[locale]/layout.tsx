@@ -1,8 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import { notFound } from "next/navigation";
-import { hasLocale, NextIntlClientProvider } from "next-intl";
+import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
+import { BASE_NAMESPACES, IntlIsland } from "@/i18n/IntlIsland";
+import { CartProvider } from "@/components/cart/CartProvider";
+import { ToastProvider } from "@/components/ui/Toaster";
 import { fontVariables } from "../fonts";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
@@ -39,7 +42,9 @@ export default async function LocaleLayout({ children, params }: { children: Rea
   return (
     <html lang={locale} className={fontVariables}>
       <body className="flex min-h-screen flex-col antialiased">
-        <NextIntlClientProvider>
+        <IntlIsland namespaces={BASE_NAMESPACES}>
+          <CartProvider>
+          <ToastProvider>
           <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[70] focus:rounded-control focus:bg-surface focus:px-4 focus:py-3 focus:shadow-lift">
             {t("skipToContent")}
           </a>
@@ -53,7 +58,9 @@ export default async function LocaleLayout({ children, params }: { children: Rea
           <Footer />
           <WhatsAppFab />
           <JsonLd data={localBusinessJsonLd()} />
-        </NextIntlClientProvider>
+          </ToastProvider>
+          </CartProvider>
+        </IntlIsland>
       </body>
     </html>
   );

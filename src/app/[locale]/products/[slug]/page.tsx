@@ -3,8 +3,14 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { getCatalog, getProductBySlug } from "@/features/catalog/queries";
+import { routing } from "@/i18n/routing";
+import { IntlIsland } from "@/i18n/IntlIsland";
+import { ProductGallery } from "@/components/product/ProductGallery";
+import { OrderJourney } from "@/components/home/OrderJourney";
+import { resolveImageSrc } from "@/lib/images";
 import { fromPrice, pick } from "@/features/catalog/types";
 import { getPublicSettings } from "@/features/settings/queries";
+import { productSampleFor } from "@/lib/assets";
 import { ProductVisual } from "@/components/shop/ProductVisual";
 import { ProductCard } from "@/components/shop/ProductCard";
 import { DeliveryLine } from "@/components/shop/DeliveryLine";
@@ -16,7 +22,15 @@ import { JsonLd } from "@/lib/seo/jsonld";
 import { localizedPath, pageMetadata } from "@/lib/seo/metadata";
 import { whatsappUrl } from "@/lib/site";
 
+// Static (ISR): all products are pre-rendered; new products render on first visit.
+export const revalidate = 3600;
+
 type Props = { params: Promise<{ locale: string; slug: string }> };
+
+export async function generateStaticParams() {
+  const { products } = await getCatalog();
+  return routing.locales.flatMap((locale) => products.map((p) => ({ locale, slug: p.slug })));
+}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params;
@@ -42,6 +56,7 @@ export default async function ProductPage({ params }: Props) {
   const category = categories.find((c) => c.slug === product.categorySlug);
   const name = pick(product.name, locale);
   const price = fromPrice(product);
+  const sample = productSampleFor(product.slug, product.images.length > 0);
   const related = products.filter((p) => p.categorySlug === product.categorySlug && p.slug !== product.slug).slice(0, 4);
   const url = `${siteUrl()}${localizedPath(locale, `/products/${product.slug}`)}`;
 
@@ -55,7 +70,7 @@ export default async function ProductPage({ params }: Props) {
     category: category ? pick(category.name, locale) : undefined,
     brand: { "@type": "Brand", name: "Nirmanee Digital Print House" },
     url,
-    ...(product.images[0] ? { image: product.images.map((i) => i.key) } : {}),
+    ...(product.images[0] ? { image: product.images.map((i) => `${i.key.startsWith("/") ? siteUrl() : ""}${resolveImageSrc(i.key)}`) } : {}),
     ...(price !== null && product.orderType === "fixed"
       ? {
           offers: {
@@ -83,11 +98,11 @@ export default async function ProductPage({ params }: Props) {
     <div className="mx-auto max-w-6xl px-4 pb-32 pt-4 sm:pt-8 lg:pb-16">
       <nav aria-label={t("product.breadcrumb")} className="text-sm text-ink-500">
         <ol className="flex flex-wrap items-center gap-1">
-          <li><Link href="/shop" className="inline-flex min-h-8 items-center hover:text-brand-600">{t("nav.shop")}</Link></li>
+          <li><Link href="/shop" className="inline-flex min-h-11 items-center hover:text-brand-600">{t("nav.shop")}</Link></li>
           {category && (
             <>
               <li aria-hidden="true">/</li>
-              <li><Link href={`/shop/${category.slug}`} className="inline-flex min-h-8 items-center hover:text-brand-600">{pick(category.name, locale)}</Link></li>
+              <li><Link href={`/shop/${category.slug}`} className="inline-flex min-h-11 items-center hover:text-brand-600">{pick(category.name, locale)}</Link></li>
             </>
           )}
         </ol>
@@ -95,15 +110,22 @@ export default async function ProductPage({ params }: Props) {
 
       <div className="mt-2 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:gap-12">
         <div className="lg:sticky lg:top-24 lg:self-start">
-          <ProductVisual
-            image={product.images[0]}
-            alt={name}
-            categorySlug={product.categorySlug}
-            placeholderLabel={t("common.photoComingSoon")}
-            sizes="(max-width: 1024px) 100vw, 50vw"
-            priority
-            className="aspect-[4/3] rounded-sheet sm:aspect-square"
-          />
+          {product.images.length > 0 ? (
+            <IntlIsland namespaces={["product"]}>
+              <ProductGallery images={product.images.map((img) => ({ src: resolveImageSrc(img.key), alt: pick(img.alt, locale) }))} />
+            </IntlIsland>
+          ) : (
+            <ProductVisual
+              image={sample ? { key: sample, alt: product.name } : undefined}
+              alt={name}
+              categorySlug={product.categorySlug}
+              placeholderLabel={t("common.photoComingSoon")}
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              priority
+              sampleLabel={sample ? t("common.sampleImage") : undefined}
+              className="aspect-[4/3] rounded-sheet sm:aspect-square"
+            />
+          )}
           <div className="mt-6 hidden lg:block">
             <ProductDetails product={product} locale={locale} />
           </div>
@@ -121,7 +143,9 @@ export default async function ProductPage({ params }: Props) {
           <DeliveryLine days={product.productionDays} className="mt-3" />
 
           <div className="mt-8">
-            <Customizer product={product} uploadsEnabled={isUploadConfigured()} revisionFee={settings.revision_fee_lkr} />
+            <IntlIsland namespaces={["product", "uploader"]}>
+              <Customizer product={product} uploadsEnabled={isUploadConfigured()} revisionFee={settings.revision_fee_lkr} />
+            </IntlIsland>
           </div>
 
           <a
@@ -135,6 +159,10 @@ export default async function ProductPage({ params }: Props) {
 
           <div className="mt-8 lg:hidden">
             <ProductDetails product={product} locale={locale} />
+          </div>
+
+          <div className="mt-10 rounded-card border border-line bg-surface p-5">
+            <OrderJourney freeRevisions={settings.free_revisions} compact headingLevel={2} />
           </div>
         </div>
       </div>

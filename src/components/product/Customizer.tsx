@@ -1,13 +1,15 @@
 "use client";
 
-import { useCallback, useMemo, useState, useTransition } from "react";
+import { useCallback, useMemo, useState } from "react";
 import Image from "next/image";
-import { Check, Loader2, Minus, Paintbrush, Plus, ShoppingBag, Upload, LayoutTemplate } from "lucide-react";
+import { Check, Minus, Paintbrush, Plus, ShoppingBag, Upload, LayoutTemplate } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { addToCart } from "@/features/cart/actions";
+import { addToCartRequest } from "@/features/cart/client";
 import { availableDesignModes, pick, type Product, type ProductOption } from "@/features/catalog/types";
-import { computePrice, CUSTOM_SIZE_VALUE, type DesignMode, type Turnaround } from "@/lib/pricing";
+import { computePrice, CUSTOM_SIZE_VALUE, perimeterFeet, type DesignMode, type ModifierType, type Turnaround } from "@/lib/pricing";
+import { useCart } from "@/components/cart/CartProvider";
+import { useToast } from "@/components/ui/Toaster";
 import { formatLKR } from "@/lib/format";
 import { buttonClass } from "@/components/ui/button";
 import { cn } from "@/lib/cn";
@@ -23,10 +25,15 @@ function defaultValues(product: Product): Record<string, string> {
   return values;
 }
 
-function modifierLabel(type: "flat" | "percent" | "per_sqft", amount: number, perSqftLabel: (p: string) => string): string | null {
+function modifierLabel(
+  type: ModifierType,
+  amount: number,
+  labels: { perSqft: (p: string) => string; perRunningFt: (p: string) => string },
+): string | null {
   if (amount === 0) return null;
   if (type === "percent") return `+${amount}%`;
-  if (type === "per_sqft") return `+${perSqftLabel(formatLKR(amount))}`;
+  if (type === "per_sqft") return `+${labels.perSqft(formatLKR(amount))}`;
+  if (type === "per_running_ft") return `+${labels.perRunningFt(formatLKR(amount))}`;
   return `+${formatLKR(amount)}`;
 }
 
@@ -46,6 +53,13 @@ export function Customizer({
   const t = useTranslations("product");
   const tc = useTranslations("common");
   const tu = useTranslations("uploader");
+  const tt = useTranslations("toast");
+  const cart = useCart();
+  const toast = useToast();
+  const modLabels = {
+    perSqft: (p: string) => tc("perSqft", { price: p }),
+    perRunningFt: (p: string) => t("perRunningFt", { price: p }),
+  };
   const locale = useLocale();
   const modes = availableDesignModes(product);
   const productName = pick(product.name, locale);
@@ -61,7 +75,6 @@ export function Customizer({
   const [uploads, setUploads] = useState<UploadState>({ uploadedIds: [], busy: false });
   const [error, setError] = useState<string | null>(null);
   const [added, setAdded] = useState(false);
-  const [pending, startTransition] = useTransition();
 
   const sizeOption = product.options.find((o) => o.type === "size");
   const sizeUnit = sizeOption?.config.unit ?? "in";
@@ -75,6 +88,22 @@ export function Customizer({
         : null,
     [sizeChoice, custom.w, custom.h, unitFactor],
   );
+
+  const unitLabel = sizeUnit === "ft" ? t("unitFt") : t("unitIn");
+  const fmtDim = (inches: number) => `${Number((inches / unitFactor).toFixed(2))} ${unitLabel}`;
+  const sizeErrors = useMemo(() => {
+    if (!sizeOption || sizeChoice !== CUSTOM_SIZE_VALUE) return [];
+    const cfg = sizeOption.config;
+    const errs: string[] = [];
+    const w = Number(custom.w) * unitFactor;
+    const h = Number(custom.h) * unitFactor;
+    const fmt = (inches: number) => `${Number((inches / unitFactor).toFixed(2))} ${sizeUnit === "ft" ? t("unitFt") : t("unitIn")}`;
+    if (custom.w !== "" && cfg.min_width_in !== undefined && w < cfg.min_width_in) errs.push(t("sizeMinWidth", { min: fmt(cfg.min_width_in) }));
+    if (custom.w !== "" && cfg.max_width_in !== undefined && w > cfg.max_width_in) errs.push(t("sizeMaxWidth", { max: fmt(cfg.max_width_in) }));
+    if (custom.h !== "" && cfg.min_height_in !== undefined && h < cfg.min_height_in) errs.push(t("sizeMinHeight", { min: fmt(cfg.min_height_in) }));
+    if (custom.h !== "" && cfg.max_height_in !== undefined && h > cfg.max_height_in) errs.push(t("sizeMaxHeight", { max: fmt(cfg.max_height_in) }));
+    return errs;
+  }, [sizeOption, sizeChoice, custom.w, custom.h, unitFactor, sizeUnit, t]);
 
   const choiceValues = useMemo(() => {
     const v: Record<string, string> = {};
@@ -115,6 +144,10 @@ export function Customizer({
     return null;
   }
 
+  /**
+   * Optimistic add: the badge and toast update immediately; the item is saved
+   * in the background and both are rolled back if the server rejects it.
+   */
   function submit() {
     const problem = validate();
     if (problem) {
@@ -122,35 +155,55 @@ export function Customizer({
       return;
     }
     setError(null);
-    startTransition(async () => {
-      const textValues = Object.fromEntries(
-        product.options.filter((o) => o.type === "text" && values[o.code]).map((o) => [o.code, values[o.code]]),
-      );
-      const res = await addToCart({
-        productSlug: product.slug,
-        values: { ...choiceValues, ...textValues },
-        customSize,
-        quantity,
-        designMode,
-        templateId: designMode === "template" ? templateId : null,
-        turnaround,
-        skipProof: designMode === "upload" && skipProof,
-        notes,
-        fileIds: uploads.uploadedIds,
-      });
-      if (res.ok) {
-        setAdded(true);
-      } else if (res.error === "missing_text" || res.error === "missing_option") {
-        const o = product.options.find((x) => x.code === res.option);
-        setError(res.error === "missing_text" ? t("errorText", { option: o ? optionLabel(o) : "" }) : t("errorMissing", { option: o ? optionLabel(o) : "" }));
-      } else if (res.error === "invalid_size") {
-        setError(t("errorSize"));
-      } else if (res.error === "template") {
-        setError(t("errorTemplate"));
-      } else {
+    setAdded(true);
+    cart.adjust(1);
+    cart.beginSave();
+    const toastId = toast.show({ message: tt("added"), tone: "success", action: { label: tt("viewCart"), href: "/cart" } });
+
+    const textValues = Object.fromEntries(
+      product.options.filter((o) => o.type === "text" && values[o.code]).map((o) => [o.code, values[o.code]]),
+    );
+    void addToCartRequest({
+      productSlug: product.slug,
+      values: { ...choiceValues, ...textValues },
+      customSize,
+      quantity,
+      designMode,
+      templateId: designMode === "template" ? templateId : null,
+      turnaround,
+      skipProof: designMode === "upload" && skipProof,
+      notes,
+      fileIds: uploads.uploadedIds,
+    })
+      .then((res) => {
+        if (res.ok) {
+          cart.set(res.cartCount);
+          return;
+        }
+        rollback();
+        if (res.error === "missing_text" || res.error === "missing_option") {
+          const o = product.options.find((x) => x.code === res.option);
+          setError(res.error === "missing_text" ? t("errorText", { option: o ? optionLabel(o) : "" }) : t("errorMissing", { option: o ? optionLabel(o) : "" }));
+        } else if (res.error === "invalid_size") {
+          setError(t("errorSize"));
+        } else if (res.error === "template") {
+          setError(t("errorTemplate"));
+        } else {
+          setError(t("errorGeneric"));
+        }
+      })
+      .catch(() => {
+        rollback();
         setError(t("errorGeneric"));
-      }
-    });
+      })
+      .finally(() => cart.endSave());
+
+    function rollback() {
+      setAdded(false);
+      cart.adjust(-1);
+      toast.dismiss(toastId);
+      toast.show({ message: tt("addFailed"), tone: "error" });
+    }
   }
 
   const totalLabel = price.ok ? formatLKR(price.total) : "—";
@@ -221,6 +274,17 @@ export function Customizer({
                 </label>
               ))}
             </div>
+            {(() => {
+              const tpl = product.templates.find((x) => x.id === templateId);
+              if (!tpl) return null;
+              const fields = tpl.textFields.map((f) => t(`templateText_${f}` as "templateText_name")).join(", ");
+              return (
+                <p className="mt-2 text-xs text-ink-500">
+                  {pick(tpl.name, locale)}: {t("templatePhotos", { count: tpl.photoSlots })}
+                  {fields ? ` + ${fields}` : ""}
+                </p>
+              );
+            })()}
           </fieldset>
         )}
       </fieldset>
@@ -239,8 +303,8 @@ export function Customizer({
                       <input type="radio" name={o.code} value={v.value} checked={values[o.code] === v.value} onChange={() => setValue(o.code, v.value)} className="sr-only" />
                       <span className="size-5 rounded-full border border-ink-300" style={{ backgroundColor: v.swatchHex ?? "transparent" }} aria-hidden="true" />
                       {pick(v.label, locale)}
-                      {modifierLabel(v.modifierType, v.priceModifier, (p) => tc("perSqft", { price: p })) && (
-                        <span className="text-xs text-ink-500">{modifierLabel(v.modifierType, v.priceModifier, (p) => tc("perSqft", { price: p }))}</span>
+                      {modifierLabel(v.modifierType, v.priceModifier, modLabels) && (
+                        <span className="text-xs text-ink-500">{modifierLabel(v.modifierType, v.priceModifier, modLabels)}</span>
                       )}
                     </label>
                   ))}
@@ -248,7 +312,7 @@ export function Customizer({
               ) : (
                 <div className="mt-2 flex flex-wrap gap-2">
                   {o.values.map((v) => {
-                    const mod = modifierLabel(v.modifierType, v.priceModifier, (p) => tc("perSqft", { price: p }));
+                    const mod = modifierLabel(v.modifierType, v.priceModifier, modLabels);
                     return (
                       <label key={v.value} className={chip}>
                         <input type="radio" name={o.code} value={v.value} checked={values[o.code] === v.value} onChange={() => setValue(o.code, v.value)} className="sr-only" />
@@ -265,6 +329,15 @@ export function Customizer({
                   )}
                 </div>
               )}
+              {(() => {
+                const chosen = o.values.find((v) => v.value === values[o.code]);
+                if (!chosen || chosen.modifierType !== "per_running_ft" || !price.ok || !price.printSize) return null;
+                return (
+                  <p className="mt-2 text-xs text-ink-500">
+                    {t("eyeletsNote", { label: pick(chosen.label, locale), price: formatLKR(chosen.priceModifier), feet: perimeterFeet(price.printSize) })}
+                  </p>
+                );
+              })()}
               {o.type === "size" && values[o.code] === CUSTOM_SIZE_VALUE && (
                 <div className="mt-3 grid max-w-sm grid-cols-2 gap-3">
                   {(["w", "h"] as const).map((dim) => (
@@ -277,18 +350,29 @@ export function Customizer({
                         step="0.5"
                         value={custom[dim]}
                         onChange={(e) => setCustom((c) => ({ ...c, [dim]: e.target.value }))}
-                        className="mt-1 h-11 w-full rounded-control border border-line bg-surface px-3 text-[16px] focus:border-brand-400 focus:outline-none"
+                        aria-invalid={sizeErrors.length > 0 || undefined}
+                        aria-describedby={`${o.code}-size-help`}
+                        className={cn(
+                          "mt-1 h-11 w-full rounded-control border bg-surface px-3 text-[16px] focus:outline-none",
+                          sizeErrors.length > 0 ? "border-danger-600" : "border-line focus:border-brand-400",
+                        )}
                       />
                     </label>
                   ))}
-                  {o.config.min_width_in !== undefined && o.config.max_width_in !== undefined && (
-                    <p className="col-span-2 text-xs text-ink-500">
-                      {t("sizeLimits", {
-                        min: `${o.config.min_width_in / unitFactor} ${sizeUnit === "ft" ? t("unitFt") : t("unitIn")}`,
-                        max: `${o.config.max_width_in / unitFactor} ${sizeUnit === "ft" ? t("unitFt") : t("unitIn")}`,
-                      })}
-                    </p>
-                  )}
+                  <div id={`${o.code}-size-help`} className="col-span-2" aria-live="polite">
+                    {sizeErrors.length > 0 ? (
+                      <ul className="space-y-0.5 text-xs font-medium text-danger-600">
+                        {sizeErrors.map((e) => (<li key={e}>{e}</li>))}
+                      </ul>
+                    ) : (
+                      o.config.min_width_in !== undefined &&
+                      o.config.max_width_in !== undefined && (
+                        <p className="text-xs text-ink-500">
+                          {t("sizeLimits", { min: fmtDim(o.config.min_width_in), max: fmtDim(o.config.max_width_in) })}
+                        </p>
+                      )
+                    )}
+                  </div>
                 </div>
               )}
             </fieldset>
@@ -385,7 +469,7 @@ export function Customizer({
                     type="button"
                     onClick={() => setQuantity(tier.minQuantity)}
                     className={cn(
-                      "inline-flex min-h-9 items-center rounded-full border px-3 text-xs font-medium",
+                      "inline-flex min-h-11 items-center rounded-full border px-3.5 text-xs font-medium",
                       price.ok && price.tierDiscountPercent === tier.discountPercent ? "border-success-600 bg-success-50 text-success-600" : "border-line bg-surface text-ink-700 hover:border-ink-300",
                     )}
                   >
@@ -454,9 +538,9 @@ export function Customizer({
           )}
         </div>
 
-        <button type="submit" disabled={pending} className={buttonClass({ size: "lg", full: true, className: "mt-3 hidden lg:inline-flex" })}>
-          {pending ? <Loader2 className="size-5 animate-spin" aria-hidden="true" /> : <ShoppingBag className="size-5" aria-hidden="true" />}
-          {pending ? t("adding") : t("addToCart")}
+        <button type="submit" className={buttonClass({ size: "lg", full: true, className: "mt-3 hidden lg:inline-flex" })}>
+          <ShoppingBag className="size-5" aria-hidden="true" />
+          {t("addToCart")}
         </button>
       </section>
 
@@ -472,9 +556,9 @@ export function Customizer({
               <Check className="size-5" aria-hidden="true" /> {t("viewCart")}
             </Link>
           ) : (
-            <button type="submit" disabled={pending} className={buttonClass({ size: "lg" })}>
-              {pending ? <Loader2 className="size-5 animate-spin" aria-hidden="true" /> : <ShoppingBag className="size-5" aria-hidden="true" />}
-              {pending ? t("adding") : t("addToCart")}
+            <button type="submit" className={buttonClass({ size: "lg" })}>
+              <ShoppingBag className="size-5" aria-hidden="true" />
+              {t("addToCart")}
             </button>
           )}
         </div>

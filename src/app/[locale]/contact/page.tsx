@@ -4,7 +4,11 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { buttonClass } from "@/components/ui/button";
 import { WhatsAppIcon } from "@/components/ui/WhatsAppIcon";
 import { pageMetadata } from "@/lib/seo/metadata";
+import { SITE_SETTINGS } from "@/config/site-settings";
+import { TrustSection } from "@/components/home/TrustSection";
 import { SITE, whatsappUrl } from "@/lib/site";
+
+export const revalidate = 3600;
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -49,7 +53,9 @@ export default async function ContactPage({ params }: Props) {
 
         <section className={card} aria-labelledby="c-loc">
           <h2 id="c-loc" className="flex items-center gap-2 font-sans text-lg font-semibold"><MapPin className="size-5 text-brand-600" aria-hidden="true" />{t("locationTitle")}</h2>
-          <p className="mt-1 text-ink-700">{t("locationValue")}</p>
+          <p className="mt-1 text-ink-700">
+            {SITE_SETTINGS.streetAddress ? (locale === "si" ? SITE_SETTINGS.streetAddress.si : SITE_SETTINGS.streetAddress.en) : t("locationValue")}
+          </p>
           <a href={SITE.mapsUrl} target="_blank" rel="noopener noreferrer" className={buttonClass({ variant: "secondary", full: true, className: "mt-4" })}>
             <MapPin className="size-4" aria-hidden="true" /> {t("directions")}
           </a>
@@ -66,6 +72,9 @@ export default async function ContactPage({ params }: Props) {
           <h2 id="c-del" className="flex items-center gap-2 font-sans text-lg font-semibold"><Truck className="size-5 text-brand-600" aria-hidden="true" />{t("deliveryTitle")}</h2>
           <p className="mt-1 text-ink-700">{t("deliveryText")}</p>
         </section>
+      </div>
+      <div className="-mx-4 mt-6">
+        <TrustSection />
       </div>
     </div>
   );

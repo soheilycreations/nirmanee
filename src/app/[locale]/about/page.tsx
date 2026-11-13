@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { CheckCircle2 } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { buttonClass } from "@/components/ui/button";
 import { pageMetadata } from "@/lib/seo/metadata";
+
+export const revalidate = 3600;
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -22,6 +25,15 @@ export default async function AboutPage({ params }: Props) {
     <div className="mx-auto max-w-3xl px-4 py-10 sm:py-14">
       <h1 className="text-display-sm sm:text-display-md">{t("title")}</h1>
       <p className="mt-4 text-lg text-ink-700">{t("lead")}</p>
+      <Image
+        src="/brand/shop-wide.webp"
+        alt={t("shopPhotoAlt")}
+        width={2400}
+        height={800}
+        sizes="(max-width: 768px) 100vw, 768px"
+        priority
+        className="mt-8 aspect-[3/1] w-full rounded-sheet object-cover shadow-card"
+      />
 
       <section className="mt-10" aria-labelledby="how">
         <h2 id="how" className="text-2xl">{t("howTitle")}</h2>

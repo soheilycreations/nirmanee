@@ -13,9 +13,9 @@ export async function proxy(request: NextRequest) {
   if (pathname === "/admin" || pathname.startsWith("/admin/")) {
     const response = NextResponse.next({ request });
     response.headers.set("X-Robots-Tag", "noindex, nofollow");
-    const { user } = await refreshSupabaseSession(request, response);
+    const session = await refreshSupabaseSession(request, response);
     const isLogin = pathname === "/admin/login";
-    const signedIn = user !== null && !user.is_anonymous;
+    const signedIn = session.userId !== null && !session.isAnonymous;
     if (!signedIn && !isLogin) {
       const url = request.nextUrl.clone();
       url.pathname = "/admin/login";
@@ -26,6 +26,8 @@ export async function proxy(request: NextRequest) {
   }
 
   const response = intl(request);
+  // Only visitors who already have a session (cart / staff) pay for a refresh;
+  // first-time visitors get the cached static page straight away.
   await refreshSupabaseSession(request, response);
   return response;
 }

@@ -1,19 +1,23 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { ShopView, parseSort } from "@/components/shop/ShopView";
-import { getCategory } from "@/features/catalog/queries";
+import { ShopView } from "@/components/shop/ShopView";
+import { getCategories, getCategory } from "@/features/catalog/queries";
 import { pick } from "@/features/catalog/types";
+import { routing } from "@/i18n/routing";
 import { pageMetadata } from "@/lib/seo/metadata";
 
-type Props = {
-  params: Promise<{ locale: string; category: string }>;
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
-};
+export const revalidate = 3600;
 
-export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
+type Props = { params: Promise<{ locale: string; category: string }> };
+
+export async function generateStaticParams() {
+  const categories = await getCategories();
+  return routing.locales.flatMap((locale) => categories.map((c) => ({ locale, category: c.slug })));
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, category: slug } = await params;
-  const sp = await searchParams;
   const category = await getCategory(slug);
   if (!category) return {};
   const t = await getTranslations({ locale, namespace: "meta" });
@@ -23,15 +27,13 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
     path: `/shop/${category.slug}`,
     title: `${name} — Kalutara`,
     description: t("categoryDescription", { name, description: pick(category.description, locale) }),
-    noindex: Boolean(sp.q || sp.sort),
   });
 }
 
-export default async function CategoryPage({ params, searchParams }: Props) {
+export default async function CategoryPage({ params }: Props) {
   const { locale, category: slug } = await params;
   setRequestLocale(locale);
   const category = await getCategory(slug);
   if (!category) notFound();
-  const sp = await searchParams;
-  return <ShopView category={category} q={typeof sp.q === "string" ? sp.q.slice(0, 100) : ""} sort={parseSort(sp.sort)} />;
+  return <ShopView category={category} />;
 }

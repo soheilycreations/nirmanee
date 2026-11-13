@@ -13,7 +13,11 @@
     "contactTitle": "Contact & location",
     "contactDescription": "WhatsApp 077 923 3822 · Call 034 204 0029 · Open daily 8.30 AM – 5.30 PM · Kalutara, Sri Lanka.",
     "cartTitle": "Your cart",
-    "notFoundTitle": "Page not found"
+    "notFoundTitle": "Page not found",
+    "faqTitle": "Frequently asked questions",
+    "faqDescription": "Answers about ordering custom printing from Nirmanee in Kalutara: proofs, files, turnaround, delivery and reprints.",
+    "trackTitle": "Track your order",
+    "trackDescription": "Check the status of your Nirmanee order."
   },
   "common": {
     "skipToContent": "Skip to content",
@@ -32,6 +36,7 @@
     "switchLanguageLabel": "View this page in Sinhala",
     "home": "Home",
     "photoComingSoon": "Photo coming soon",
+    "sampleImage": "Sample image",
     "readyIn": "{days, plural, =0 {Ready same day} one {Ready in # day} other {Ready in # days}}",
     "pickupKalutara": "Pickup Kalutara",
     "islandwide": "Islandwide {days} days",
@@ -56,7 +61,14 @@
     "hours": "Open daily, 8.30 AM – 5.30 PM",
     "location": "Kalutara, Sri Lanka",
     "rights": "© {year} Nirmanee Digital Print House. All rights reserved.",
-    "openMaps": "Open in Google Maps"
+    "openMaps": "Open in Google Maps",
+    "help": "Help & policies",
+    "faq": "FAQ",
+    "track": "Track order",
+    "privacy": "Privacy policy",
+    "terms": "Terms of service",
+    "returns": "Refund & reprint policy",
+    "follow": "Follow us"
   },
   "home": {
     "heroEyebrow": "Print studio · Kalutara",
@@ -86,7 +98,29 @@
     "servicesSubtitle": "ඔබගේ සියළුම මුද්‍රණ කටයුතු එකම වහලක් යටින්",
     "ctaTitle": "Not sure what you need?",
     "ctaText": "Send us a photo or an idea on WhatsApp — we'll suggest the right product and price.",
-    "ctaButton": "Message us on WhatsApp"
+    "ctaButton": "Message us on WhatsApp",
+    "heroCtaWhatsappShort": "WhatsApp",
+    "heroPromise": "Ready in 24–48h · Free pickup in Kalutara",
+    "collageAlt": "Recent work from our studio",
+    "journeyTitle": "How your order works",
+    "journeySubtitle": "Nothing is printed until you approve it.",
+    "journey1Title": "Your photo",
+    "journey1Text": "Upload photos or a design — or tell us your idea.",
+    "journey2Title": "Our mockup",
+    "journey2Text": "Our designer prepares the artwork and posts a proof.",
+    "journey3Title": "You approve",
+    "journey3Text": "Approve it, or ask for changes ({free} free).",
+    "journey4Title": "Printed & delivered",
+    "journey4Text": "Printed, quality-checked, then picked up or couriered.",
+    "trustTitle": "Visit our Kalutara studio",
+    "servingSince": "Serving Kalutara since {year}",
+    "googleRating": "{rating} on Google",
+    "googleReviews": "{count, plural, one {# review} other {# reviews}}",
+    "readReviews": "Read reviews on Google",
+    "mapTitle": "Map to Nirmanee Digital Print House",
+    "shopPhotoAlt": "Nirmanee Digital Print House shop in Kalutara",
+    "galleryTitle": "Recent work",
+    "gallerySubtitle": "Fresh from our printers in Kalutara."
   },
   "shop": {
     "title": "Shop",
@@ -169,7 +203,19 @@
     "proofPromise": "Our designer sends you a proof in your job chat before printing. 2 revisions are free, then {fee} each.",
     "relatedTitle": "More in {category}",
     "whatsappAsk": "Questions about this product?",
-    "whatsappMessage": "Hi Nirmanee! I have a question about {product}."
+    "whatsappMessage": "Hi Nirmanee! I have a question about {product}.",
+    "sizeMinWidth": "Width must be at least {min}.",
+    "sizeMaxWidth": "Width can be at most {max}.",
+    "sizeMinHeight": "Height must be at least {min}.",
+    "sizeMaxHeight": "Height can be at most {max}.",
+    "templatePhotos": "{count, plural, one {# photo} other {# photos}}",
+    "templateText_name": "name",
+    "templateText_message": "message",
+    "templateText_date": "date",
+    "perRunningFt": "{price} / running ft",
+    "eyeletsNote": "{label}: {price} per running ft × {feet} ft perimeter",
+    "photoOf": "Photo {n} of {total}",
+    "showPhoto": "Show photo {n}"
   },
   "uploader": {
     "title": "Upload files",
@@ -222,7 +268,23 @@
     "whatsappIntro": "Hi Nirmanee! I'd like to order:",
     "whatsappTotal": "Cart total: {total}",
     "unavailableItem": "This product is no longer available.",
-    "updated": "Cart updated"
+    "updated": "Cart updated",
+    "deliveryCourier": "Courier delivery",
+    "zoneLine": "{fee} · {min}–{max} days",
+    "free": "Free",
+    "deliveryChooseLater": "You choose pickup or a zone when you check out.",
+    "cartRef": "Cart reference: {ref}",
+    "turnaroundStandard": "Standard",
+    "turnaroundExpress": "Express",
+    "waQty": "Qty {qty}",
+    "waDesign": "Design: {mode}",
+    "waTurnaround": "Turnaround: {mode}",
+    "waEstimate": "Estimate — please confirm the final price",
+    "waNotes": "Notes: {notes}",
+    "waFiles": "Files uploaded online: {count}",
+    "waRef": "Cart ref: {ref}",
+    "waPrice": "Price: {price}",
+    "saving": "Saving…"
   },
   "services": {
     "title": "Our services",
@@ -245,7 +307,8 @@
     "whatText": "Photo mugs and sublimation gifts, photo framing, crystal printing, laser cutting and wood engraving, banners and large format, plan printing, T-shirts, edible cake prints and custom souvenirs.",
     "visitTitle": "Visit our shop",
     "visitText": "Drop by our Kalutara shop to see samples, talk to a designer or collect your order.",
-    "contactCta": "Contact & directions"
+    "contactCta": "Contact & directions",
+    "shopPhotoAlt": "Our Kalutara shop front at night"
   },
   "contact": {
     "title": "Contact us",
@@ -267,5 +330,38 @@
     "text": "The page or product may have moved. Try the shop or message us on WhatsApp.",
     "toShop": "Go to the shop",
     "toHome": "Back to home"
+  },
+  "toast": {
+    "added": "Added to cart",
+    "viewCart": "View cart",
+    "addFailed": "Couldn't add to cart — please try again.",
+    "removed": "{name} removed",
+    "undo": "Undo",
+    "updateFailed": "Couldn't update your cart — your change was undone.",
+    "dismiss": "Dismiss notification"
+  },
+  "legal": {
+    "draftNotice": "Draft — this text is being reviewed and may change.",
+    "contactLine": "Questions? WhatsApp {whatsapp} or call {phone}."
+  },
+  "faq": {
+    "title": "Frequently asked questions",
+    "subtitle": "Quick answers about proofs, files, turnaround and delivery.",
+    "more": "Still have a question?",
+    "ask": "Ask us on WhatsApp"
+  },
+  "track": {
+    "title": "Track your order",
+    "lead": "Enter your order number and the phone number you used.",
+    "orderNumber": "Order number",
+    "orderNumberHint": "For example NP-26-000123",
+    "phone": "Phone number",
+    "submit": "Track order",
+    "notAvailableTitle": "Online tracking is coming soon",
+    "notAvailableText": "Order tracking will be available after online checkout launches. For now, message us on WhatsApp with your order number and we'll update you right away.",
+    "whatsappMessage": "Hi Nirmanee! Could you update me on order {order}? My phone number is {phone}.",
+    "askWhatsapp": "Ask about this order on WhatsApp",
+    "errorOrder": "Enter your order number, for example NP-26-000123.",
+    "errorPhone": "Enter the phone number you used for the order."
   }
 }

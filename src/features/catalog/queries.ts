@@ -1,8 +1,9 @@
 import "server-only";
 import { cache } from "react";
 import seed from "../../../supabase/seed/catalog.json";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { fromPrice, type Catalog, type Category, type OptionConfig, type OptionType, type Product, type ProductOption } from "./types";
+import { createSupabasePublicClient } from "@/lib/supabase/public";
+import { productImagesFor } from "@/lib/assets";
+import { minimumPrice, parseTemplateConfig, type Catalog, type Category, type OptionConfig, type OptionType, type Product, type ProductOption } from "./types";
 import type { ModifierType, PricingMode } from "@/lib/pricing";
 
 const num = (v: unknown): number | null => (v === null || v === undefined ? null : Number(v));
@@ -32,7 +33,7 @@ interface DbProduct {
   category: { id: string; slug: string };
   product_options: DbOption[];
   product_price_tiers: { min_quantity: number; discount_percent: number | string }[];
-  product_templates: { id: string; name_en: string; name_si: string | null; preview_key: string; is_active: boolean; sort_order: number }[];
+  product_templates: { id: string; name_en: string; name_si: string | null; preview_key: string; config: unknown; is_active: boolean; sort_order: number }[];
 }
 
 const PRODUCT_SELECT = `
@@ -44,7 +45,7 @@ const PRODUCT_SELECT = `
   product_options(id, type, code, label_en, label_si, is_required, config, sort_order,
     product_option_values(id, value, label_en, label_si, modifier_type, price_modifier, width_in, height_in, swatch_hex, is_default, is_active, sort_order)),
   product_price_tiers(min_quantity, discount_percent),
-  product_templates(id, name_en, name_si, preview_key, is_active, sort_order)
+  product_templates(id, name_en, name_si, preview_key, config, is_active, sort_order)
 `;
 
 function mapDbProduct(p: DbProduct): Product {
@@ -101,12 +102,12 @@ function mapDbProduct(p: DbProduct): Product {
     templates: [...p.product_templates]
       .filter((t) => t.is_active)
       .sort((a, b) => a.sort_order - b.sort_order)
-      .map((t) => ({ id: t.id, name: { en: t.name_en, si: t.name_si }, previewKey: t.preview_key })),
+      .map((t) => ({ id: t.id, name: { en: t.name_en, si: t.name_si }, previewKey: t.preview_key, ...parseTemplateConfig(t.config) })),
   };
 }
 
 async function loadFromSupabase(): Promise<Catalog | null> {
-  const supabase = await createSupabaseServerClient();
+  const supabase = createSupabasePublicClient();
   if (!supabase) return null;
   const [cats, prods] = await Promise.all([
     supabase.from("categories").select("id, slug, name_en, name_si, description_en, description_si, sort_order").order("sort_order"),
@@ -143,7 +144,7 @@ interface SeedProduct {
   allow_customer_artwork?: boolean; allow_design_service?: boolean; requires_artwork?: boolean;
   images?: { key: string; alt_en?: string; alt_si?: string }[];
   specs?: [string, string][]; tiers?: [number, number][]; options?: SeedOption[];
-  templates?: { name_en: string; name_si?: string; preview_key: string }[];
+  templates?: { name_en: string; name_si?: string; preview_key: string; config?: unknown }[];
 }
 
 function loadFromSeed(): Catalog {
@@ -206,6 +207,7 @@ function loadFromSeed(): Catalog {
       id: `seed-${p.slug}-tpl-${i + 1}`,
       name: { en: t.name_en, si: t.name_si ?? null },
       previewKey: t.preview_key,
+      ...parseTemplateConfig(t.config),
     })),
   }));
   return { categories, products, source: "seed" };
@@ -214,12 +216,32 @@ function loadFromSeed(): Catalog {
 // ---------------------------------------------------------------------------
 // Public API (memoised per request)
 // ---------------------------------------------------------------------------
+/** Local photos in public/products/<slug>/ come first, then images stored in the DB. */
+function withLocalImages(catalog: Catalog): Catalog {
+  return {
+    ...catalog,
+    products: catalog.products.map((p) => {
+      const local = productImagesFor(p.slug).map((src, i) => ({
+        key: src,
+        alt: { en: `${p.name.en} — photo ${i + 1}`, si: p.name.si ? `${p.name.si} — ඡායාරූපය ${i + 1}` : null },
+      }));
+      return local.length > 0 ? { ...p, images: [...local, ...p.images] } : p;
+    }),
+  };
+}
+
 export const getCatalog = cache(async (): Promise<Catalog> => {
-  return (await loadFromSupabase()) ?? loadFromSeed();
+  return withLocalImages((await loadFromSupabase()) ?? loadFromSeed());
 });
 
 export async function getCategories(): Promise<Category[]> {
   return (await getCatalog()).categories;
+}
+
+/** Categories shown in navigation / home grid: those with at least 2 products. */
+export async function getNavCategories(): Promise<Category[]> {
+  const { categories, products } = await getCatalog();
+  return categories.filter((c) => products.filter((p) => p.categorySlug === c.slug).length >= 2);
 }
 
 export async function getCategory(slug: string): Promise<Category | null> {
@@ -252,12 +274,8 @@ export async function searchProducts(opts: { category?: string; q?: string; sort
         .includes(q),
     );
   }
-  // Per-sq-ft products sort by their minimum billable order, not the rate.
-  const price = (p: Product) => {
-    const from = fromPrice(p);
-    if (from === null) return Number.MAX_SAFE_INTEGER;
-    return p.pricingMode === "per_sqft" ? from * Math.max(p.minSqft ?? 1, 1) : from;
-  };
+  // Sort by the cheapest possible order (per-sq-ft products: minimum billable size).
+  const price = (p: Product) => minimumPrice(p) ?? Number.MAX_SAFE_INTEGER;
   const sorted = [...list];
   switch (opts.sort) {
     case "price-asc":

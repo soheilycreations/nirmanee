@@ -78,12 +78,12 @@ docs/                          AUDIT, SCHEMA, DESIGN, ROADMAP, PROGRESS
 
 1. **TypeScript strict.** No `any` (use `unknown` + zod), no `@ts-ignore`, no non-null `!` without a comment explaining why.
 2. **Server Components by default.** Add `"use client"` only for interactivity; keep client components small and leaf-level.
-3. **Mutations = Server Actions** (`features/<domain>/actions.ts`, `"use server"`). Route handlers only for webhooks (PayHere), cron and third-party callbacks.
+3. **Mutations = Server Actions** (`features/<domain>/actions.ts`, `"use server"`). Route handlers only for webhooks (PayHere, `/api/revalidate`), cron and third-party callbacks. **Exception:** cart mutations go through `/api/cart` (`fetch` + `keepalive`, same-origin check) because Next.js can drop an in-flight Server Action when the visitor navigates, and setting a cookie in a Server Action re-renders the page.
 4. **Validate everything with zod** at the boundary: server action inputs, route handler bodies, search params, env vars (`lib/env.ts`). Never trust the client for prices, totals, statuses or ownership.
 5. **Prices are computed server-side only** (`lib/pricing.ts`), using DB product/option data. Cart items store selections, never prices.
 6. **Database changes only as migrations** in `supabase/migrations/<timestamp>_<name>.sql`. Never edit an applied migration — add a new one. Regenerate `src/types/database.ts` after each.
-7. **RLS on every table**, with explicit policies. New table without RLS = rejected. Business rules that must always hold (status transitions, payment recalculation, revision counts) live in **DB triggers/functions**, not only in app code.
-8. **Service role key** only in `lib/supabase/admin.ts` (with `import "server-only"`), used only where RLS cannot express the operation (checkout insert, PayHere notify, upload confirmation). Prefer the user-scoped server client.
+7. **RLS on every table**, with explicit policies. Remember guests are `authenticated` too (anonymous auth) — use `app.is_anonymous()` when a rule needs a permanent account. New table without RLS = rejected. Business rules that must always hold (status transitions, payment recalculation, revision counts) live in **DB triggers/functions**, not only in app code.
+8. **Secret key** (`SUPABASE_SECRET_KEY`, `sb_secret_…`; legacy service_role) only in `lib/supabase/admin.ts` (with `import "server-only"`), used only where RLS cannot express the operation (checkout insert, PayHere notify, upload confirmation). Prefer the user-scoped server client.
 9. **No secrets in code or in `NEXT_PUBLIC_*`.** All config via env vars documented in `.env.example`. Never log secrets, tokens, or full PayHere payloads to the client.
 10. **Files go to R2, never to `public/` or the DB.** Use presigned PUT/GET with short TTLs; verify size/type server-side; record every object in `job_files`.
 11. **PayHere:** compute the checkout `hash` server-side; on `notify_url` verify `md5sig` (`UPPER(MD5(merchant_id + order_id + payhere_amount + payhere_currency + status_code + UPPER(MD5(merchant_secret))))`), check amount/currency against our DB, make the handler idempotent (unique `provider_reference`), then insert the payment with the service role. Never mark paid from `return_url`.
@@ -94,6 +94,10 @@ docs/                          AUDIT, SCHEMA, DESIGN, ROADMAP, PROGRESS
 16. **No fake data in production UI** — no invented reviews, ratings, discounts, stats or claims.
 17. **Full-file outputs:** when showing or writing code, output complete files — no `// ...rest unchanged` placeholders.
 18. Keep `npm run lint` and `npm run build` green before every commit.
+19. **Static first:** customer pages are SSG/ISR (`export const revalidate = 3600`, `generateStaticParams`). Never read cookies/headers in the `[locale]` layout or in catalogue pages; public data comes from `lib/supabase/public.ts` (cookie-less, cached under the `catalog` tag, cleared by `/api/revalidate`). Per-visitor UI (cart badge) is client state.
+20. **Translations per page:** wrap client components in `<IntlIsland namespaces={[...]}>` so only the needed message namespaces are sent (base: common, nav, toast).
+21. **Photos:** product photos live in `public/products/<slug>/1.webp…`, gallery in `public/gallery/`; `scripts/build-assets-manifest.mjs` (runs before dev/build) indexes them — never read `public/` with `fs` at request time.
+22. **Owner content** (address, rating, socials, legal-draft flag) lives in `src/config/site-settings.ts`; sections stay hidden while values are null.
 
 ## 5. Git workflow
 
@@ -122,12 +126,20 @@ supabase start && supabase db reset          # local DB with migrations + seed
 supabase gen types typescript --local > src/types/database.ts
 ```
 
+Live project: `jvejmlwpahjittbzztmy` (keys come from the environment / `.env.local`, never commit them).
+In the Claude cloud sandbox, Node only reaches Supabase through the proxy with
+`NODE_USE_ENV_PROXY=1` (e.g. `NODE_USE_ENV_PROXY=1 npm start`).
+
 SQL scenario test without Docker (plain Postgres 15+):
 ```bash
 psql -d test -f supabase/tests/_supabase_stub.sql \
   -f supabase/migrations/20261107000000_drop_legacy_tables.sql \
   -f supabase/migrations/20261108000000_foundation_schema.sql \
   -f supabase/migrations/20261109000000_phase1a_storefront.sql \
+  -f supabase/migrations/20261110000000_anonymous_users.sql \
+  -f supabase/migrations/20261111000000_cart_policies.sql \
+  -f supabase/migrations/20261112000000_running_ft_modifier.sql \
+  -f supabase/migrations/20261112000100_eyelets_and_templates.sql \
   -f supabase/tests/_grants.sql -f supabase/tests/foundation_scenario.sql \
-  -f supabase/tests/phase1a_scenario.sql
+  -f supabase/tests/phase1a_scenario.sql -f supabase/tests/anonymous_scenario.sql
 ```

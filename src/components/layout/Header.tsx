@@ -1,15 +1,13 @@
 import Image from "next/image";
-import { ShoppingBag } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { getCartCount } from "@/features/cart/store";
+import { CartBadge } from "@/components/cart/CartBadge";
 import { whatsappUrl } from "@/lib/site";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { MobileNav } from "./MobileNav";
 
 export async function Header() {
   const t = await getTranslations();
-  const count = await getCartCount();
   const items = [
     { href: "/shop", label: t("nav.shop") },
     { href: "/services", label: t("nav.services") },
@@ -42,18 +40,7 @@ export async function Header() {
 
         <div className="flex items-center gap-1">
           <LanguageSwitcher className="hidden sm:inline-flex" />
-          <Link
-            href="/cart"
-            aria-label={t("nav.cartWithCount", { count })}
-            className="relative inline-flex size-11 items-center justify-center rounded-control text-ink-900 hover:bg-paper-200"
-          >
-            <ShoppingBag className="size-6" aria-hidden="true" strokeWidth={1.75} />
-            {count > 0 && (
-              <span className="absolute right-1 top-1 flex min-w-5 items-center justify-center rounded-full bg-primary px-1 text-[11px] font-bold text-white">
-                {count}
-              </span>
-            )}
-          </Link>
+          <CartBadge />
           <MobileNav items={items} whatsappHref={whatsappUrl()} />
         </div>
       </div>
